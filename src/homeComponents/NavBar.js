@@ -62,7 +62,7 @@ export default function Navbar() {
           <FiSearch className="text-xl text-gray-700 cursor-pointer" />
 
           <button className="bg-[#E3B793] text-white font-semibold text-sm px-5 py-2 rounded hover:bg-[#d09f74] transition">
-            BOOK APPOINTMENT
+            ORDER NOW
           </button>
         </div>
 
