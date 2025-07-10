@@ -58,7 +58,7 @@ const Slider = () => {
         loop={true}
         pagination={{ clickable: true }}
         autoplay={{
-          delay: 6000,
+          delay: 5000,
           disableOnInteraction: false,
         }}
         onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}

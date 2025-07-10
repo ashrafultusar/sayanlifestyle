@@ -28,7 +28,6 @@ export default function Navbar() {
           </div>
           <span className="text-2xl font-bold italic text-gray-800">SAYAN</span>
         </div>
-
         <ul className="hidden md:flex space-x-6 text-gray-700 font-medium">
           <li>
             <Link href="/">Home</Link>
@@ -58,14 +57,11 @@ export default function Navbar() {
               <div className="text-base font-medium">+1- (246) 333-0089</div>
             </div>
           </div>
-
           <FiSearch className="text-xl text-gray-700 cursor-pointer" />
-
           <button className="bg-[#E3B793] text-white font-semibold text-sm px-5 py-2 rounded hover:bg-[#d09f74] transition">
             ORDER NOW
           </button>
         </div>
-
         <button
           className="md:hidden text-2xl text-gray-700 cursor-pointer"
           onClick={() => setMobileMenuOpen(true)}
@@ -73,14 +69,12 @@ export default function Navbar() {
           <FiMenu />
         </button>
       </nav>
-
       <div
         className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-transform duration-500 ${
           mobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
         onClick={() => setMobileMenuOpen(false)}
       />
-
       <div
         className={`fixed top-0 right-0 h-full w-72 bg-gray-900 text-white z-50 transform transition-transform duration-300 ${
           mobileMenuOpen ? "translate-x-0" : "translate-x-full"
@@ -101,7 +95,6 @@ export default function Navbar() {
             <FiX />
           </button>
         </div>
-
         <ul className="flex flex-col p-4 space-y-2 font-medium">
           {[
             ["Home", "/"],
