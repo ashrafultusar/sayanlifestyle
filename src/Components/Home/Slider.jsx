@@ -7,7 +7,7 @@ import "swiper/css/pagination";
 
 export default function HeroSection() {
   return (
-    <div className="container mx-auto py-4">
+    <div className="container mx-auto py-4 px-2">
     
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[350px] lg:h-[200px]">
 
@@ -18,34 +18,34 @@ export default function HeroSection() {
             pagination={{ clickable: true }}
             autoplay={{ delay: 3000, disableOnInteraction: false }}
             loop
-            className="w-full h-full rounded-xl overflow-hidden"
+            className="w-full h-[300px] md:h-[500px] overflow-hidden"
           >
             <SwiperSlide>
               <div className="relative w-full h-full">
                 <img
                   src="/slider-1.jpg"
                   alt="Joggers"
-                  className="w-full h-full object-cover"
+                  className="w-full  object-cover"
                 />
               </div>
             </SwiperSlide>
 
             <SwiperSlide>
-              <div className="relative w-full h-full">
+              <div className="relative w-full ">
                 <img
                   src="/slider-2.jpg"
                   alt="Jersey"
-                  className="w-full h-full object-cover"
+                  className="w-full object-cover"
                 />
               </div>
             </SwiperSlide>
 
             <SwiperSlide>
-              <div className="relative w-full h-full">
+              <div className="relative w-full ">
                 <img
                   src="/slider-3.jpg"
                   alt="Trousers"
-                  className="w-full h-full object-cover"
+                  className="w-full  object-cover"
                 />
               </div>
             </SwiperSlide>
@@ -59,7 +59,7 @@ export default function HeroSection() {
             <img
               src="/slider-1.jpg"
               alt="Half Sleeve Collection"
-              className="w-full h-full object-cover"
+              className="w-full md:h-[245px] object-cover"
             />
           </div>
 
@@ -68,7 +68,7 @@ export default function HeroSection() {
             <img
               src="/slider-2.jpg"
               alt="Full Sleeve Jersey"
-              className="w-full h-full object-cover"
+              className="w-full  md:h-[240px] object-cover"
             />
           </div>
         </div>
