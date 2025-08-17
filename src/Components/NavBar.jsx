@@ -26,9 +26,9 @@ export default function Navbar() {
       <div className="bg-white">
         <div className="container mx-auto flex items-center justify-between px-4 py-3">
           {/* Logo */}
-          <div className="flex items-center space-x-2 text-xl font-bold">
+         <Link href={'/'}> <div className="flex items-center space-x-2 text-xl font-bold">
             SAYAN
-          </div>
+          </div></Link>
 
           {/* Search bar - hidden on mobile */}
           <div className="hidden md:flex flex-1 max-w-md mx-6">
