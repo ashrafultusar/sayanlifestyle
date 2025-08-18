@@ -1,0 +1,49 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+// React Icons
+import { FaBoxOpen, FaUserShield, FaThList } from "react-icons/fa";
+
+export default function Sidebar() {
+  const pathname = usePathname();
+
+  const links = [
+    { name: "Add Product", href: "/dashboard/addProduct", icon: <FaBoxOpen /> },
+    { name: "Add Admin", href: "/dashboard/signup", icon: <FaUserShield /> },
+    { name: "Add Category", href: "/dashboard/categories", icon: <FaThList /> },
+  ];
+
+  return (
+    <aside className="w-64 bg-white shadow-lg border-r h-screen sticky top-0">
+      {/* Logo / Header */}
+      <div className="px-6 py-5 border-b flex items-center justify-center">
+        <img
+          className="h-8"
+          src="https://merakiui.com/images/logo.svg"
+          alt="Logo"
+        />
+       
+      </div>
+
+      {/* Navigation */}
+      <nav className="mt-6">
+        {links.map((link) => {
+          const active = pathname.startsWith(link.href);
+          return (
+            <Link
+              key={link.name}
+              href={link.href}
+              className={`flex items-center gap-3 px-6 py-3 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition 
+                ${active ? "bg-gray-200 font-semibold text-gray-900" : ""}`}
+            >
+              <span className="text-lg">{link.icon}</span>
+              <span>{link.name}</span>
+            </Link>
+          );
+        })}
+      </nav>
+    </aside>
+  );
+}

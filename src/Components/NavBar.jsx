@@ -26,9 +26,12 @@ export default function Navbar() {
       <div className="bg-white">
         <div className="container mx-auto flex items-center justify-between px-4 py-3">
           {/* Logo */}
-         <Link href={'/'}> <div className="flex items-center space-x-2 text-xl font-bold">
-            SAYAN
-          </div></Link>
+          <Link href={"/"}>
+            {" "}
+            <div className="flex items-center space-x-2 text-xl font-bold">
+              SAYAN
+            </div>
+          </Link>
 
           {/* Search bar - hidden on mobile */}
           <div className="hidden md:flex flex-1 max-w-md mx-6">
@@ -44,6 +47,7 @@ export default function Navbar() {
 
           {/* Contact & Facebook */}
           <div className="hidden md:flex items-center space-x-4 text-sm">
+            <Link href={'/dashboard'}><button className="cursor-pointer px-2 py-2 rounded-md border">Dashboard</button></Link>
             <div className="flex items-center space-x-1">
               <FiPhoneCall />
               <span>09639-184415</span>

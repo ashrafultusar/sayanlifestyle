@@ -15,29 +15,13 @@ const SignUp = () => {
     const password = form.password.value;
 
     try {
-      const res = await fetch("/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        toast.success("Registration successful");
-        router.push("/dashboard/admins");
-        form.reset();
-      } else {
-        toast.error(data.error || "Registration failed");
-      }
+      
     } catch {
-      toast.error("Something went wrong");
+      
     }
   };
 
-  const handleGoogleSignUp = () => {
-    signIn("google", { callbackUrl: "/dashboard/order" });
-  };
+
 
   return (
     <div className="flex w-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800">
@@ -58,21 +42,7 @@ const SignUp = () => {
           Create your account
         </p>
 
-        {/* Google signup */}
-        <button
-          onClick={handleGoogleSignUp}
-          type="button"
-          className="flex items-center justify-center mt-4 text-gray-600 w-full border rounded-lg hover:bg-gray-50"
-        >
-          <div className="px-4 py-2">
-            <svg className="w-6 h-6" viewBox="0 0 40 40">
-              <path fill="#EA4335" d="M20 3.5c4.6 0 8.5 1.8 11.3 4.8l-4.6 4.6C25.2 11.2 22.8 10 20 10c-5.3 0-9.6 4.3-9.6 9.6s4.3 9.6 9.6 9.6c4.9 0 8.5-3.3 9.3-7.9h-9.3v-6.3h16c.2 1.1.3 2.2.3 3.5 0 9.5-6.5 16.3-16.3 16.3C10.5 34.8 3.5 27.8 3.5 19S10.5 3.5 20 3.5z" />
-            </svg>
-          </div>
-          <span className="w-5/6 px-4 py-3 font-bold text-center">
-            Sign up with Google
-          </span>
-        </button>
+       
 
         {/* Email/password form */}
         <div className="flex items-center justify-between mt-4">
