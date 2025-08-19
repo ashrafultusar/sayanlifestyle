@@ -19,11 +19,13 @@ const NewArrival = () => {
         {products.map((product) => (
           <ProductCard
             key={product?._id}
+            _id={product._id}
             title={product?.title}
             image={product?.image}
             description={product?.description}
             discountPrice={product?.discountPrice}
             price={product?.price}
+          
           />
         ))}
       </div>
