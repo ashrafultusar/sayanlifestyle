@@ -1,9 +1,7 @@
+import BestSellingProducts from "@/Components/Home/BestSellingProducts/BestSellingProducts";
 import CategoriesSection from "@/Components/Home/CategoriesSection/CategoriesSection";
 import NewArrival from "@/Components/Home/NewArrival/NewArrival";
 import Slider from "@/Components/Home/Slider/Slider";
-
-
-
 
 export default function Home() {
   return (
@@ -11,6 +9,7 @@ export default function Home() {
       <Slider />
       <CategoriesSection />
       <NewArrival></NewArrival>
+      <BestSellingProducts></BestSellingProducts>
     </div>
   );
 }

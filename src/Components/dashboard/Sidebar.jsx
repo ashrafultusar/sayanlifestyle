@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 // React Icons
-import { FaBoxOpen, FaUserShield, FaThList } from "react-icons/fa";
+import { FaBoxOpen, FaUserShield, FaThList, FaShoppingCart, FaTruck, FaImages } from "react-icons/fa";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -13,6 +13,9 @@ export default function Sidebar() {
     { name: "Add Product", href: "/dashboard/addProduct", icon: <FaBoxOpen /> },
     { name: "Add Admin", href: "/dashboard/signup", icon: <FaUserShield /> },
     { name: "Add Category", href: "/dashboard/categories", icon: <FaThList /> },
+    { name: "Orders", href: "/dashboard/orders", icon: <FaShoppingCart /> },
+    { name: "Delivery Charges", href: "/dashboard/deliveryCharges", icon: <FaTruck /> },
+    { name: "Home Slider", href: "/dashboard/slider", icon: <FaImages /> },
   ];
 
   return (
@@ -24,7 +27,6 @@ export default function Sidebar() {
           src="https://merakiui.com/images/logo.svg"
           alt="Logo"
         />
-       
       </div>
 
       {/* Navigation */}

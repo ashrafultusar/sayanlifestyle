@@ -6,7 +6,7 @@ import React from "react";
 
 
 
-const NewArrival = () => {
+const BestSellingProducts = () => {
   const { products, loading, error } = useProducts();
 
   if (loading) return <p className="text-center mt-10">Loading...</p>;
@@ -31,4 +31,4 @@ const NewArrival = () => {
   );
 };
 
-export default NewArrival;
+export default BestSellingProducts;
