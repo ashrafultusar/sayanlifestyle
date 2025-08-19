@@ -1,19 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import ImageZoom from "react-image-zoom";
 import { useParams } from "next/navigation";
+import Image from "next/image";
 
 export default function ProductPage() {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const [product, setProduct] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState("");
+  const [selectedSize, setSelectedSize] = useState("");
   const [loading, setLoading] = useState(true);
 
-
-
-
-  
   // fetch product details
   useEffect(() => {
     const fetchProduct = async () => {
@@ -22,7 +19,9 @@ export default function ProductPage() {
         if (!res.ok) throw new Error("Failed to fetch product");
         const data = await res.json();
         setProduct(data);
-        setSelectedImage(data.images[0]);
+        if (data.images && data.images.length > 0) {
+          setSelectedImage(data.images[0]);
+        }
       } catch (err) {
         console.error(err.message);
       } finally {
@@ -31,79 +30,113 @@ export default function ProductPage() {
     };
     if (id) fetchProduct();
   }, [id]);
-console.log(product);
+
   if (loading) return <p className="text-center py-10">Loading...</p>;
   if (!product) return <p className="text-center text-black py-10">Product not found</p>;
 
-  const zoomProps = {
-    width: 400,
-    height: 400,
-    zoomWidth: 500,
-    img: selectedImage,
-  };
-
   return (
-    <div className="container mx-auto px-4 py-10">
-      <div className="flex flex-col lg:flex-row gap-8">
-        {/* Left: Images */}
-        <div className="flex flex-col items-center gap-4">
-          <div className="border p-2">
-            {/* <ImageZoom {...zoomProps} /> */}
-          </div>
-          <div className="flex gap-2 mt-2">
-            {product?.images?.map((img, i) => (
+    <div className="mt-10 container mx-auto px-4 transition-opacity text-black ease-in duration-500 opacity-100">
+      <div className="flex gap-12 flex-col lg:flex-row">
+        {/* Left: product images */}
+        <div className="flex-1 flex flex-col-reverse gap-3 lg:flex-row">
+          {/* Thumbnails */}
+          <div className="flex lg:flex-col overflow-x-auto lg:overflow-y-scroll justify-between lg:justify-normal lg:w-[18.7%] w-full">
+            {product?.images?.map((img, index) => (
               <img
-                key={i}
-                src={img}
-                alt={`Thumbnail ${i}`}
-                className={`w-20 h-20 object-cover border cursor-pointer ${
-                  selectedImage === img ? "border-blue-500" : "border-gray-300"
-                }`}
+                key={index}
                 onClick={() => setSelectedImage(img)}
+                src={img}
+                className={`w-[24%] lg:w-full lg:mb-3 flex-shrink-0 cursor-pointer border rounded ${
+                  selectedImage === img ? "border-orange-500" : ""
+                }`}
+                alt={`Thumbnail ${index}`}
               />
             ))}
+          </div>
+          {/* Main Image */}
+          <div className="w-full lg:w-[80%]">
+            {selectedImage && (
+              <Image
+                src={selectedImage}
+                alt={product.name}
+                width={600}
+                height={600}
+                className="w-full h-auto rounded"
+              />
+            )}
           </div>
         </div>
 
         {/* Right: Product Info */}
         <div className="flex-1">
-          <h1 className="text-2xl font-semibold">{product?.name}</h1>
-          <div className="flex items-center gap-4 mt-2">
-            <span className="text-gray-500 line-through">
-              ৳{product?.originalPrice}
-            </span>
-            <span className="text-xl font-bold text-green-600">
-              ৳{product?.price}
-            </span>
+          <h1 className="font-medium text-2xl mt-2">{product.name}</h1>
+
+          {/* Rating */}
+          <div className="flex items-center gap-1 mt-2">
+            {[1, 2, 3, 4].map((i) => (
+              <img key={i} src="/star_icon.svg" alt="star" className="w-3" />
+            ))}
+            <img src="/star_dull_icon.svg" alt="star" className="w-3" />
+            <p className="pl-2 text-sm">(122)</p>
           </div>
 
-          <div className="mt-4">
-            <label className="block mb-1">Size:</label>
-            <select className="border p-2 rounded w-full max-w-xs">
-              {product?.sizes?.map((size) => (
-                <option key={size}>{size}</option>
+          {/* Price */}
+          <p className="mt-5 text-3xl font-medium text-green-600">৳{product.price}</p>
+
+          {/* Description */}
+          <p className="mt-5 text-gray-500 lg:w-4/5">{product.description}</p>
+
+          {/* Sizes */}
+          <div className="flex flex-col gap-4 my-8">
+            <p>Select Size</p>
+            <div className="flex gap-2">
+              {product.sizes?.map((size, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSelectedSize(size)}
+                  className={`border py-2 px-4 bg-gray-100 rounded ${
+                    size === selectedSize ? "border-orange-500" : ""
+                  }`}
+                >
+                  {size}
+                </button>
               ))}
-            </select>
+            </div>
           </div>
 
-          <div className="mt-4 flex items-center gap-4">
-            <button className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-              Buy Now
-            </button>
-            <button className="px-6 py-2 border rounded hover:bg-gray-100">
-              Add to Cart
-            </button>
-          </div>
+          {/* Add to cart button */}
+          <button
+            onClick={() => alert(`Added ${product.name} - Size: ${selectedSize}`)}
+            className="bg-black text-white px-8 py-3 text-sm rounded active:bg-gray-700"
+          >
+            ADD TO CART
+          </button>
 
-          <div className="mt-4 text-gray-600">
-            <p>Outside Dhaka: ৳{product?.deliveryOutside}</p>
-            <p>Inside Dhaka: ৳{product?.deliveryInside}</p>
-          </div>
+          <hr className="mt-8 lg:w-4/5" />
 
-          <div className="mt-6">
-            <h2 className="font-semibold mb-2">Description:</h2>
-            <p>{product?.description}</p>
+          {/* Policy */}
+          <div className="text-sm text-gray-500 mt-5 flex flex-col gap-1">
+            <p>100% Original Product.</p>
+            <p>Cash on Delivery is available on this product.</p>
+            <p>Easy return and exchange policy within 7 days.</p>
           </div>
+        </div>
+      </div>
+
+      {/* Description & Reviews */}
+      <div className="mt-20">
+        <div className="flex">
+          <b className="border px-5 py-3 text-sm">Description</b>
+          <p className="border px-5 py-3 text-sm">Reviews (122)</p>
+        </div>
+        <div className="flex flex-col gap-4 border px-6 py-6 text-sm text-gray-500">
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita, in? 
+          </p>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt aut, 
+            ut praesentium cumque ullam fuga?
+          </p>
         </div>
       </div>
 
@@ -111,18 +144,18 @@ console.log(product);
       <div className="mt-16">
         <h2 className="text-xl font-semibold mb-4">Related Products</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {product?.related?.map((item) => (
+          {(product.related || []).map((item, i) => (
             <div
-              key={item?.id}
-              className="border p-2 rounded hover:shadow-lg transition"
+              key={i}
+              className="border p-2 rounded hover:shadow-lg transition cursor-pointer"
             >
               <img
-                src={item?.image}
-                alt={item?.name}
-                className="w-full h-48 object-cover"
+                src={item.image}
+                alt={item.name}
+                className="w-full h-48 object-cover rounded"
               />
-              <h3 className="mt-2 text-sm">{item?.name}</h3>
-              <p className="text-green-600 font-bold">৳{item?.price}</p>
+              <h3 className="mt-2 text-sm">{item.name}</h3>
+              <p className="text-green-600 font-bold">৳{item.price}</p>
             </div>
           ))}
         </div>
