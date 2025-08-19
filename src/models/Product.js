@@ -1,3 +1,5 @@
+
+
 import mongoose from "mongoose";
 
 const ProductSchema = new mongoose.Schema(
@@ -24,7 +26,8 @@ const ProductSchema = new mongoose.Schema(
     price: { type: Number, required: true },
     discountPrice: { type: Number, required: true },
     description: { type: String },
-    image: { type: String },
+    // Changed 'image' type to an array of strings
+    image: { type: [String], required: true },
   },
   { timestamps: true }
 );

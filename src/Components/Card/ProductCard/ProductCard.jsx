@@ -5,12 +5,15 @@ import React from "react";
 import { FaStar, FaMapMarkerAlt, FaCalendarAlt, FaClock } from "react-icons/fa";
 
 const ProductCard = ({_id, title, image, description, discountPrice, price }) => {
+  
+  const imageUrl = Array.isArray(image) ? image[0] : image;
+  
   return (
     <div className="w-full bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
       {/* Image */}
       <Link href={`/productDetails/${_id}`}>
         <img
-          src={image || "https://via.placeholder.com/300x200"}
+          src={imageUrl || "https://via.placeholder.com/300x200"}
           alt={title}
           className="w-full h-40 object-cover"
         />
