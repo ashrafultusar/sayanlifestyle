@@ -13,13 +13,34 @@ const SignUp = () => {
     const name = form.name.value;
     const email = form.email.value;
     const password = form.password.value;
-
+  
     try {
-      
-    } catch {
-      
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+  
+      const data = await res.json();
+  
+      if (res.ok) {
+        toast.success("✅ Registration successful!");
+        // login after register (optional)
+        await signIn("credentials", {
+          email,
+          password,
+          redirect: true,
+          callbackUrl: "/dashboard/manageAdmin", // এখানে তোমার admin panel route
+        });
+      } else {
+        toast.error(data.error || "Registration failed");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
     }
   };
+  
 
 
 

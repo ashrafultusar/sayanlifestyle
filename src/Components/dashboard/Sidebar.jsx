@@ -2,9 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-// React Icons
-import { FaBoxOpen, FaUserShield, FaThList, FaShoppingCart, FaTruck, FaImages } from "react-icons/fa";
+import {
+  FaBoxOpen,
+  FaUserShield,
+  FaThList,
+  FaShoppingCart,
+  FaTruck,
+  FaImages,
+  FaSignOutAlt,
+} from "react-icons/fa";
+import { signOut } from "next-auth/react";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -12,6 +19,7 @@ export default function Sidebar() {
   const links = [
     { name: "Add Product", href: "/dashboard/addProduct", icon: <FaBoxOpen /> },
     { name: "Add Admin", href: "/dashboard/signup", icon: <FaUserShield /> },
+    { name: "Manage Admin", href: "/dashboard/manageAdmin", icon: <FaUserShield /> },
     { name: "Add Category", href: "/dashboard/categories", icon: <FaThList /> },
     { name: "Orders", href: "/dashboard/orders", icon: <FaShoppingCart /> },
     { name: "Delivery Charges", href: "/dashboard/deliveryCharges", icon: <FaTruck /> },
@@ -19,7 +27,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="w-64 bg-white shadow-lg border-r h-screen sticky top-0">
+    <aside className="w-64 bg-white shadow-lg border-r h-screen flex flex-col sticky top-0">
       {/* Logo / Header */}
       <div className="px-6 py-5 border-b flex items-center justify-center">
         <img
@@ -29,8 +37,8 @@ export default function Sidebar() {
         />
       </div>
 
-      {/* Navigation */}
-      <nav className="mt-6">
+      {/* Navigation Links */}
+      <nav className="mt-6 flex-1">
         {links.map((link) => {
           const active = pathname.startsWith(link.href);
           return (
@@ -46,6 +54,17 @@ export default function Sidebar() {
           );
         })}
       </nav>
+
+      {/* Logout Button (Always at Bottom) */}
+      <div className="border-t">
+        <button
+          onClick={() => signOut({ callbackUrl: "/" })}
+          className="flex items-center gap-3 w-full px-6 py-3 text-red-600 hover:bg-red-50 hover:text-red-700 transition"
+        >
+          <FaSignOutAlt className="text-lg" />
+          <span>Logout</span>
+        </button>
+      </div>
     </aside>
   );
 }
