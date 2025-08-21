@@ -18,12 +18,12 @@ export default function Sidebar() {
 
   const links = [
     { name: "Add Product", href: "/dashboard/addProduct", icon: <FaBoxOpen /> },
-    { name: "Add Admin", href: "/dashboard/signup", icon: <FaUserShield /> },
+   
     { name: "Manage Admin", href: "/dashboard/manageAdmin", icon: <FaUserShield /> },
-    { name: "Add Category", href: "/dashboard/categories", icon: <FaThList /> },
+    { name: "Add Category", href: "/dashboard/manageCategorie", icon: <FaThList /> },
     { name: "Orders", href: "/dashboard/orders", icon: <FaShoppingCart /> },
     { name: "Delivery Charges", href: "/dashboard/deliveryCharges", icon: <FaTruck /> },
-    { name: "Home Slider", href: "/dashboard/slider", icon: <FaImages /> },
+    { name: "Home Slider", href: "/dashboard/homeSlider", icon: <FaImages /> },
   ];
 
   return (
