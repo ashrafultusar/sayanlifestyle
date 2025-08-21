@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 import {
   FaFacebookF,
@@ -61,11 +62,21 @@ const Footer = () => {
         <div className="flex-1">
           <h3 className="text-white font-semibold mb-4">USEFUL LINKS</h3>
           <ul className="space-y-2 text-sm">
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Wholesale</a></li>
-            <li><a href="#">Terms & Conditions</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Return Refund Policy</a></li>
+            <Link href={"/about"}>
+              <li className="pb-2 text-sm">About Us</li>
+            </Link>
+            <li>
+              <a href="#">Wholesale</a>
+            </li>
+            <li>
+              <a href="#">Terms & Conditions</a>
+            </li>
+            <li>
+              <a href="#">Privacy Policy</a>
+            </li>
+            <li>
+              <a href="#">Return Refund Policy</a>
+            </li>
           </ul>
         </div>
       </div>
