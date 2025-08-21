@@ -77,6 +77,7 @@ const SignIn = () => {
             id="email"
             name="email"
             type="email"
+            defaultValue='admin@gmail.com'
             required
             className="block w-full px-4 py-2 border rounded-lg focus:border-blue-400 focus:ring focus:ring-blue-300"
           />
@@ -91,6 +92,7 @@ const SignIn = () => {
           </label>
           <input
             id="password"
+            defaultValue='123456'
             name="password"
             type="password"
             required
