@@ -3,7 +3,6 @@ import connectDB from "@/lib/db";
 import Category from "@/models/Category";
 import { v2 as cloudinary } from "cloudinary";
 
-// ⬇️ Cloudinary config inline here
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -16,7 +15,10 @@ export async function POST(req) {
   const file = formData.get("image");
 
   if (!name || !file) {
-    return NextResponse.json({ error: "Missing name or image" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Missing name or image" },
+      { status: 400 }
+    );
   }
 
   const arrayBuffer = await file.arrayBuffer();
@@ -31,7 +33,10 @@ export async function POST(req) {
         if (error) {
           console.error("❌ Cloudinary error:", error);
           resolve(
-            NextResponse.json({ error: "Cloudinary upload failed" }, { status: 500 })
+            NextResponse.json(
+              { error: "Cloudinary upload failed" },
+              { status: 500 }
+            )
           );
           return;
         }
@@ -50,4 +55,16 @@ export async function POST(req) {
 
     stream.end(buffer);
   });
+}
+
+export async function GET() {
+  try {
+    await connectDB();
+
+    const categories = await Category.find().sort({ _id: -1 });
+    return NextResponse.json(categories, { status: 200 });
+  } catch (err) {
+    console.error("faild to fetch", err);
+    return NextResponse.json({ error: "faild to fetch" }, { status: 500 });
+  }
 }

@@ -1,23 +1,19 @@
-'use client';
+"use client";
 
+import useCategories from "@/hook/useCategories";
 import { useState } from "react";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 export default function page() {
+  const { categories } = useCategories();
   const [search, setSearch] = useState("");
-  const [categories, setCategories] = useState([
-    { id: 1, name: "Men's Clothing", image: "" },
-    { id: 2, name: "Women's Clothing", image: "" },
-    { id: 3, name: "Accessories", image: "" },
-  ]);
   const [showForm, setShowForm] = useState(false);
   const [newCategory, setNewCategory] = useState("");
   const [newImage, setNewImage] = useState(null);
   const [preview, setPreview] = useState(null);
 
   const handleImageChange = (e) => {
-  
     const file = e.target.files[0];
     if (file) {
       setNewImage(file);
@@ -27,38 +23,37 @@ export default function page() {
 
   const handleAddCategory = async () => {
     if (!newCategory || !newImage) return;
-  
+
     const formData = new FormData();
     formData.append("name", newCategory);
     formData.append("image", newImage);
-  
+
     try {
       const res = await fetch("/api/categories", {
         method: "POST",
         body: formData,
       });
-  
+
       const data = await res.json();
-  
+
       if (!res.ok) {
         alert(data.error || "Upload failed");
         return;
       }
-  
+
       // Add to UI
       setCategories([...categories, data]);
       setNewCategory("");
       setNewImage(null);
       setPreview(null);
       setShowForm(false);
-      toast.success('categorie upload successfully')
+      toast.success("categorie upload successfully");
     } catch (err) {
-      toast.error(err)
+      toast.error(err);
       console.error("Error uploading:", err);
     }
   };
-  
-
+  console.log(categories);
   return (
     <div className="p-6 space-y-6 text-black max-w-5xl mx-auto">
       {/* Header */}
@@ -146,12 +141,12 @@ export default function page() {
                 cat.name.toLowerCase().includes(search.toLowerCase())
               )
               .map((cat) => (
-                <tr key={cat.id} className="hover:bg-gray-50">
-                  <td className="p-3 border-b">{cat.id}</td>
+                <tr key={cat?._id} className="hover:bg-gray-50">
+                  <td className="p-3 border-b">{cat._id}</td>
                   <td className="p-3 border-b">
-                    {cat.image ? (
+                    {cat.imageUrl ? (
                       <img
-                        src={cat.image}
+                        src={cat.imageUrl}
                         alt={cat.name}
                         className="w-12 h-12 object-cover rounded"
                       />
@@ -159,7 +154,7 @@ export default function page() {
                       <span className="text-gray-400">No image</span>
                     )}
                   </td>
-                  <td className="p-3 border-b">{cat.name}</td>
+                  <td className="p-3 border-b">{cat?.name}</td>
                   <td className="p-3 border-b text-right space-x-2">
                     <button className="p-2 cursor-pointer rounded-lg border border-blue-200 text-blue-600 hover:bg-blue-50">
                       <FaEdit />
