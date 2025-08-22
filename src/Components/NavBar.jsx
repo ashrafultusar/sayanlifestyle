@@ -3,22 +3,14 @@ import Link from "next/link";
 import { useState } from "react";
 import { FiPhoneCall, FiSearch, FiMenu, FiX } from "react-icons/fi";
 import { FaFacebookF } from "react-icons/fa";
-import { PiShirtFoldedLight } from "react-icons/pi";
-import { GiWinterHat, GiTrousers } from "react-icons/gi";
-import { MdChildCare } from "react-icons/md";
-import { FaShirt } from "react-icons/fa6";
+
+import useCategories from "@/hook/useCategories";
 
 export default function Navbar() {
+  const { categories } = useCategories();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const categories = [
-    { label: "Jersey", icon: <PiShirtFoldedLight /> },
-    { label: "Tshirt", icon: <FaShirt /> },
-    { label: "Creative T-Shirt", icon: <FaShirt /> },
-    { label: "Winter Clothes", icon: <GiWinterHat /> },
-    { label: "Trousers", icon: <GiTrousers /> },
-    { label: "Kids", icon: <MdChildCare /> },
-  ];
+  console.log(categories);
 
   return (
     <div className="w-full  shadow-sm relative z-50 text-black">
@@ -47,7 +39,11 @@ export default function Navbar() {
 
           {/* Contact & Facebook */}
           <div className="hidden md:flex items-center space-x-4 text-sm">
-            <Link href={'/dashboard'}><button className="cursor-pointer px-2 py-2 rounded-md border">Dashboard</button></Link>
+            <Link href={"/dashboard"}>
+              <button className="cursor-pointer px-2 py-2 rounded-md border">
+                Dashboard
+              </button>
+            </Link>
             <div className="flex items-center space-x-1">
               <FiPhoneCall />
               <span>09639-184415</span>
@@ -75,10 +71,9 @@ export default function Navbar() {
               <Link
                 key={i}
                 href="#"
-                className="flex items-center space-x-1 text-gray-700 hover:text-black"
+                className="uppercase  text-gray-700 hover:text-black"
               >
-                {cat.icon}
-                <span>{cat.label}</span>
+                {cat?.name}
               </Link>
             ))}
           </div>
@@ -139,8 +134,7 @@ export default function Navbar() {
               href="#"
               className="flex items-center space-x-2 py-2 border-b"
             >
-              {cat.icon}
-              <span>{cat.label}</span>
+              {cat?.name}
             </Link>
           ))}
         </div>

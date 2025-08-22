@@ -12,6 +12,7 @@ export default function page() {
   const [newCategory, setNewCategory] = useState("");
   const [newImage, setNewImage] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -20,40 +21,44 @@ export default function page() {
       setPreview(URL.createObjectURL(file));
     }
   };
-
   const handleAddCategory = async () => {
     if (!newCategory || !newImage) return;
-
+  
+    setLoading(true); // start loading
+  
     const formData = new FormData();
     formData.append("name", newCategory);
     formData.append("image", newImage);
-
+  
     try {
       const res = await fetch("/api/categories", {
         method: "POST",
         body: formData,
       });
-
+  
       const data = await res.json();
-
+  
       if (!res.ok) {
         alert(data.error || "Upload failed");
         return;
       }
-
-      // Add to UI
-      setCategories([...categories, data]);
+  
+   
+  
       setNewCategory("");
       setNewImage(null);
       setPreview(null);
       setShowForm(false);
-      toast.success("categorie upload successfully");
+      toast.success("Category uploaded successfully");
     } catch (err) {
-      toast.error(err);
+      toast.error("Something went wrong");
       console.error("Error uploading:", err);
+    } finally {
+      setLoading(false); // stop loading
     }
   };
-  console.log(categories);
+  
+
   return (
     <div className="p-6 space-y-6 text-black max-w-5xl mx-auto">
       {/* Header */}
@@ -61,7 +66,7 @@ export default function page() {
         <h1 className="text-2xl font-bold">Manage Categories</h1>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-2  px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          className="flex items-center gap-2 cursor-pointer px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
         >
           <FaPlus /> {showForm ? "Close" : "Add Category"}
         </button>
@@ -107,11 +112,15 @@ export default function page() {
 
           {/* Submit Button */}
           <button
-            onClick={handleAddCategory}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg cursor-pointer hover:bg-green-700 transition"
-          >
-            Submit
-          </button>
+  onClick={handleAddCategory}
+  disabled={loading}
+  className={`px-4 py-2 cursor-pointer text-white rounded-lg transition ${
+    loading ? "bg-green-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"
+  }`}
+>
+  {loading ? "Submitting..." : "Submit"}
+</button>
+
         </div>
       )}
 
