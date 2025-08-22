@@ -10,7 +10,7 @@ export default function Navbar() {
   const { categories } = useCategories();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  console.log(categories);
+
 
   return (
     <div className="w-full  shadow-sm relative z-50 text-black">
@@ -55,7 +55,7 @@ export default function Navbar() {
 
           {/* Mobile menu button */}
           <button
-            className="md:hidden text-2xl"
+            className="md:hidden cursor-pointer text-2xl"
             onClick={() => setMobileMenuOpen(true)}
           >
             <FiMenu />
@@ -78,8 +78,8 @@ export default function Navbar() {
             ))}
           </div>
 
-          <Link href="#" className="hover:text-black">
-            Login / Register
+          <Link href="/collection" className="hover:text-black">
+          Collection
           </Link>
         </div>
       </div>
@@ -97,9 +97,9 @@ export default function Navbar() {
         }`}
       >
         <div className="flex items-center justify-between p-4 ">
-          <div className="text-lg font-bold">SAYAN</div>
+      <Link href={'/'}>    <div className="text-lg font-bold">SAYAN</div></Link>
           <button onClick={() => setMobileMenuOpen(false)}>
-            <FiX className="text-2xl" />
+            <FiX className="text-2xl cursor-pointer" />
           </button>
         </div>
 
@@ -117,7 +117,7 @@ export default function Navbar() {
 
         {/* Contact & Facebook */}
         <div className="p-4 space-y-3 text-sm border-t">
-          <div className="flex items-center space-x-2">
+          <div className="flex  items-center space-x-2">
             <FiPhoneCall />
             <span>09639-184415</span>
           </div>
@@ -141,7 +141,9 @@ export default function Navbar() {
 
         {/* Login/Register */}
         <div className="p-4 border-t">
-          <Link href="#">Login / Register</Link>
+        <Link href="/collection" className="hover:text-black">
+          Collection
+          </Link>
         </div>
       </div>
     </div>

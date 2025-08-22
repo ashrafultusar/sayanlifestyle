@@ -1,9 +1,14 @@
 "use client";
+import useCategories from "@/hook/useCategories";
+import { useRouter } from "next/navigation";
+
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Page = () => {
+  const { categories } = useCategories();
+  const router=useRouter()
   const [form, setForm] = useState({
     title: "",
     size: "",
@@ -34,7 +39,9 @@ const Page = () => {
 
   const removeImage = (indexToRemove) => {
     setImageFiles(imageFiles.filter((_, index) => index !== indexToRemove));
-    setImagePreviews(imagePreviews.filter((_, index) => index !== indexToRemove));
+    setImagePreviews(
+      imagePreviews.filter((_, index) => index !== indexToRemove)
+    );
   };
 
   const handleSubmit = async (e) => {
@@ -47,7 +54,10 @@ const Page = () => {
     });
 
     try {
-      const res = await fetch("/api/products", { method: "POST", body: formData });
+      const res = await fetch("/api/products", {
+        method: "POST",
+        body: formData,
+      });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to upload product");
 
@@ -65,6 +75,7 @@ const Page = () => {
       });
       setImageFiles([]);
       setImagePreviews([]);
+      router.push('/dashboard/products')
     } catch (err) {
       toast.error(err.message);
     }
@@ -108,14 +119,20 @@ const Page = () => {
                 onChange={handleChange}
                 className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
-              <input
-                type="text"
+              <select
                 name="Category"
-                placeholder="Category"
                 value={form.Category}
                 onChange={handleChange}
-                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
+                className="text-sm bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded flex items-center gap-2"
+              >
+                <option value="">Category</option>
+                {categories?.map((ctg) => (
+                  <option key={ctg._id} value={ctg.name}>
+                    {ctg.name}
+                  </option>
+                ))}
+              </select>
+
               <input
                 type="number"
                 name="Chest"
@@ -142,7 +159,7 @@ const Page = () => {
               />
             </div>
           </div>
-          
+
           <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
             <h2 className="text-xl font-semibold mb-4">Pricing</h2>
             <div className="grid grid-cols-2 gap-4">
@@ -172,7 +189,10 @@ const Page = () => {
             <h2 className="text-xl font-semibold mb-4">Image Uploads</h2>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center h-40 flex items-center justify-center flex-col">
               <p className="text-gray-500 mb-2">Drag & Drop Images or</p>
-              <label htmlFor="image-upload" className="bg-blue-500 text-white py-2 px-4 rounded-lg cursor-pointer hover:bg-blue-600 transition">
+              <label
+                htmlFor="image-upload"
+                className="bg-blue-500 text-white py-2 px-4 rounded-lg cursor-pointer hover:bg-blue-600 transition"
+              >
                 Browse Files
               </label>
               <input
@@ -189,7 +209,11 @@ const Page = () => {
               <div className="mt-4 grid grid-cols-3 gap-2">
                 {imagePreviews.map((src, index) => (
                   <div key={index} className="relative group">
-                    <img src={src} alt={`Preview ${index}`} className="w-full h-24 object-cover rounded-lg" />
+                    <img
+                      src={src}
+                      alt={`Preview ${index}`}
+                      className="w-full h-24 object-cover rounded-lg"
+                    />
                     <button
                       type="button"
                       onClick={() => removeImage(index)}
@@ -202,7 +226,10 @@ const Page = () => {
               </div>
             )}
           </div>
-          <button type="submit" className="bg-green-600 text-white p-4 rounded-lg mt-auto text-xl font-semibold cursor-pointer hover:bg-green-700 transition">
+          <button
+            type="submit"
+            className="bg-green-600 text-white p-4 rounded-lg mt-auto text-xl font-semibold cursor-pointer hover:bg-green-700 transition"
+          >
             Save Product
           </button>
         </div>

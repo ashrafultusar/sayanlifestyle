@@ -5,9 +5,9 @@ import useProducts from "@/hook/useProducts";
 import React, { useState } from "react";
 
 const Page = () => {
-  const { products, loading, error } = useProducts();
+  const { products} = useProducts();
   const [showFilters, setShowFilters] = useState(false);
-
+  console.log(products);
   return (
     <div className="min-h-screen px-4 p-4 text-black">
       {/* Filters toggle on mobile */}
@@ -100,8 +100,9 @@ const Page = () => {
             </select>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4  gap-6 pb-20">
+          <div className="grid grid-cols-2 sm:grid-cols-2  lg:grid-cols-5  gap-6 pb-20">
             {products.map((product) => (
+              
               <ProductCard
                 key={product?._id}
                 id={product?._id}

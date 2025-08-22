@@ -169,7 +169,7 @@ const page = () => {
           </thead>
           <tbody>
             {filteredOrders.map((order) => (
-              <tr key={order.id} className="border-t hover:bg-gray-50">
+              <tr key={order.id} className=" hover:bg-gray-50">
                 <td className="p-4">{order.id}</td>
                 <td className="p-4">{order.paymentMethod}</td>
                 <td className="p-4">{formatDateDisplay(order.orderDate)}</td>

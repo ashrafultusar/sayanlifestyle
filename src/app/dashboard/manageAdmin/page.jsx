@@ -54,7 +54,7 @@ const Page = () => {
       )}
 
       {/* Admin Cards - Row wise */}
-      <div className="space-y-4">
+      <div className="space-y-1">
         {admins.map((admin) => (
           <div
             key={admin.id}

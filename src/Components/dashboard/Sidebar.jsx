@@ -17,11 +17,12 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   const links = [
+    { name: "Orders", href: "/dashboard/orders", icon: <FaShoppingCart /> },
     { name: "Products", href: "/dashboard/products", icon: <FaBoxOpen /> },
    
     { name: "Admins", href: "/dashboard/manageAdmin", icon: <FaUserShield /> },
     { name: "Categorys", href: "/dashboard/manageCategorie", icon: <FaThList /> },
-    { name: "Orders", href: "/dashboard/orders", icon: <FaShoppingCart /> },
+    
     { name: "Delivery Charges", href: "/dashboard/deliveryCharges", icon: <FaTruck /> },
     { name: "Home Slider", href: "/dashboard/homeSlider", icon: <FaImages /> },
   ];
