@@ -71,15 +71,15 @@ export default function Navbar() {
               <Link
                 key={i}
                 href="#"
-                className="uppercase  text-gray-700 hover:text-black"
+                className="uppercase  text-gray-700 hover:text-orange-400"
               >
                 {cat?.name}
               </Link>
             ))}
           </div>
 
-          <Link href="/collection" className="hover:text-black">
-          Collection
+          <Link href="/collection" className="hover:text-orange-400">
+         All Collection
           </Link>
         </div>
       </div>
@@ -132,7 +132,7 @@ export default function Navbar() {
             <Link
               key={i}
               href="#"
-              className="flex items-center space-x-2 py-2 border-b"
+              className="flex items-center hover:text-orange-400 space-x-2 py-2 border-b"
             >
               {cat?.name}
             </Link>

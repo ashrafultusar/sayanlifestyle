@@ -31,11 +31,11 @@ export default function Sidebar() {
     <aside className="w-64 bg-white shadow-lg border-r h-screen flex flex-col sticky top-0">
       {/* Logo / Header */}
       <div className="px-6 py-5 border-b flex items-center justify-center">
-        <img
+        <Link href={'/dashboard'}><img
           className="h-8"
           src="https://merakiui.com/images/logo.svg"
           alt="Logo"
-        />
+        /></Link>
       </div>
 
       {/* Navigation Links */}

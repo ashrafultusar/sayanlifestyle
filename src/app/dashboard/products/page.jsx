@@ -3,10 +3,8 @@ import useCategories from "@/hook/useCategories";
 import useProducts from "@/hook/useProducts";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import {
-  FaEdit,
-  FaTrash
-} from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const Page = () => {
   const { products } = useProducts();
@@ -14,8 +12,8 @@ const Page = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [filteredProducts, setFilteredProducts] = useState(products);
-  const [sortField, setSortField] = useState("title"); // 'title' or 'price'
-  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
+  const [sortField, setSortField] = useState("title");
+  const [sortOrder, setSortOrder] = useState("asc");
 
   useEffect(() => {
     let results = products;
@@ -54,15 +52,34 @@ const Page = () => {
     setFilteredProducts(results);
   }, [searchTerm, selectedCategory, sortField, sortOrder, products]);
 
-  const handleEdit = () => {
-    console.log("Edit product", productId);
-  };
+  const handleDelete = async (productId) => {
+    const confirmDelete = confirm(
+      "Are you sure you want to delete this product?"
+    );
+    if (!confirmDelete) return;
 
-  const handleDelete = () => {
-    if (confirm("Are you sure you want to delete this product?")) {
-      console.log("Delete product", productId);
+    try {
+      const res = await fetch(`/api/products/${productId}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        toast.error(`Failed to delete: ${errorData.error}`);
+        return;
+      }
+
+      toast.success("Product deleted successfully!");
+      setFilteredProducts((prev) =>
+        prev.filter((product) => product._id !== productId)
+      );
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      toast.error("Something went wrong!");
     }
   };
+
+  console.log(products);
 
   return (
     <div className="container mx-auto text-black p-6">
@@ -101,6 +118,8 @@ const Page = () => {
             <th className="p-4 text-left">Image</th>
             <th className="p-4 text-left">Title</th>
             <th className="p-4 text-left">Category</th>
+            <th className="p-4 text-left">size</th>
+            <th className="p-4 text-left">Code</th>
             <th className="p-4 text-left">Price</th>
             <th className="p-4 text-left">Actions</th>
           </tr>
@@ -121,17 +140,19 @@ const Page = () => {
               </td>
               <td className="p-4">{product?.title}</td>
               <td className="p-4">{product?.Category}</td>
+              <td className="p-4">{product?.size}</td>
+              <td className="p-4">{product?.Code}</td>
               <td className="p-4">${product?.price}</td>
-              <td className="p-4 flex gap-2">
-                <button
-                  onClick={() => handleEdit(product?._id)}
-                  className="text-blue-600 hover:text-blue-800"
-                >
-                  <FaEdit />
-                </button>
+              <td className="p-4 flex justify-center items-center gap-2">
+                <Link href={`/dashboard/createProduct/${product?._id}`}>
+                  <button className="text-blue-600 cursor-pointer hover:text-blue-800">
+                    <FaEdit />
+                  </button>
+                </Link>
+
                 <button
                   onClick={() => handleDelete(product?._id)}
-                  className="text-red-600 hover:text-red-800"
+                  className="text-red-600 cursor-pointer hover:text-red-800"
                 >
                   <FaTrash />
                 </button>

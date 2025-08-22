@@ -17,7 +17,7 @@ const Footer = () => {
         <div className="flex-1">
           <img
             src="/logo.png" // <-- Replace with your actual logo path or URL
-            alt="NOGOR Logo"
+            alt="SAYAN Logo"
             className="w-32"
           />
         </div>
