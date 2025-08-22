@@ -1,12 +1,52 @@
-'use client';
-import React, { useState } from 'react';
+'use client'
+import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
-const page = () => {
-  const [insideDhaka, setInsideDhaka] = useState('100');
-  const [outsideDhaka, setOutsideDhaka] = useState('150');
+const Page = () => {
+  const [insideDhaka, setInsideDhaka] = useState('');
+  const [outsideDhaka, setOutsideDhaka] = useState('');
 
-  const handleSave = () => {
-    alert(`Saved:\nInside Dhaka: ${insideDhaka}\nOutside Dhaka: ${outsideDhaka}`);
+  useEffect(() => {
+    const fetchCharges = async () => {
+      try {
+        const res = await fetch('/api/deliveryCharge');
+        const data = await res.json();
+        if (res.ok && data.data) {
+          setInsideDhaka(data.data.insideDhaka || '');
+          setOutsideDhaka(data.data.outsideDhaka || '');
+        }
+      } catch (error) {
+        console.error('Error fetching delivery charge:', error);
+      }
+    };
+
+    fetchCharges();
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      const res = await fetch('/api/deliveryCharge', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          insideDhaka: Number(insideDhaka),
+          outsideDhaka: Number(outsideDhaka),
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success(`${data.message}`);
+      } else {
+        toast.error(`${data.message}`);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('Something went wrong!');
+    }
   };
 
   return (
@@ -26,13 +66,14 @@ const page = () => {
           <label className="block font-medium mb-1">Outside Dhaka</label>
           <input
             type="number"
+         
             className="w-full border rounded px-3 py-2"
             value={outsideDhaka}
             onChange={(e) => setOutsideDhaka(e.target.value)}
           />
         </div>
         <button
-          className="text-black px-4 py-2 rounded hover:bg-green-300 bg-green-500 cursor-pointer transition "
+          className="text-black px-4 py-2 rounded hover:bg-green-300 bg-green-500 cursor-pointer transition"
           onClick={handleSave}
         >
           Save Changes
@@ -42,4 +83,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

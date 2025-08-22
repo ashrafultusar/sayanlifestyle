@@ -23,28 +23,26 @@ export default function page() {
   };
   const handleAddCategory = async () => {
     if (!newCategory || !newImage) return;
-  
-    setLoading(true); // start loading
-  
+
+    setLoading(true);
+
     const formData = new FormData();
     formData.append("name", newCategory);
     formData.append("image", newImage);
-  
+
     try {
       const res = await fetch("/api/categories", {
         method: "POST",
         body: formData,
       });
-  
+
       const data = await res.json();
-  
+
       if (!res.ok) {
         alert(data.error || "Upload failed");
         return;
       }
-  
-   
-  
+
       setNewCategory("");
       setNewImage(null);
       setPreview(null);
@@ -54,10 +52,9 @@ export default function page() {
       toast.error("Something went wrong");
       console.error("Error uploading:", err);
     } finally {
-      setLoading(false); // stop loading
+      setLoading(false);
     }
   };
-  
 
   return (
     <div className="p-6 space-y-6 text-black max-w-5xl mx-auto">
@@ -112,15 +109,16 @@ export default function page() {
 
           {/* Submit Button */}
           <button
-  onClick={handleAddCategory}
-  disabled={loading}
-  className={`px-4 py-2 cursor-pointer text-white rounded-lg transition ${
-    loading ? "bg-green-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"
-  }`}
->
-  {loading ? "Submitting..." : "Submit"}
-</button>
-
+            onClick={handleAddCategory}
+            disabled={loading}
+            className={`px-4 py-2 cursor-pointer text-white rounded-lg transition ${
+              loading
+                ? "bg-green-400 cursor-not-allowed"
+                : "bg-green-600 hover:bg-green-700"
+            }`}
+          >
+            {loading ? "Submitting..." : "Submit"}
+          </button>
         </div>
       )}
 
@@ -135,13 +133,13 @@ export default function page() {
 
       {/* Category Table */}
       <div className="bg-white shadow-sm rounded-lg overflow-hidden">
-        <table className="w-full text-left border-collapse">
+        <table className="w-full text-left ">
           <thead>
             <tr className="bg-gray-100">
-              <th className="p-3 border-b">ID</th>
-              <th className="p-3 border-b">Image</th>
-              <th className="p-3 border-b">Category Name</th>
-              <th className="p-3 border-b text-right">Actions</th>
+              <th className="p-3 ">Image</th>
+
+              <th className="p-3 ">Category Name</th>
+              <th className="p-3  text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -151,8 +149,7 @@ export default function page() {
               )
               .map((cat) => (
                 <tr key={cat?._id} className="hover:bg-gray-50">
-                  <td className="p-3 border-b">{cat._id}</td>
-                  <td className="p-3 border-b">
+                  <td className="p-3 ">
                     {cat.imageUrl ? (
                       <img
                         src={cat.imageUrl}
@@ -163,8 +160,8 @@ export default function page() {
                       <span className="text-gray-400">No image</span>
                     )}
                   </td>
-                  <td className="p-3 border-b">{cat?.name}</td>
-                  <td className="p-3 border-b text-right space-x-2">
+                  <td className="p-3">{cat?.name}</td>
+                  <td className="p-3 text-right space-x-2">
                     <button className="p-2 cursor-pointer rounded-lg border border-blue-200 text-blue-600 hover:bg-blue-50">
                       <FaEdit />
                     </button>
