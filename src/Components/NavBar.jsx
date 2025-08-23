@@ -16,14 +16,14 @@ export default function Navbar() {
     e.preventDefault();
     if (!searchTerm.trim()) return;
     router.push(`/collection?search=${encodeURIComponent(searchTerm.trim())}`);
-    setSearchTerm(""); // Optional: clear input after search
+    setSearchTerm(""); 
   };
 
   return (
     <div className="w-full shadow-sm relative z-50 text-black">
       {/* Top Layer */}
       <div className="bg-white">
-        <div className="container mx-auto flex items-center justify-between px-4 py-3">
+        <div className="container mx-auto flex items-center justify-between px-4  py-3">
           <Link href={"/"}>
             <div className="flex items-center space-x-2 text-xl font-bold">
               SAYAN
@@ -79,7 +79,7 @@ export default function Navbar() {
       {/* Bottom Categories (Desktop) */}
       <div className="hidden md:flex w-full bg-blue-50">
         <div className="container mx-auto flex items-center justify-between px-4 py-2 text-sm font-medium">
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-6 uppercase">
             {categories?.map((cat, i) => (
               <Link
                 key={i}
@@ -150,7 +150,7 @@ export default function Navbar() {
             <Link
               key={i}
               href={`/collection?category=${encodeURIComponent(cat?.name)}`}
-              className="hover:text-orange-400 block border-b py-2"
+              className="hover:text-orange-400 uppercase block border-b py-2"
             >
               {cat?.name}
             </Link>

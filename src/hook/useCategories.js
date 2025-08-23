@@ -22,7 +22,7 @@ const useCategories = () => {
     fetchCategories();
   }, []);
 
-  return { categories, loading, error };
+  return { categories, setCategories, loading, error }; // 👈 add setCategories
 };
 
 export default useCategories;

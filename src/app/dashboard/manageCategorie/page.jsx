@@ -6,7 +6,8 @@ import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 export default function page() {
-  const { categories } = useCategories();
+  const { categories, setCategories } = useCategories();
+
   const [search, setSearch] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [newCategory, setNewCategory] = useState("");
@@ -55,6 +56,32 @@ export default function page() {
       setLoading(false);
     }
   };
+
+  const handleDeleteCategory = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this category?")) return;
+  
+    try {
+      const res = await fetch(`/api/categories?id=${id}`, {
+        method: "DELETE",
+      });
+  
+      const data = await res.json();
+  
+      if (!res.ok) {
+        toast.error(data.error || "Failed to delete category");
+        return;
+      }
+  
+      toast.success("Category deleted");
+  
+      // Remove from local state without reloading
+      setCategories((prev) => prev.filter((cat) => cat._id !== id));
+    } catch (err) {
+      toast.error("Something went wrong");
+      console.error("Delete error:", err);
+    }
+  };
+  
 
   return (
     <div className="p-6 space-y-6 text-black max-w-5xl mx-auto">
@@ -162,10 +189,10 @@ export default function page() {
                   </td>
                   <td className="p-3">{cat?.name}</td>
                   <td className="p-3 text-right space-x-2">
-                    <button className="p-2 cursor-pointer rounded-lg border border-blue-200 text-blue-600 hover:bg-blue-50">
-                      <FaEdit />
-                    </button>
-                    <button className="p-2 rounded-lg cursor-pointer border border-red-200 text-red-600 hover:bg-red-50">
+                    <button
+                      onClick={() => handleDeleteCategory(cat._id)}
+                      className="p-2 rounded-lg cursor-pointer border border-red-200 text-red-600 hover:bg-red-50"
+                    >
                       <FaTrash />
                     </button>
                   </td>

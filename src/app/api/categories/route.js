@@ -68,3 +68,26 @@ export async function GET() {
     return NextResponse.json({ error: "faild to fetch" }, { status: 500 });
   }
 }
+
+export async function DELETE(req) {
+  const url = new URL(req.url);
+  const id = url.searchParams.get("id");
+
+  if (!id) {
+    return NextResponse.json({ error: "Missing category ID" }, { status: 400 });
+  }
+
+  try {
+    await connectDB();
+    const deleted = await Category.findByIdAndDelete(id);
+
+    if (!deleted) {
+      return NextResponse.json({ error: "Category not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: "Category deleted successfully" }, { status: 200 });
+  } catch (err) {
+    console.error("Error deleting category:", err);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
