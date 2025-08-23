@@ -5,8 +5,32 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { useEffect, useState } from "react";
 
 export default function Slider() {
+  const [slider, setSlider] = useState([]);
+
+  useEffect(() => {
+    const fetchSliderData = async () => {
+      try {
+        const res = await fetch("/api/homeslider");
+        const json = await res.json();
+
+        if (json.success) {
+          setSlider(json.data[0]);
+        }
+      } catch (error) {
+        console.error("Error fetching slider data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSliderData();
+  }, []);
+
+  console.log(slider);
+
   return (
     <div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -20,39 +44,27 @@ export default function Slider() {
             loop
             className="w-full h-[250px] md:h-[400px] lg:h-[450px]  rounded-sm overflow-hidden"
           >
-            <SwiperSlide>
-              <img
-                src="/slider-1.jpg"
-                alt="Joggers"
-                className="w-full  object-cover"
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img
-                src="/slider-2.jpg"
-                alt="Jersey"
-                className="w-full  object-cover"
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img
-                src="/slider-3.jpg"
-                alt="Trousers"
-                className="w-full  object-cover"
-              />
-            </SwiperSlide>
+            {slider?.sliderImages?.map((imgUrl, index) => (
+              <SwiperSlide key={index}>
+                <img
+                  src={imgUrl}
+                  alt={`Slide ${index + 1}`}
+                  className="w-full h-full object-cover"
+                />
+              </SwiperSlide>
+            ))}
           </Swiper>
         </div>
 
         {/* Side Images */}
         <div className="hidden lg:flex flex-col gap-4">
           <img
-            src="/slider-1.jpg"
+            src={slider?.rightImageTop}
             alt="Half Sleeve Collection"
             className="w-full md:h-[400px] lg:h-[210px] object-cover rounded-sm"
           />
           <img
-            src="/slider-2.jpg"
+            src={slider?.rightImageBottom}
             alt="Full Sleeve Jersey"
             className="w-full md:h-[400px] lg:h-[220px] object-cover rounded-sm"
           />
