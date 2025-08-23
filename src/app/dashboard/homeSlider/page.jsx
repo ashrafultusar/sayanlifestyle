@@ -1,74 +1,133 @@
-import React from "react";
+// app/(your-page)/page.jsx
+"use client";
+
+import React, { useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const Page = () => {
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Home Slider</h1>
+  const [sliderImages, setSliderImages] = useState([]);
+  const [rightImageTop, setRightImageTop] = useState(null);
+  const [rightImageBottom, setRightImageBottom] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-      {/* Upload Section */}
-      <div className="bg-white p-6 rounded-md shadow mb-8">
-        <h2 className="text-lg font-semibold mb-4">Upload Image</h2>
-        <div className="flex flex-col items-center border-2 border-dashed border-gray-300 p-6 rounded-md">
-          <div className="w-20 h-20 bg-gray-100 flex items-center justify-center rounded mb-4">
-            <svg
-              className="w-10 h-10 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3 16l5-5 4 4 8-8M13 4h7v7"
-              />
-            </svg>
-          </div>
-          <button className="px-4 py-2 bg-gray-100 rounded text-sm font-medium hover:bg-gray-200">
-            Upload Image
+  const handleSliderChange = (e) => {
+    const files = Array.from(e.target.files);
+    setSliderImages((prev) => [...prev, ...files]);
+  };
+
+  const handleSubmit = async () => {
+    if (!sliderImages.length || !rightImageTop || !rightImageBottom) {
+      alert("All fields are required");
+      return;
+    }
+
+    const formData = new FormData();
+    sliderImages.forEach((file) => formData.append("sliderImages", file));
+    formData.append("rightImageTop", rightImageTop);
+    formData.append("rightImageBottom", rightImageBottom);
+
+    try {
+      setLoading(true);
+      const res = await axios.post("/api/homeslider", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (res.data.success) {
+        toast.success("Uploaded successfully!");
+        setSliderImages([]);
+        setRightImageTop(null);
+        setRightImageBottom(null);
+      }
+    } catch (err) {
+      console.error("Upload error:", err);
+      toast.error("Upload failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="p-6 text-black">
+      <h1 className="text-2xl font-bold mb-6">Home Image Upload</h1>
+
+      {/* LEFT SIDE - SLIDER IMAGES */}
+      <div className="bg-white p-4 rounded shadow mb-6">
+        <h2 className="font-semibold mb-2">Left Slider Images (Multiple)</h2>
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          onChange={handleSliderChange}
+          className="mb-4"
+        />
+
+        {sliderImages.length > 0 && (
+          <button
+            onClick={() => setSliderImages([])}
+            className="text-sm text-red-600 underline mb-2"
+          >
+            Remove All Images
           </button>
+        )}
+
+        <div className="flex gap-2 flex-wrap">
+          {sliderImages.map((file, i) => (
+            <img
+              key={i}
+              src={URL.createObjectURL(file)}
+              alt="preview"
+              className="w-24 h-24 object-cover rounded"
+            />
+          ))}
         </div>
       </div>
 
-      {/* Manage Slides Section */}
-      <div className="bg-white p-6 rounded-md shadow">
-        <h2 className="text-lg font-semibold mb-4">Manage Slides</h2>
-        <table className="min-w-full">
-          <thead>
-            <tr className="text-left text-sm font-medium text-gray-600 border-b">
-              <th className="py-2">Image</th>
-              <th className="py-2">Title</th>
-              <th className="py-2">Status</th>
-              <th className="py-2">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="border-b">
-              <td className="py-3">
-                <img
-                  src="https://via.placeholder.com/50"
-                  alt="Slide"
-                  className="w-16 h-10 object-cover rounded"
-                />
-              </td>
-              <td className="py-3 text-black">Home Slider</td>
-              <td className="py-3 ">
-                <span className="bg-green-100 text-green-800 px-2 py-1 text-xs rounded">
-                  Active
-                </span>
-              </td>
-              <td className="py-3 space-x-2">
-                <button className="px-3 py-1 text-sm text-black bg-gray-100 rounded hover:bg-gray-200">
-                  Edit
-                </button>
-                <button className="px-3 py-1 text-sm bg-red-100 text-red-600 rounded hover:bg-red-200">
-                  Delete
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      {/* RIGHT SIDE - TOP */}
+      <div className="bg-white p-4 rounded shadow mb-6">
+        <h2 className="font-semibold mb-2">Right Image Top (Single)</h2>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setRightImageTop(e.target.files[0])}
+          className="mb-4"
+        />
+        {rightImageTop && (
+          <img
+            src={URL.createObjectURL(rightImageTop)}
+            alt="preview"
+            className="w-24 h-24 object-cover rounded"
+          />
+        )}
       </div>
+
+      {/* RIGHT SIDE - BOTTOM */}
+      <div className="bg-white p-4 rounded shadow mb-6">
+        <h2 className="font-semibold mb-2">Right Image Bottom (Single)</h2>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setRightImageBottom(e.target.files[0])}
+          className="mb-4"
+        />
+        {rightImageBottom && (
+          <img
+            src={URL.createObjectURL(rightImageBottom)}
+            alt="preview"
+            className="w-24 h-24 object-cover rounded"
+          />
+        )}
+      </div>
+
+      <button
+        onClick={handleSubmit}
+        disabled={loading}
+        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+      >
+        {loading ? "Uploading..." : "Submit"}
+      </button>
     </div>
   );
 };

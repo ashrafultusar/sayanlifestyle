@@ -8,7 +8,6 @@ import React from "react";
 const NewArrival = () => {
   const { products, loading, error } = useProducts();
 
-  console.log(products);
 
   if (loading) return <p className="text-center mt-10">Loading...</p>;
   if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;

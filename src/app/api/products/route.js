@@ -75,12 +75,88 @@ export const POST = async (req) => {
   }
 };
 
-export const GET = async () => {
+
+// export const GET = async (req) => {
+//   try {
+//     const { searchParams } = new URL(req.url);
+//     const page = parseInt(searchParams.get("page")) || 1;
+//     const limit = parseInt(searchParams.get("limit")) || 12;
+//     const category = searchParams.get("category") || "";
+
+//     const skip = (page - 1) * limit;
+
+//     const query = {};
+//     if (category) {
+//       query.Category = category; // Capital C here
+//     }
+
+//     // sort logic (optional, কিন্তু ভালো হয়)
+//     const sort = searchParams.get("sort") || "newest";
+//     let sortOption = { createdAt: -1 };
+//     if (sort === "lowToHigh") sortOption = { price: 1 };
+//     else if (sort === "highToLow") sortOption = { price: -1 };
+
+//     const [products, total] = await Promise.all([
+//       Product.find(query).sort(sortOption).skip(skip).limit(limit),
+//       Product.countDocuments(query),
+//     ]);
+
+//     return NextResponse.json({ products, total }, { status: 200 });
+//   } catch (err) {
+//     console.error(err);
+//     return NextResponse.json({ error: err.message }, { status: 500 });
+//   }
+// };
+
+
+export const GET = async (req) => {
   try {
-    const products = await Product.find().sort({ createdAt: -1 });
-    return NextResponse.json(products, { status: 200 });
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get("page")) || 1;
+    const limit = parseInt(searchParams.get("limit")) || 12;
+    const search = searchParams.get("search") || "";
+    const categoryParam = searchParams.get("category") || "";
+
+    const skip = (page - 1) * limit;
+
+    let query = {};
+
+    // If both search and category are provided
+    if (search && categoryParam) {
+      query = {
+        Category: categoryParam,
+        title: { $regex: search, $options: "i" },
+      };
+    }
+    // Only category
+    else if (categoryParam) {
+      query = { Category: categoryParam };
+    }
+    // Only search
+    else if (search) {
+      query = {
+        $or: [
+          { title: { $regex: search, $options: "i" } },
+          { Category: { $regex: search, $options: "i" } },
+        ],
+      };
+    }
+
+    // Sorting
+    const sort = searchParams.get("sort") || "newest";
+    let sortOption = { createdAt: -1 };
+    if (sort === "lowToHigh") sortOption = { price: 1 };
+    else if (sort === "highToLow") sortOption = { price: -1 };
+
+    const [products, total] = await Promise.all([
+      Product.find(query).sort(sortOption).skip(skip).limit(limit),
+      Product.countDocuments(query),
+    ]);
+
+    return NextResponse.json({ products, total }, { status: 200 });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 };
+

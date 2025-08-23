@@ -17,7 +17,7 @@ import useCategories from "@/hook/useCategories";
 export default function CategoriesSection() {
 
   const { categories } = useCategories();
-console.log(categories);
+
   return (
     <div className="w-full  p-6 rounded-lg">
       <h1 className="text-black md:text-3xl text-center uppercase font-medium mb-4">

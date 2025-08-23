@@ -1,24 +1,28 @@
-"use client";
+'use client';
+import Pagination from "@/Components/Shared/Pagination";
 import useCategories from "@/hook/useCategories";
 import useProducts from "@/hook/useProducts";
+
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 
+
 const Page = () => {
-  const { products } = useProducts();
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
+
+  const { products, totalCount, loading } = useProducts(currentPage, itemsPerPage);
   const { categories } = useCategories();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState(products);
-  const [sortField, setSortField] = useState("title");
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
     let results = products;
 
-    // Search filter (title + category match)
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       results = results.filter(
@@ -28,34 +32,17 @@ const Page = () => {
       );
     }
 
-    // Category filter (dropdown)
     if (selectedCategory) {
       results = results.filter(
         (product) => product.category === selectedCategory
       );
     }
 
-    // Sorting
-    results = [...results].sort((a, b) => {
-      if (sortField === "title") {
-        const aVal = a.title.toLowerCase();
-        const bVal = b.title.toLowerCase();
-        return sortOrder === "asc"
-          ? aVal.localeCompare(bVal)
-          : bVal.localeCompare(aVal);
-      } else if (sortField === "price") {
-        return sortOrder === "asc" ? a.price - b.price : b.price - a.price;
-      }
-      return 0;
-    });
-
     setFilteredProducts(results);
-  }, [searchTerm, selectedCategory, sortField, sortOrder, products]);
+  }, [searchTerm, selectedCategory, products]);
 
   const handleDelete = async (productId) => {
-    const confirmDelete = confirm(
-      "Are you sure you want to delete this product?"
-    );
+    const confirmDelete = confirm("Are you sure?");
     if (!confirmDelete) return;
 
     try {
@@ -65,42 +52,45 @@ const Page = () => {
 
       if (!res.ok) {
         const errorData = await res.json();
-        toast.error(`Failed to delete: ${errorData.error}`);
+        toast.error(`Failed: ${errorData.error}`);
         return;
       }
 
-      toast.success("Product deleted successfully!");
+      toast.success("Deleted!");
       setFilteredProducts((prev) =>
         prev.filter((product) => product._id !== productId)
       );
     } catch (error) {
       console.error("Error deleting product:", error);
-      toast.error("Something went wrong!");
+      toast.error("Error occurred!");
     }
   };
 
-  console.log(products);
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   return (
     <div className="container mx-auto text-black p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Products: {products?.length}</h1>
+        <h1 className="text-3xl font-bold">Products</h1>
         <Link href="/dashboard/createProduct">
-          <button className="bg-blue-600 cursor-pointer text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+          <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
             Create Product
           </button>
         </Link>
       </div>
+
+      {/* Filters */}
       <div className="mb-4 flex flex-wrap justify-between items-center gap-4">
         <input
           type="text"
           placeholder="Search by title or category..."
-          className="text-md bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded flex items-center gap-2"
+          className="bg-gray-200 px-3 py-2 rounded"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
+
         <select
-          className="text-sm bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded flex items-center gap-2"
+          className="bg-gray-200 px-3 py-2 rounded"
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
         >
@@ -112,23 +102,25 @@ const Page = () => {
           ))}
         </select>
       </div>
-      <table className="w-full table-auto border-collapse mt-4 bg-white rounded-lg shadow">
+
+      {/* Table */}
+      <table className="w-full table-auto bg-white shadow rounded-lg mt-4">
         <thead className="bg-gray-200">
           <tr>
             <th className="p-4 text-left">Image</th>
             <th className="p-4 text-left">Title</th>
             <th className="p-4 text-left">Category</th>
-            <th className="p-4 text-left">size</th>
+            <th className="p-4 text-left">Size</th>
             <th className="p-4 text-left">Code</th>
             <th className="p-4 text-left">Price</th>
             <th className="p-4 text-left">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {filteredProducts.map((product, idx) => (
-            <tr key={idx} className="hover:bg-gray-50">
+          {filteredProducts.map((product) => (
+            <tr key={product._id} className="hover:bg-gray-50">
               <td className="p-4">
-                {product.image?.length > 0 ? (
+                {product.image?.[0] ? (
                   <img
                     src={product.image[0]}
                     alt={product.title}
@@ -138,21 +130,20 @@ const Page = () => {
                   <span className="text-gray-400">No image</span>
                 )}
               </td>
-              <td className="p-4">{product?.title}</td>
-              <td className="p-4">{product?.Category}</td>
-              <td className="p-4">{product?.size}</td>
-              <td className="p-4">{product?.Code}</td>
-              <td className="p-4">${product?.price}</td>
-              <td className="p-4 flex justify-center items-center gap-2">
-                <Link href={`/dashboard/createProduct/${product?._id}`}>
-                  <button className="text-blue-600 cursor-pointer hover:text-blue-800">
+              <td className="p-4">{product.title}</td>
+              <td className="p-4">{product.Category}</td>
+              <td className="p-4">{product.size}</td>
+              <td className="p-4">{product.Code}</td>
+              <td className="p-4">${product.price}</td>
+              <td className="p-4 flex gap-2">
+                <Link href={`/dashboard/createProduct/${product._id}`}>
+                  <button className="text-blue-600 hover:text-blue-800">
                     <FaEdit />
                   </button>
                 </Link>
-
                 <button
-                  onClick={() => handleDelete(product?._id)}
-                  className="text-red-600 cursor-pointer hover:text-red-800"
+                  onClick={() => handleDelete(product._id)}
+                  className="text-red-600 hover:text-red-800"
                 >
                   <FaTrash />
                 </button>
@@ -161,13 +152,20 @@ const Page = () => {
           ))}
           {filteredProducts.length === 0 && (
             <tr>
-              <td colSpan="6" className="p-4 text-center text-gray-500">
+              <td colSpan="7" className="p-4 text-center text-gray-500">
                 No products found.
               </td>
             </tr>
           )}
         </tbody>
       </table>
+
+      {/* Pagination */}
+      <Pagination
+  currentPage={currentPage}
+  totalPages={totalPages}
+  onPageChange={(page) => setCurrentPage(page)}
+/>
     </div>
   );
 };

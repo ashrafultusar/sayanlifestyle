@@ -9,7 +9,7 @@ const ProductCard = ({_id, title, image, description, discountPrice, price }) =>
   const imageUrl = Array.isArray(image) ? image[0] : image;
   
   return (
-    <div className="w-full bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+    <div className="w-full text-black bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
       {/* Image */}
       <Link href={`/productDetails/${_id}`}>
         <img

@@ -15,16 +15,16 @@ const SignIn = () => {
 
     try {
       const res = await signIn("credentials", {
-        redirect: false, // আমরা নিজে redirect করব
+        redirect: false, 
         email,
         password,
       });
 
       if (res.error) {
-        toast.error(res.error); // next-auth এর error message
+        toast.error(res.error);
       } else {
         toast.success("Logged in successfully!");
-        router.push("/dashboard"); // তোমার admin panel এ redirect
+        router.push("/dashboard"); 
       }
     } catch (error) {
       console.error(error);
