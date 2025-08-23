@@ -27,7 +27,7 @@ const Page = () => {
     }
   };
 
-  console.log(admins);
+
   useEffect(() => {
     fetchAdmins();
   }, []);

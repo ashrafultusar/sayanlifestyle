@@ -38,7 +38,7 @@ export default function page() {
       });
 
       const data = await res.json();
-
+      setCategories((prev) => [data, ...prev]);
       if (!res.ok) {
         alert(data.error || "Upload failed");
         return;
@@ -58,30 +58,29 @@ export default function page() {
   };
 
   const handleDeleteCategory = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this category?")) return;
-  
+    if (!window.confirm("Are you sure you want to delete this category?"))
+      return;
+
     try {
       const res = await fetch(`/api/categories?id=${id}`, {
         method: "DELETE",
       });
-  
+
       const data = await res.json();
-  
+
       if (!res.ok) {
         toast.error(data.error || "Failed to delete category");
         return;
       }
-  
+
       toast.success("Category deleted");
-  
-      // Remove from local state without reloading
+
       setCategories((prev) => prev.filter((cat) => cat._id !== id));
     } catch (err) {
       toast.error("Something went wrong");
       console.error("Delete error:", err);
     }
   };
-  
 
   return (
     <div className="p-6 space-y-6 text-black max-w-5xl mx-auto">

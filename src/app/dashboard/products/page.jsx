@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import Pagination from "@/Components/Shared/Pagination";
 import useCategories from "@/hook/useCategories";
 import useProducts from "@/hook/useProducts";
@@ -8,12 +8,14 @@ import React, { useState, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 
-
 const Page = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
 
-  const { products, totalCount, loading } = useProducts(currentPage, itemsPerPage);
+  const { products, totalCount, loading } = useProducts(
+    currentPage,
+    itemsPerPage
+  );
   const { categories } = useCategories();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -135,15 +137,10 @@ const Page = () => {
               <td className="p-4">{product.size}</td>
               <td className="p-4">{product.Code}</td>
               <td className="p-4">${product.price}</td>
-              <td className="p-4 flex gap-2">
-                <Link href={`/dashboard/createProduct/${product._id}`}>
-                  <button className="text-blue-600 hover:text-blue-800">
-                    <FaEdit />
-                  </button>
-                </Link>
+              <td className=" p-4">
                 <button
                   onClick={() => handleDelete(product._id)}
-                  className="text-red-600 hover:text-red-800"
+                  className="text-red-600 hover:text-red-800 cursor-pointer"
                 >
                   <FaTrash />
                 </button>
@@ -162,10 +159,10 @@ const Page = () => {
 
       {/* Pagination */}
       <Pagination
-  currentPage={currentPage}
-  totalPages={totalPages}
-  onPageChange={(page) => setCurrentPage(page)}
-/>
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={(page) => setCurrentPage(page)}
+      />
     </div>
   );
 };

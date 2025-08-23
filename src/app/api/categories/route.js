@@ -3,12 +3,14 @@ import connectDB from "@/lib/db";
 import Category from "@/models/Category";
 import { v2 as cloudinary } from "cloudinary";
 
+// ✅ Cloudinary config
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+// ✅ Create a new category (POST)
 export async function POST(req) {
   const formData = await req.formData();
   const name = formData.get("name");
@@ -41,10 +43,9 @@ export async function POST(req) {
           return;
         }
 
-        // Save category in DB
         const newCategory = new Category({
           name,
-          imageUrl: result.secure_url,
+          imageUrl: result.secure_url, // ✅ Matches schema
         });
 
         await newCategory.save();
@@ -57,18 +58,22 @@ export async function POST(req) {
   });
 }
 
+// ✅ Get all categories (GET)
 export async function GET() {
   try {
     await connectDB();
-
     const categories = await Category.find().sort({ _id: -1 });
     return NextResponse.json(categories, { status: 200 });
   } catch (err) {
-    console.error("faild to fetch", err);
-    return NextResponse.json({ error: "faild to fetch" }, { status: 500 });
+    console.error("Failed to fetch categories", err);
+    return NextResponse.json(
+      { error: "Failed to fetch categories" },
+      { status: 500 }
+    );
   }
 }
 
+// ✅ Delete category by ID (DELETE)
 export async function DELETE(req) {
   const url = new URL(req.url);
   const id = url.searchParams.get("id");
@@ -82,12 +87,21 @@ export async function DELETE(req) {
     const deleted = await Category.findByIdAndDelete(id);
 
     if (!deleted) {
-      return NextResponse.json({ error: "Category not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 404 }
+      );
     }
 
-    return NextResponse.json({ message: "Category deleted successfully" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Category deleted successfully" },
+      { status: 200 }
+    );
   } catch (err) {
     console.error("Error deleting category:", err);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

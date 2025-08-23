@@ -5,10 +5,11 @@ const CategorySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  image: {
+  imageUrl: { // ✅ Matches what you'll save
     type: String,
     required: true,
   },
 });
 
-export default mongoose.models.Category || mongoose.model("Category", CategorySchema);
+export default mongoose.models.Category ||
+  mongoose.model("Category", CategorySchema);
