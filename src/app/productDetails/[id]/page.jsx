@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function ProductPage() {
   const { id } = useParams();
@@ -108,14 +109,12 @@ export default function ProductPage() {
           </div>
 
           {/* Add to cart button */}
-          <button
-            onClick={() =>
-              alert(`Added ${product.title} - Size: ${selectedSize || "N/A"}`)
-            }
-            className="bg-black text-white px-8 py-3 text-sm rounded active:bg-gray-700"
+       <Link href={'/checkout'}>   <button
+            
+            className="bg-black text-white px-8 py-3 cursor-pointer text-sm rounded active:bg-gray-700"
           >
-            ADD TO CART
-          </button>
+           BUY NOW
+          </button></Link>
 
           <hr className="mt-8 lg:w-4/5" />
 

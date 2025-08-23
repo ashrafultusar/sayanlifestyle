@@ -3,9 +3,24 @@
 import { useState } from "react";
 import { FaEye, FaEdit } from "react-icons/fa";
 
-const page = () => {
+const getStartOfWeek = (date = new Date()) => {
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  return new Date(d.setDate(diff));
+};
+
+const getStartOfMonth = (date = new Date()) =>
+  new Date(date.getFullYear(), date.getMonth(), 1);
+
+const getEndOfMonth = (date = new Date()) =>
+  new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+const Page = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterDate, setFilterDate] = useState("");
+  const [customFromDate, setCustomFromDate] = useState("");
+  const [customToDate, setCustomToDate] = useState("");
 
   const [orders, setOrders] = useState([
     {
@@ -68,9 +83,58 @@ const page = () => {
 
   const filteredOrders = orders.filter((order) => {
     const matchesSearch = order.id.includes(searchTerm);
-    const matchesDate = filterDate
-      ? order.orderDate.startsWith(filterDate)
-      : true;
+    const orderDate = new Date(order.orderDate);
+    const now = new Date();
+    let matchesDate = true;
+
+    switch (filterDate) {
+      case "thisWeek": {
+        const start = getStartOfWeek(now);
+        const end = new Date(start);
+        end.setDate(start.getDate() + 6);
+        matchesDate = orderDate >= start && orderDate <= end;
+        break;
+      }
+
+      case "thisMonth": {
+        const start = getStartOfMonth(now);
+        const end = getEndOfMonth(now);
+        matchesDate = orderDate >= start && orderDate <= end;
+        break;
+      }
+
+      case "lastWeek": {
+        const startOfThisWeek = getStartOfWeek(now);
+        const lastStart = new Date(startOfThisWeek);
+        lastStart.setDate(startOfThisWeek.getDate() - 7);
+        const lastEnd = new Date(startOfThisWeek);
+        lastEnd.setDate(startOfThisWeek.getDate() - 1);
+        matchesDate = orderDate >= lastStart && orderDate <= lastEnd;
+        break;
+      }
+
+      case "lastMonth": {
+        const start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        const end = new Date(now.getFullYear(), now.getMonth(), 0);
+        matchesDate = orderDate >= start && orderDate <= end;
+        break;
+      }
+
+      case "custom": {
+        if (customFromDate && customToDate) {
+          const from = new Date(customFromDate);
+          const to = new Date(customToDate);
+          matchesDate = orderDate >= from && orderDate <= to;
+        } else {
+          matchesDate = true;
+        }
+        break;
+      }
+
+      default:
+        matchesDate = true;
+    }
+
     return matchesSearch && matchesDate;
   });
 
@@ -134,23 +198,53 @@ const page = () => {
       </div>
 
       {/* Filter Controls */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
-      <input
-            type="text"
-            placeholder="Search by Order ID"
-            className="border rounded px-3 py-2"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-     
-          <input
-            type="date"
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+        <input
+          type="text"
+          placeholder="Search by Order ID"
+          className="border rounded px-3 py-2"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+
+        <div className="flex flex-col gap-2">
+          <select
             className="border rounded px-3 py-2"
             value={filterDate}
             onChange={(e) => setFilterDate(e.target.value)}
-          />
-         
-      
+          >
+            <option value="">All Dates</option>
+            <option value="thisWeek">This Week</option>
+            <option value="thisMonth">This Month</option>
+            <option value="lastWeek">Last Week</option>
+            <option value="lastMonth">Last Month</option>
+            <option value="custom">Custom Range</option>
+          </select>
+
+          {filterDate === "custom" && (
+            <div className="flex gap-2">
+              <div>
+                <label className="text-sm block mb-1">From:</label>
+                <input
+                  type="date"
+                  className="border rounded px-3 py-2"
+                  value={customFromDate}
+                  onChange={(e) => setCustomFromDate(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-sm block mb-1">To:</label>
+                <input
+                  type="date"
+                  className="border rounded px-3 py-2"
+                  value={customToDate}
+                  onChange={(e) => setCustomToDate(e.target.value)}
+                  disabled={!customFromDate}
+                />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Orders Table */}
@@ -169,7 +263,7 @@ const page = () => {
           </thead>
           <tbody>
             {filteredOrders.map((order) => (
-              <tr key={order.id} className=" hover:bg-gray-50">
+              <tr key={order.id} className="hover:bg-gray-50">
                 <td className="p-4">{order.id}</td>
                 <td className="p-4">{order.paymentMethod}</td>
                 <td className="p-4">{formatDateDisplay(order.orderDate)}</td>
@@ -220,4 +314,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
