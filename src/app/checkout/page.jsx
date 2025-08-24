@@ -105,15 +105,7 @@ const CheckoutPage = () => {
 
   console.log(productInfo);
   return (
-    <div className="max-w-7xl mx-auto py-10 text-black">
-      {/* Progress Bar */}
-      <div className="bg-gray-400 px-12 mb-2 py-4 text-center text-lg font-semibold tracking-wide text-gray-800">
-        <span>SHOPPING CART</span>
-        <span className="mx-2">→</span>
-        <span className="underline font-bold">CHECKOUT</span>
-        <span className="mx-2">→</span>
-        <span>ORDER COMPLETE</span>
-      </div>
+    <div className="max-w-7xl mx-auto pb-10 text-black">
 
       <div className="bg-white rounded-lg p-6">
         <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
@@ -122,7 +114,7 @@ const CheckoutPage = () => {
 
         <form
           onSubmit={handlePlaceOrder}
-          className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+          className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start"
         >
           {/* Billing Section */}
           <div className="lg:col-span-2 border border-gray-300 p-6 space-y-10 rounded-md">
@@ -244,61 +236,71 @@ const CheckoutPage = () => {
 
           {/* Order Summary */}
           <div className="bg-gray-50 p-6 border border-gray-300 rounded-md shadow-sm">
-            <h3 className="text-xl font-semibold mb-4">Your Order</h3>
-            {productInfo.length > 0 ? (
-              <>
-                {productInfo.map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="flex justify-between items-center mb-4 bg-white p-4 rounded shadow"
-                  >
-                    <div>
-                      <p className="font-semibold">{item.title}</p>
-                      <p className="text-sm text-gray-600">
-                        Size: {item.size} | Quantity: {item.quantity}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        Courier:{" "}
-                        {item.courierLocation === "inside"
-                          ? "Inside Dhaka"
-                          : "Outside Dhaka"}
-                      </p>
-                    </div>
-                    <div className="">
-                      <p className="font-semibold mb-2">
-                        ৳{item.price * item.quantity}
-                      </p>
-                      <button
-                        onClick={() => handleRemoveProduct(idx)}
-                        className="text-red-600 hover:text-red-800 text-sm"
-                        aria-label={`Remove ${item.title} from order`}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                ))}
+  <h3 className="text-xl font-semibold mb-4">Your Order</h3>
 
-                <div className="flex justify-between mb-2 text-gray-700">
-                  <span>Courier Charges</span>
-                  <span>
-                    ৳
-                    {productInfo.reduce(
-                      (acc, item) => acc + courierCharge(item.courierLocation),
-                      0
-                    )}
-                  </span>
-                </div>
-                <hr className="my-3" />
-                <div className="flex justify-between font-bold">
-                  <p>Total:</p>
-                  <p>৳{totalAmount}</p>
-                </div>
-              </>
-            ) : (
-              <p className="text-sm text-red-500">No product info found.</p>
-            )}
+  {productInfo?.length > 0 ? (
+    <>
+      {productInfo.map((item, idx) => (
+        <div
+          key={idx}
+          className="flex items-center justify-between border-b border-gray-200 py-3"
+        >
+          {/* Remove button */}
+          <button
+            onClick={() => handleRemoveProduct(idx)}
+            className="text-gray-500 cursor-pointer hover:text-red-600 mr-3 text-lg"
+            aria-label={`Remove ${item.title}`}
+          >
+            ✕
+          </button>
+
+          {/* Product image */}
+          <img
+            src={item?.image}
+            alt={item?.title}
+            className="w-16 h-16 object-cover rounded mr-3"
+          />
+
+          {/* Product details */}
+          <div className="flex-1">
+            <p className="font-medium text-gray-800">
+              {item?.title}
+            </p>
+<p>Price: ৳ {item?.discountPrice}</p>
+           <p>Size: {item?.size}</p>
           </div>
+
+          {/* Price */}
+          <p className="font-semibold text-gray-800 ml-4">
+          ৳{item.price * item.quantity}
+          </p>
+        </div>
+      ))}
+
+      {/* Courier charges */}
+      <div className="flex justify-between mt-4 text-gray-700">
+        <span>Courier Charges</span>
+        <span>
+          ৳
+          {productInfo.reduce(
+            (acc, item) => acc + courierCharge(item.courierLocation),
+            0
+          )}
+        </span>
+      </div>
+      <hr className="my-3" />
+
+      {/* Total */}
+      <div className="flex justify-between font-bold">
+        <p>Total:</p>
+        <p>৳{totalAmount}</p>
+      </div>
+    </>
+  ) : (
+    <p className="text-sm text-red-500">No product info found.</p>
+  )}
+</div>
+
         </form>
       </div>
     </div>
