@@ -1,5 +1,5 @@
-import { FaFacebook, FaSmile } from "react-icons/fa";
-import { FaPrint } from "react-icons/fa6";
+import {  FaSmile } from "react-icons/fa";
+
 
 const page = () => {
   return (

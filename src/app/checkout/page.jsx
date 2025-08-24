@@ -42,7 +42,7 @@ const CheckoutPage = () => {
 
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
-  
+
     if (
       !formData.fullName ||
       !formData.phone ||
@@ -50,27 +50,29 @@ const CheckoutPage = () => {
       !formData.city ||
       productInfo.length === 0
     ) {
-      alert("Please fill in all required fields and have at least one product.");
+      alert(
+        "Please fill in all required fields and have at least one product."
+      );
       return;
     }
-  
+
     const order = {
       products: productInfo,
       customer: formData,
       totalAmount,
     };
-  
+
     try {
       const res = await fetch("/api/order", {
         method: "POST",
         body: JSON.stringify(order),
         headers: { "Content-Type": "application/json" },
       });
-  
+
       if (!res.ok) throw new Error("Order failed");
-  
+
       const result = await res.json();
-  
+
       // ✅ Clear data
       localStorage.removeItem("checkoutData");
       setProductInfo([]);
@@ -82,18 +84,17 @@ const CheckoutPage = () => {
         city: "",
         notes: "",
       });
-  
+
       toast.success(`✅ Order placed! Order ID: ${result.orderId}`);
-  
+
       // ✅ Redirect after successful order
       router.push("/order-success");
-  
     } catch (err) {
       console.error(err);
       toast.error("❌ Something went wrong.");
     }
   };
-  
+
   // Add this handler inside your component
   const handleRemoveProduct = (indexToRemove) => {
     const updatedProducts = productInfo.filter(
@@ -106,7 +107,6 @@ const CheckoutPage = () => {
   console.log(productInfo);
   return (
     <div className="max-w-7xl mx-auto pb-10 text-black">
-
       <div className="bg-white rounded-lg p-6">
         <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
           Checkout
@@ -227,80 +227,79 @@ const CheckoutPage = () => {
                 </a>{" "}
                 policies.
               </p>
-              <button type="submit" className="bg-black text-white py-2 px-6 rounded hover:bg-gray-800 mt-4 transition-all">
-  Place Order
-</button>
-
+              <button
+                type="submit"
+                className="bg-black text-white py-2 px-6 rounded hover:bg-gray-800 mt-4 transition-all"
+              >
+                Place Order
+              </button>
             </div>
           </div>
 
           {/* Order Summary */}
           <div className="bg-gray-50 p-6 border border-gray-300 rounded-md shadow-sm">
-  <h3 className="text-xl font-semibold mb-4">Your Order</h3>
+            <h3 className="text-xl font-semibold mb-4">Your Order</h3>
 
-  {productInfo?.length > 0 ? (
-    <>
-      {productInfo.map((item, idx) => (
-        <div
-          key={idx}
-          className="flex items-center justify-between border-b border-gray-200 py-3"
-        >
-          {/* Remove button */}
-          <button
-            onClick={() => handleRemoveProduct(idx)}
-            className="text-gray-500 cursor-pointer hover:text-red-600 mr-3 text-lg"
-            aria-label={`Remove ${item.title}`}
-          >
-            ✕
-          </button>
+            {productInfo?.length > 0 ? (
+              <>
+                {productInfo.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between border-b border-gray-200 py-3"
+                  >
+                    {/* Remove button */}
+                    <button
+                      onClick={() => handleRemoveProduct(idx)}
+                      className="text-gray-500 cursor-pointer hover:text-red-600 mr-3 text-lg"
+                      aria-label={`Remove ${item.title}`}
+                    >
+                      ✕
+                    </button>
 
-          {/* Product image */}
-          <img
-            src={item?.image}
-            alt={item?.title}
-            className="w-16 h-16 object-cover rounded mr-3"
-          />
+                    {/* Product image */}
+                    <img
+                      src={item?.image}
+                      alt={item?.title}
+                      className="w-16 h-16 object-cover rounded mr-3"
+                    />
 
-          {/* Product details */}
-          <div className="flex-1">
-            <p className="font-medium text-gray-800">
-              {item?.title}
-            </p>
-<p>Price: ৳ {item?.discountPrice}</p>
-           <p>Size: {item?.size}</p>
+                    {/* Product details */}
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-800">{item?.title}</p>
+                      <p>Price: ৳ {item?.discountPrice}</p>
+                      <p>Size: {item?.size}</p>
+                    </div>
+
+                    {/* Price */}
+                    <p className="font-semibold text-gray-800 ml-4">
+                      ৳{item.price * item.quantity}
+                    </p>
+                  </div>
+                ))}
+
+                {/* Courier charges */}
+                <div className="flex justify-between mt-4 text-gray-700">
+                  <span>Courier Charges</span>
+                  <span>
+                    ৳
+                    {productInfo.reduce(
+                      (acc, item) => acc + courierCharge(item.courierLocation),
+                      0
+                    )}
+                  </span>
+                </div>
+                <hr className="my-3" />
+
+                {/* Total */}
+                <div className="flex justify-between font-bold">
+                  <p>Total:</p>
+                  <p>৳{totalAmount}</p>
+                </div>
+              </>
+            ) : (
+              <p className="text-sm text-red-500">No product info found.</p>
+            )}
           </div>
-
-          {/* Price */}
-          <p className="font-semibold text-gray-800 ml-4">
-          ৳{item.price * item.quantity}
-          </p>
-        </div>
-      ))}
-
-      {/* Courier charges */}
-      <div className="flex justify-between mt-4 text-gray-700">
-        <span>Courier Charges</span>
-        <span>
-          ৳
-          {productInfo.reduce(
-            (acc, item) => acc + courierCharge(item.courierLocation),
-            0
-          )}
-        </span>
-      </div>
-      <hr className="my-3" />
-
-      {/* Total */}
-      <div className="flex justify-between font-bold">
-        <p>Total:</p>
-        <p>৳{totalAmount}</p>
-      </div>
-    </>
-  ) : (
-    <p className="text-sm text-red-500">No product info found.</p>
-  )}
-</div>
-
         </form>
       </div>
     </div>
