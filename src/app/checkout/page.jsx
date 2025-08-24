@@ -1,76 +1,192 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import Link from "next/link";
 
 const CheckoutPage = () => {
   const [location, setLocation] = useState("inside");
-  const productPrice = 480;
-  const courierCharge = location === "inside" ? 60 : 120;
-  const total = productPrice + courierCharge;
+  const [productInfo, setProductInfo] = useState([]);
+  const [formData, setFormData] = useState({
+    fullName: "",
+    phone: "",
+    email: "",
+    address: "",
+    city: "",
+    notes: "",
+  });
 
+  const router = useRouter();
+
+  useEffect(() => {
+    const storedData = localStorage.getItem("checkoutData");
+    if (storedData) {
+      setProductInfo(JSON.parse(storedData));
+    }
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const courierCharge = (location) => (location === "inside" ? 60 : 120);
+
+  // Total calculation for all products
+  const totalAmount = productInfo.reduce(
+    (acc, item) =>
+      acc + item.price * item.quantity + courierCharge(item.courierLocation),
+    0
+  );
+
+  const handlePlaceOrder = async (e) => {
+    e.preventDefault();
+  
+    if (
+      !formData.fullName ||
+      !formData.phone ||
+      !formData.address ||
+      !formData.city ||
+      productInfo.length === 0
+    ) {
+      alert("Please fill in all required fields and have at least one product.");
+      return;
+    }
+  
+    const order = {
+      products: productInfo,
+      customer: formData,
+      totalAmount,
+    };
+  
+    try {
+      const res = await fetch("/api/order", {
+        method: "POST",
+        body: JSON.stringify(order),
+        headers: { "Content-Type": "application/json" },
+      });
+  
+      if (!res.ok) throw new Error("Order failed");
+  
+      const result = await res.json();
+  
+      // ✅ Clear data
+      localStorage.removeItem("checkoutData");
+      setProductInfo([]);
+      setFormData({
+        fullName: "",
+        phone: "",
+        email: "",
+        address: "",
+        city: "",
+        notes: "",
+      });
+  
+      toast.success(`✅ Order placed! Order ID: ${result.orderId}`);
+  
+      // ✅ Redirect after successful order
+      router.push("/order-success");
+  
+    } catch (err) {
+      console.error(err);
+      toast.error("❌ Something went wrong.");
+    }
+  };
+  
+  // Add this handler inside your component
+  const handleRemoveProduct = (indexToRemove) => {
+    const updatedProducts = productInfo.filter(
+      (_, idx) => idx !== indexToRemove
+    );
+    setProductInfo(updatedProducts);
+    localStorage.setItem("checkoutData", JSON.stringify(updatedProducts));
+  };
+
+  console.log(productInfo);
   return (
-    <div
-      className="text-black max-w-7xl mx-auto
-  py-10"
-    >
-      {/* Breadcrumb/Progress Bar */}
-
-      <div
-        className="bg-gray-400 px-12 mb-2
-         py-4 text-center text-lg font-semibold tracking-wide text-gray-800"
-      >
-        <span className="text-gray-800">SHOPPING CART</span>
+    <div className="max-w-7xl mx-auto py-10 text-black">
+      {/* Progress Bar */}
+      <div className="bg-gray-400 px-12 mb-2 py-4 text-center text-lg font-semibold tracking-wide text-gray-800">
+        <span>SHOPPING CART</span>
         <span className="mx-2">→</span>
         <span className="underline font-bold">CHECKOUT</span>
         <span className="mx-2">→</span>
-        <span className="text-gray-800">ORDER COMPLETE</span>
+        <span>ORDER COMPLETE</span>
       </div>
 
-      <div className=" bg-white rounded-lg p-6 ">
+      <div className="bg-white rounded-lg p-6">
         <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
           Checkout
         </h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Side: Billing + Payment */}
+        <form
+          onSubmit={handlePlaceOrder}
+          className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+        >
+          {/* Billing Section */}
           <div className="lg:col-span-2 border border-gray-300 p-6 space-y-10 rounded-md">
-            {/* Billing Details */}
             <div>
               <h3 className="text-xl font-semibold mb-4">Billing Details</h3>
-              <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input
                   type="text"
+                  name="fullName"
                   placeholder="Full Name"
+                  value={formData.fullName}
+                  onChange={handleChange}
                   className="form-input border border-gray-300 px-2 py-2 rounded-sm"
                 />
                 <input
                   type="text"
+                  name="phone"
                   placeholder="Mobile Number"
+                  value={formData.phone}
+                  onChange={handleChange}
                   className="form-input border border-gray-300 px-2 py-2 rounded-sm"
                 />
                 <input
                   type="email"
+                  name="email"
                   placeholder="Email Address (optional)"
+                  value={formData.email}
+                  onChange={handleChange}
                   className="form-input md:col-span-2 border border-gray-300 px-2 py-2 rounded-sm"
                 />
                 <input
                   type="text"
+                  name="address"
                   placeholder="Street Address"
+                  value={formData.address}
+                  onChange={handleChange}
                   className="form-input md:col-span-2 border border-gray-300 px-2 py-2 rounded-sm"
                 />
-                <input type="text" placeholder="City" className="form-input border border-gray-300 px-2 py-2 rounded-sm" />
-                <select className="form-input border border-gray-300 px-2 py-2 rounded-sm">
+                <input
+                  type="text"
+                  name="city"
+                  placeholder="City"
+                  value={formData.city}
+                  onChange={handleChange}
+                  className="form-input border border-gray-300 px-2 py-2 rounded-sm"
+                />
+                <select
+                  className="form-input border border-gray-300 px-2 py-2 rounded-sm"
+                  disabled
+                >
                   <option>Bangladesh</option>
                 </select>
                 <textarea
+                  name="notes"
                   placeholder="Order Notes (optional)"
+                  value={formData.notes}
+                  onChange={handleChange}
                   className="form-input border border-gray-300 px-2 py-2 rounded-sm md:col-span-2"
                   rows="3"
                 />
-              </form>
+              </div>
             </div>
 
-            {/* Courier Option */}
+            {/* Courier Location */}
             <div>
               <h3 className="text-xl font-semibold mb-4">Courier Location</h3>
               <div className="flex flex-col gap-2 text-gray-700">
@@ -97,63 +213,93 @@ const CheckoutPage = () => {
               </div>
             </div>
 
-            {/* Payment Options */}
+            {/* Payment + Submit */}
             <div>
               <h3 className="text-xl font-semibold mb-4">Payment Option</h3>
-              <div className="space-y-3">
-                <label className="flex items-center space-x-2">
-                  <input type="radio" name="payment" defaultChecked />
-                  <span>Cash on Delivery</span>
-                </label>
+              <label className="flex items-center space-x-2">
+                <input type="radio" name="payment" defaultChecked />
+                <span>Cash on Delivery</span>
+              </label>
+              <p className="text-sm text-gray-600 mt-2">
+                By placing order, you agree to our{" "}
+                <a href="#" className="underline text-blue-600">
+                  Terms
+                </a>
+                ,{" "}
+                <a href="#" className="underline text-blue-600">
+                  Return
+                </a>{" "}
+                and{" "}
+                <a href="#" className="underline text-blue-600">
+                  Privacy
+                </a>{" "}
+                policies.
+              </p>
+              <button type="submit" className="bg-black text-white py-2 px-6 rounded hover:bg-gray-800 mt-4 transition-all">
+  Place Order
+</button>
 
-                <p className="text-sm text-gray-600 mt-2">
-                  By placing order, you agree to our{" "}
-                  <a href="#" className="underline text-blue-600">
-                    Terms
-                  </a>
-                  ,{" "}
-                  <a href="#" className="underline text-blue-600">
-                    Return
-                  </a>{" "}
-                  and{" "}
-                  <a href="#" className="underline text-blue-600">
-                    Privacy
-                  </a>{" "}
-                  policies.
-                </p>
-
-                <button className="bg-black text-white py-2 px-6 rounded hover:bg-gray-800 mt-4 transition-all">
-                  Place Order
-                </button>
-              </div>
             </div>
           </div>
 
-          {/* Right Side: Order Summary */}
+          {/* Order Summary */}
           <div className="bg-gray-50 p-6 border border-gray-300 rounded-md shadow-sm">
             <h3 className="text-xl font-semibold mb-4">Your Order</h3>
+            {productInfo.length > 0 ? (
+              <>
+                {productInfo.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="flex justify-between items-center mb-4 bg-white p-4 rounded shadow"
+                  >
+                    <div>
+                      <p className="font-semibold">{item.title}</p>
+                      <p className="text-sm text-gray-600">
+                        Size: {item.size} | Quantity: {item.quantity}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Courier:{" "}
+                        {item.courierLocation === "inside"
+                          ? "Inside Dhaka"
+                          : "Outside Dhaka"}
+                      </p>
+                    </div>
+                    <div className="">
+                      <p className="font-semibold mb-2">
+                        ৳{item.price * item.quantity}
+                      </p>
+                      <button
+                        onClick={() => handleRemoveProduct(idx)}
+                        className="text-red-600 hover:text-red-800 text-sm"
+                        aria-label={`Remove ${item.title} from order`}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ))}
 
-            <div className="flex justify-between mb-2 text-gray-700">
-              <span>“Lime Flow the Vibrant Energy”</span>
-              <span>৳{productPrice}</span>
-            </div>
-
-            <div className="flex justify-between mb-2 text-gray-700">
-              <span>
-                Courier Charge (
-                {location === "inside" ? "Inside Dhaka" : "Outside Dhaka"})
-              </span>
-              <span>৳{courierCharge}</span>
-            </div>
-
-            <hr className="my-3" />
-
-            <div className="flex justify-between text-lg font-bold">
-              <span>Total</span>
-              <span>৳{total}</span>
-            </div>
+                <div className="flex justify-between mb-2 text-gray-700">
+                  <span>Courier Charges</span>
+                  <span>
+                    ৳
+                    {productInfo.reduce(
+                      (acc, item) => acc + courierCharge(item.courierLocation),
+                      0
+                    )}
+                  </span>
+                </div>
+                <hr className="my-3" />
+                <div className="flex justify-between font-bold">
+                  <p>Total:</p>
+                  <p>৳{totalAmount}</p>
+                </div>
+              </>
+            ) : (
+              <p className="text-sm text-red-500">No product info found.</p>
+            )}
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

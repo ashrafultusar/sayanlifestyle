@@ -2,22 +2,28 @@
 
 import Link from "next/link";
 import React from "react";
-import {
-  FaStar,
-  FaMapMarkerAlt,
-  FaCalendarAlt,
-  FaClock,
-  FaShoppingCart,
-} from "react-icons/fa";
+import { FaShoppingCart } from "react-icons/fa";
 
 const ProductCard = ({ _id, title, image, discountPrice, price }) => {
   const imageUrl = Array.isArray(image) ? image[0] : image;
 
+  // Calculate discount percentage
+  const discountPercent =
+    price && discountPrice
+      ? Math.round(((price - discountPrice) / price) * 100)
+      : 0;
+
   return (
     <div className="w-full text-black bg-white rounded-xl border border-gray-200 overflow-hidden shadow transition-shadow duration-300 group hover:shadow-xl flex flex-col">
-      {/* Image */}
+      {/* Image with Discount Badge */}
       <Link href={`/productDetails/${_id}`}>
-        <div className="overflow-hidden">
+        <div className="relative overflow-hidden">
+          {/* Discount Badge */}
+          {discountPercent > 0 && (
+            <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded z-10 shadow">
+              -{discountPercent}%
+            </div>
+          )}
           <img
             src={imageUrl || "https://via.placeholder.com/300x200"}
             alt={title}
@@ -28,12 +34,11 @@ const ProductCard = ({ _id, title, image, discountPrice, price }) => {
 
       {/* Content */}
       <div className="p-4 flex flex-col justify-between flex-1">
-        {/* Title and Rating */}
+        {/* Title and Price */}
         <div>
-          <div className=" mb-2">
+          <div className="mb-2">
             <h2 className="text-lg font-semibold">{title}</h2>
           </div>
-
           <div>
             <p className="text-lg font-bold">
               ${discountPrice}{" "}
@@ -45,7 +50,7 @@ const ProductCard = ({ _id, title, image, discountPrice, price }) => {
         </div>
 
         {/* Footer Button */}
-        <Link href={`/productDetails/${_id}`}>
+        <Link href={`/checkout`}>
           <button className="mt-4 bg-orange-500 hover:bg-orange-600 text-white text-sm px-4 py-2 rounded flex items-center cursor-pointer justify-center w-full gap-2 transition-all duration-300 group/button relative overflow-hidden">
             <span className="transition-opacity duration-300 group-hover/button:opacity-0">
               Buy Now
