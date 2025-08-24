@@ -1,88 +1,82 @@
-import {  FaSmile } from "react-icons/fa";
+"use client";
 
-
-const page = () => {
+export default function OrderSuccessPage() {
   return (
-    <div className="text-black max-w-4xl mx-auto p-6 border border-gray-300 rounded-sm my-10">
-      <div className="border border-green-300 bg-green-50 text-green-700 p-4 rounded text-center mb-6">
+    <div className="text-black container mx-auto p-6 border border-gray-300 rounded my-10">
+      <div className="bg-green-50 text-green-700 p-4 text-center mb-6 rounded">
         Thank you. Your order has been received.
       </div>
 
-      {/* Order info */}
-      <div className="grid grid-cols-2 md:grid-cols-5 text-sm border-b pb-4 mb-4">
+      <div className="bg-gray-100 p-4 rounded mb-6 text-sm text-gray-800">
+        <p>
+          Our team is reviewing your order and will start processing it as soon
+          as possible.
+        </p>
+        <p className="mt-2">
+          You will receive all order details via your registered email.
+        </p>
+        <p className="mt-2 font-semibold">
+          For any inquiries, feel free to contact us: support@example.com
+        </p>
+        <p className="mt-2 font-medium">
+          Thank you for your trust and support.
+        </p>
+      </div>
+      {/* Bangla Version */}
+      <div className="bg-gray-100 p-4 rounded text-sm text-gray-800">
+        <p>
+          আমাদের টিম আপনার অর্ডারটি যাচাই করছে এবং যত দ্রুত সম্ভব প্রক্রিয়াকরণ
+          শুরু করবে।
+        </p>
+        <p className="mt-2">
+          আপনি অর্ডার সম্পর্কিত সকল তথ্য আপনার ইমেইলে পাবেন।
+        </p>
+        <p className="mt-2 font-semibold">
+          যেকোনো প্রশ্ন বা সহায়তার জন্য আমাদের সাথে যোগাযোগ করুন:
+          support@example.com
+        </p>
+        <p className="mt-2 font-medium">
+          আপনার বিশ্বাস ও সমর্থনের জন্য ধন্যবাদ।
+        </p>
+      </div>
+      {/* <div className="grid grid-cols-2 md:grid-cols-5 text-sm border-b pb-4 mb-4">
         <div>
           <p className="font-semibold">Order number:</p>
-          <p>230823050054470</p>
+          <p>{'order._id'}</p>
         </div>
         <div>
           <p className="font-semibold">Date:</p>
-          <p>August 23, 2025</p>
+      
         </div>
         <div>
           <p className="font-semibold">Email:</p>
-          <p>fydoowir@mailinator.com</p>
+          <p>{'order.customer.email'}</p>
         </div>
         <div>
           <p className="font-semibold">Total:</p>
-          <p>৳11,040.00</p>
+          <p>৳{'order.totalAmount'}</p>
         </div>
         <div>
           <p className="font-semibold">Payment method:</p>
           <p className="font-bold text-red-600">CASH</p>
         </div>
-      </div>
-      <p className="mb-6">Pay with cash upon delivery.</p>
+      </div> */}
 
-      {/* Order Details */}
-      <h2 className="font-bold text-lg mb-2">ORDER DETAILS</h2>
-      <div className="border border-gray-200 rounded overflow-hidden text-sm">
+      {/* <h2 className="font-bold text-lg mb-2">ORDER DETAILS</h2>
+      <div className="border rounded text-sm">
         <div className="flex justify-between bg-gray-50 px-4 py-2 font-semibold">
           <span>PRODUCT</span>
           <span>TOTAL</span>
         </div>
-        <div className="flex justify-between px-4 py-2 border-b">
-          <div>
-            Lime Flow the Vibrant Energy – NS0031386 × L × 23
-            <p className="text-xs">Size: L</p>
-          </div>
-          <span>৳11,040.00</span>
-        </div>
-        <div className="px-4 py-2">
-          Thank you for your purchase and choosing NOGOR as your online shop{" "}
-          <FaSmile className="inline text-yellow-500" />
-        </div>
-        <div className="flex justify-between px-4 py-2 border-t">
-          <span>Subtotal</span>
-          <span>৳11,040.00</span>
-        </div>
-        <div className="flex justify-between px-4 py-2 border-t">
-          <span>Shipping</span>
-          <span>Free Shipping</span>
-        </div>
-        <div className="flex justify-between px-4 py-2 border-t">
-          <span>Payment method</span>
-          <span>CASH</span>
-        </div>
+      
         <div className="flex justify-between px-4 py-2 border-t font-bold">
           <span>Total</span>
-          <span>৳11,040.00</span>
+          <span>৳{'order.totalAmount'}</span>
         </div>
         <div className="px-4 py-2 border-t">
-          <span className="font-semibold">NOTE:</span> Mollitia labore fuga
+          <span className="font-semibold">NOTE:</span> {'order.customer.notes'}
         </div>
-      </div>
-
-    
-
-      {/* Billing Address */}
-      <h2 className="font-bold text-lg mt-8 mb-2">BILLING ADDRESS</h2>
-      <p>Evelyn</p>
-      <p>92 West Clarendon Freeway</p>
-      <p>Narsingdi</p>
-      <p>+12058224286</p>
-      <p>fydoowir@mailinator.com</p>
+      </div> */}
     </div>
   );
-};
-
-export default page;
+}

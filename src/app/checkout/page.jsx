@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import Link from "next/link";
 
 const CheckoutPage = () => {
   const [location, setLocation] = useState("inside");
@@ -19,6 +18,30 @@ const CheckoutPage = () => {
 
   const router = useRouter();
 
+  const [deliveryCharge, setDeliveryCharge] = useState({
+    insideDhaka: 0,
+    outsideDhaka: 0,
+  });
+
+  // Fetch delivery charges from API
+  useEffect(() => {
+    const fetchCharge = async () => {
+      try {
+        const res = await fetch("/api/deliveryCharge");
+        if (!res.ok) throw new Error("Failed to fetch delivery charge");
+        const data = await res.json();
+        setDeliveryCharge({
+          insideDhaka: data.data.insideDhaka,
+          outsideDhaka: data.data.outsideDhaka,
+        });
+      } catch (err) {
+        console.error(err.message);
+      }
+    };
+    fetchCharge();
+  }, []);
+
+  // Load cart from localStorage
   useEffect(() => {
     const storedData = localStorage.getItem("checkoutData");
     if (storedData) {
@@ -31,14 +54,14 @@ const CheckoutPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const courierCharge = (location) => (location === "inside" ? 60 : 120);
+  // Calculate total amount including delivery charges
+  const courierCharge =
+    location === "inside" ? deliveryCharge.insideDhaka : deliveryCharge.outsideDhaka;
 
-  // Total calculation for all products
   const totalAmount = productInfo.reduce(
-    (acc, item) =>
-      acc + item.price * item.quantity + courierCharge(item.courierLocation),
+    (acc, item) => acc + item.price * item.quantity,
     0
-  );
+  ) + courierCharge;
 
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
@@ -50,30 +73,27 @@ const CheckoutPage = () => {
       !formData.city ||
       productInfo.length === 0
     ) {
-      alert(
-        "Please fill in all required fields and have at least one product."
-      );
+      toast.error("Please fill all required fields and select products");
       return;
     }
 
     const order = {
       products: productInfo,
-      customer: formData,
+      customer: { ...formData, courierLocation: location },
+      courierCharge,
       totalAmount,
     };
 
     try {
       const res = await fetch("/api/order", {
         method: "POST",
-        body: JSON.stringify(order),
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(order),
       });
 
       if (!res.ok) throw new Error("Order failed");
-
       const result = await res.json();
 
-      // ✅ Clear data
       localStorage.removeItem("checkoutData");
       setProductInfo([]);
       setFormData({
@@ -85,26 +105,22 @@ const CheckoutPage = () => {
         notes: "",
       });
 
-      toast.success(`✅ Order placed! Order ID: ${result.orderId}`);
-
-      // ✅ Redirect after successful order
-      router.push("/order-success");
+      toast.success(`Order placed successfully!`);
+      router.push(
+        `/order-success?mongoId=${result.id}&orderId=${result.orderId}`
+      );
     } catch (err) {
       console.error(err);
-      toast.error("❌ Something went wrong.");
+      toast.error("Something went wrong");
     }
   };
 
-  // Add this handler inside your component
   const handleRemoveProduct = (indexToRemove) => {
-    const updatedProducts = productInfo.filter(
-      (_, idx) => idx !== indexToRemove
-    );
-    setProductInfo(updatedProducts);
-    localStorage.setItem("checkoutData", JSON.stringify(updatedProducts));
+    const updated = productInfo.filter((_, idx) => idx !== indexToRemove);
+    setProductInfo(updated);
+    localStorage.setItem("checkoutData", JSON.stringify(updated));
   };
 
-  console.log(productInfo);
   return (
     <div className="max-w-7xl mx-auto pb-10 text-black">
       <div className="bg-white rounded-lg p-6">
@@ -116,55 +132,48 @@ const CheckoutPage = () => {
           onSubmit={handlePlaceOrder}
           className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start"
         >
-          {/* Billing Section */}
+          {/* Billing */}
           <div className="lg:col-span-2 border border-gray-300 p-6 space-y-10 rounded-md">
             <div>
               <h3 className="text-xl font-semibold mb-4">Billing Details</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input
-                  type="text"
                   name="fullName"
                   placeholder="Full Name"
                   value={formData.fullName}
                   onChange={handleChange}
-                  className="form-input border border-gray-300 px-2 py-2 rounded-sm"
+                  className="border px-2 py-2 rounded-sm"
                 />
                 <input
-                  type="text"
                   name="phone"
                   placeholder="Mobile Number"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="form-input border border-gray-300 px-2 py-2 rounded-sm"
+                  className="border px-2 py-2 rounded-sm"
                 />
                 <input
                   type="email"
                   name="email"
-                  placeholder="Email Address (optional)"
+                  placeholder="Email (optional)"
                   value={formData.email}
                   onChange={handleChange}
-                  className="form-input md:col-span-2 border border-gray-300 px-2 py-2 rounded-sm"
+                  className="md:col-span-2 border px-2 py-2 rounded-sm"
                 />
                 <input
-                  type="text"
                   name="address"
                   placeholder="Street Address"
                   value={formData.address}
                   onChange={handleChange}
-                  className="form-input md:col-span-2 border border-gray-300 px-2 py-2 rounded-sm"
+                  className="md:col-span-2 border px-2 py-2 rounded-sm"
                 />
                 <input
-                  type="text"
                   name="city"
                   placeholder="City"
                   value={formData.city}
                   onChange={handleChange}
-                  className="form-input border border-gray-300 px-2 py-2 rounded-sm"
+                  className="border px-2 py-2 rounded-sm"
                 />
-                <select
-                  className="form-input border border-gray-300 px-2 py-2 rounded-sm"
-                  disabled
-                >
+                <select disabled className="border px-2 py-2 rounded-sm">
                   <option>Bangladesh</option>
                 </select>
                 <textarea
@@ -172,8 +181,7 @@ const CheckoutPage = () => {
                   placeholder="Order Notes (optional)"
                   value={formData.notes}
                   onChange={handleChange}
-                  className="form-input border border-gray-300 px-2 py-2 rounded-sm md:col-span-2"
-                  rows="3"
+                  className="md:col-span-2 border px-2 py-2 rounded-sm"
                 />
               </div>
             </div>
@@ -181,55 +189,36 @@ const CheckoutPage = () => {
             {/* Courier Location */}
             <div>
               <h3 className="text-xl font-semibold mb-4">Courier Location</h3>
-              <div className="flex flex-col gap-2 text-gray-700">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="location"
-                    value="inside"
-                    checked={location === "inside"}
-                    onChange={() => setLocation("inside")}
-                  />
-                  Inside Dhaka (৳60)
-                </label>
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="location"
-                    value="outside"
-                    checked={location === "outside"}
-                    onChange={() => setLocation("outside")}
-                  />
-                  Outside Dhaka (৳120)
-                </label>
-              </div>
+              <label className="flex gap-2">
+                <input
+                  type="radio"
+                  value="inside"
+                  checked={location === "inside"}
+                  onChange={() => setLocation("inside")}
+                />
+                Inside Dhaka (৳{deliveryCharge.insideDhaka})
+              </label>
+              <label className="flex gap-2">
+                <input
+                  type="radio"
+                  value="outside"
+                  checked={location === "outside"}
+                  onChange={() => setLocation("outside")}
+                />
+                Outside Dhaka (৳{deliveryCharge.outsideDhaka})
+              </label>
             </div>
 
-            {/* Payment + Submit */}
+            {/* Payment */}
             <div>
               <h3 className="text-xl font-semibold mb-4">Payment Option</h3>
               <label className="flex items-center space-x-2">
                 <input type="radio" name="payment" defaultChecked />
                 <span>Cash on Delivery</span>
               </label>
-              <p className="text-sm text-gray-600 mt-2">
-                By placing order, you agree to our{" "}
-                <a href="#" className="underline text-blue-600">
-                  Terms
-                </a>
-                ,{" "}
-                <a href="#" className="underline text-blue-600">
-                  Return
-                </a>{" "}
-                and{" "}
-                <a href="#" className="underline text-blue-600">
-                  Privacy
-                </a>{" "}
-                policies.
-              </p>
               <button
                 type="submit"
-                className="bg-black text-white py-2 px-6 rounded hover:bg-gray-800 mt-4 transition-all"
+                className="bg-black text-white py-2 px-6 rounded cursor-pointer hover:bg-gray-800 mt-4"
               >
                 Place Order
               </button>
@@ -239,65 +228,45 @@ const CheckoutPage = () => {
           {/* Order Summary */}
           <div className="bg-gray-50 p-6 border border-gray-300 rounded-md shadow-sm">
             <h3 className="text-xl font-semibold mb-4">Your Order</h3>
-
-            {productInfo?.length > 0 ? (
+            {productInfo.length > 0 ? (
               <>
                 {productInfo.map((item, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center justify-between border-b border-gray-200 py-3"
+                    className="flex items-center justify-between border border-gray-300 rounded p-2"
                   >
-                    {/* Remove button */}
                     <button
                       onClick={() => handleRemoveProduct(idx)}
-                      className="text-gray-500 cursor-pointer hover:text-red-600 mr-3 text-lg"
-                      aria-label={`Remove ${item.title}`}
+                      className="mr-3 cursor-pointer text-red-500 text-lg"
                     >
                       ✕
                     </button>
-
-                    {/* Product image */}
                     <img
                       src={item?.image}
                       alt={item?.title}
-                      className="w-16 h-16 object-cover rounded mr-3"
+                      className="w-16 h-16 object-cover mr-3"
                     />
-
-                    {/* Product details */}
                     <div className="flex-1">
-                      <p className="font-medium text-gray-800">{item?.title}</p>
-                      <p>Price: ৳ {item?.discountPrice}</p>
-                      <p>Size: {item?.size}</p>
+                      <p>{item.title}</p>
+                      <p>Price: ৳{item.discountPrice}</p>
+                      <p>Size: {item.size}</p>
                     </div>
-
-                    {/* Price */}
-                    <p className="font-semibold text-gray-800 ml-4">
+                    <p className="ml-4 font-semibold">
                       ৳{item.price * item.quantity}
                     </p>
                   </div>
                 ))}
-
-                {/* Courier charges */}
-                <div className="flex justify-between mt-4 text-gray-700">
+                <div className="flex justify-between mt-4">
                   <span>Courier Charges</span>
-                  <span>
-                    ৳
-                    {productInfo.reduce(
-                      (acc, item) => acc + courierCharge(item.courierLocation),
-                      0
-                    )}
-                  </span>
+                  <span>৳{courierCharge}</span>
                 </div>
-                <hr className="my-3" />
-
-                {/* Total */}
-                <div className="flex justify-between font-bold">
-                  <p>Total:</p>
-                  <p>৳{totalAmount}</p>
+                <div className="flex justify-between font-bold mt-2">
+                  <span>Total</span>
+                  <span>৳{totalAmount}</span>
                 </div>
               </>
             ) : (
-              <p className="text-sm text-red-500">No product info found.</p>
+              <p>No product info found</p>
             )}
           </div>
         </form>
@@ -307,3 +276,5 @@ const CheckoutPage = () => {
 };
 
 export default CheckoutPage;
+
+
