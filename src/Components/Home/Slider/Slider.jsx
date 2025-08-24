@@ -8,28 +8,30 @@ import "swiper/css/pagination";
 import { useEffect, useState } from "react";
 
 export default function Slider() {
-  const [slider, setSlider] = useState([]);
+  const [slider, setSlider] = useState(null);
+const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchSliderData = async () => {
-      try {
-        const res = await fetch("/api/homeslider");
-        const json = await res.json();
+useEffect(() => {
+  const fetchSliderData = async () => {
+    try {
+      const res = await fetch("/api/homeslider");
+      const json = await res.json();
 
-        if (json.success) {
-          setSlider(json.data[0]);
-        }
-      } catch (error) {
-        console.error("Error fetching slider data:", error);
-      } finally {
-        setLoading(false);
+      if (json.success && json.data.length > 0) {
+        setSlider(json.data[0]);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching slider data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchSliderData();
-  }, []);
+  fetchSliderData();
+}, []);
 
-  console.log(slider);
+
+  if (!slider) return <div>Loading...</div>; // Show something while loading
 
   return (
     <div>
@@ -42,9 +44,9 @@ export default function Slider() {
             pagination={{ clickable: true }}
             autoplay={{ delay: 5000, disableOnInteraction: false }}
             loop
-            className="w-full h-[250px] md:h-[400px] lg:h-[450px]  rounded-sm overflow-hidden"
+            className="w-full h-[250px] md:h-[400px] lg:h-[450px] rounded-sm overflow-hidden"
           >
-            {slider?.sliderImages?.map((imgUrl, index) => (
+            {slider.sliderImages.map((imgUrl, index) => (
               <SwiperSlide key={index}>
                 <img
                   src={imgUrl}
@@ -59,12 +61,12 @@ export default function Slider() {
         {/* Side Images */}
         <div className="hidden lg:flex flex-col gap-4">
           <img
-            src={slider?.rightImageTop}
+            src={slider.rightImageTop}
             alt="Half Sleeve Collection"
             className="w-full md:h-[400px] lg:h-[210px] object-cover rounded-sm"
           />
           <img
-            src={slider?.rightImageBottom}
+            src={slider.rightImageBottom}
             alt="Full Sleeve Jersey"
             className="w-full md:h-[400px] lg:h-[220px] object-cover rounded-sm"
           />

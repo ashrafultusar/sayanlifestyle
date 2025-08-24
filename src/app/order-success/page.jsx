@@ -7,7 +7,7 @@ export default function OrderSuccessPage() {
         Thank you. Your order has been received.
       </div>
 
-      <div className="bg-gray-100 p-4 rounded mb-6 text-sm text-gray-800">
+      <div className="bg-gray-100 p-4 rounded mb-6 text-sm text-gray-800 text-center">
         <p>
           Our team is reviewing your order and will start processing it as soon
           as possible.
@@ -23,7 +23,7 @@ export default function OrderSuccessPage() {
         </p>
       </div>
       {/* Bangla Version */}
-      <div className="bg-gray-100 p-4 rounded text-sm text-gray-800">
+      <div className="bg-gray-100 text-center p-4 rounded text-sm text-gray-800">
         <p>
           আমাদের টিম আপনার অর্ডারটি যাচাই করছে এবং যত দ্রুত সম্ভব প্রক্রিয়াকরণ
           শুরু করবে।
@@ -39,6 +39,14 @@ export default function OrderSuccessPage() {
           আপনার বিশ্বাস ও সমর্থনের জন্য ধন্যবাদ।
         </p>
       </div>
+      
+        <div className="bg-gray-100 text-center p-4 rounded text-sm text-gray-800 mt-6">
+          <p>Contact Us</p>
+          <p className="mt-2">support@example.com</p>
+          <p className="mt-2 font-semibold">0170000000</p>
+        </div>
+  
+
       {/* <div className="grid grid-cols-2 md:grid-cols-5 text-sm border-b pb-4 mb-4">
         <div>
           <p className="font-semibold">Order number:</p>
