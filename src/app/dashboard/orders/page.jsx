@@ -1,250 +1,87 @@
 "use client";
 
-import { useState } from "react";
-import { FaEye, FaEdit } from "react-icons/fa";
-
-const getStartOfWeek = (date = new Date()) => {
-  const d = new Date(date);
-  const day = d.getDay();
-  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-  return new Date(d.setDate(diff));
-};
-
-const getStartOfMonth = (date = new Date()) =>
-  new Date(date.getFullYear(), date.getMonth(), 1);
-
-const getEndOfMonth = (date = new Date()) =>
-  new Date(date.getFullYear(), date.getMonth() + 1, 0);
+import { useEffect, useState } from "react";
+import { FaEye } from "react-icons/fa";
+import Pagination from "@/Components/Shared/Pagination";
+import { MdDeleteForever } from "react-icons/md";
 
 const Page = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [search, setSearch] = useState("");
   const [filterDate, setFilterDate] = useState("");
-  const [customFromDate, setCustomFromDate] = useState("");
-  const [customToDate, setCustomToDate] = useState("");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
 
-  const [orders, setOrders] = useState([
-    {
-      id: "5386764927",
-      paymentMethod: "cash",
-      orderDate: "2020-09-09T00:01:41",
-      deliveryDate: "September 12th 2020",
-      status: "pending",
-      total: 2000,
-    },
-    {
-      id: "7039483769",
-      paymentMethod: "cash",
-      orderDate: "2020-09-09T00:40:48",
-      deliveryDate: "September 12th 2020",
-      status: "processing",
-      total: 2000,
-    },
-    {
-      id: "1577638920",
-      paymentMethod: "cash",
-      orderDate: "2020-09-09T01:15:28",
-      deliveryDate: "September 12th 2020",
-      status: "pending",
-      total: 4132,
-    },
-    {
-      id: "9143518234",
-      paymentMethod: "cash",
-      orderDate: "2020-09-08T10:27:46",
-      deliveryDate: "September 12th 2020",
-      status: "processing",
-      total: 3430,
-    },
-    {
-      id: "1300843978",
-      paymentMethod: "cash",
-      orderDate: "2020-09-08T10:24:46",
-      deliveryDate: "September 12th 2020",
-      status: "processing",
-      total: 3430,
-    },
-    {
-      id: "4348485767",
-      paymentMethod: "cash",
-      orderDate: "2020-09-07T18:14:35",
-      deliveryDate: "September 12th 2020",
-      status: "processing",
-      total: 10,
-    },
-  ]);
+  const [orders, setOrders] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 12;
 
-  const handleStatusChange = (id, newStatus) => {
-    setOrders((prev) =>
-      prev.map((order) =>
-        order.id === id ? { ...order, status: newStatus } : order
-      )
-    );
+  const fetchOrders = async () => {
+    const params = new URLSearchParams({
+      search,
+      filterDate,
+      from,
+      to,
+      page: currentPage,
+      limit: pageSize,
+    });
+    const res = await fetch(`/api/order?${params.toString()}`);
+    const data = await res.json();
+    setOrders(data.orders || []);
+    setTotal(data.total || 0);
   };
 
-  const filteredOrders = orders.filter((order) => {
-    const matchesSearch = order.id.includes(searchTerm);
-    const orderDate = new Date(order.orderDate);
-    const now = new Date();
-    let matchesDate = true;
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, filterDate, from, to]);
 
-    switch (filterDate) {
-      case "thisWeek": {
-        const start = getStartOfWeek(now);
-        const end = new Date(start);
-        end.setDate(start.getDate() + 6);
-        matchesDate = orderDate >= start && orderDate <= end;
-        break;
-      }
+  useEffect(() => {
+    fetchOrders();
+  }, [search, filterDate, from, to, currentPage]);
 
-      case "thisMonth": {
-        const start = getStartOfMonth(now);
-        const end = getEndOfMonth(now);
-        matchesDate = orderDate >= start && orderDate <= end;
-        break;
-      }
-
-      case "lastWeek": {
-        const startOfThisWeek = getStartOfWeek(now);
-        const lastStart = new Date(startOfThisWeek);
-        lastStart.setDate(startOfThisWeek.getDate() - 7);
-        const lastEnd = new Date(startOfThisWeek);
-        lastEnd.setDate(startOfThisWeek.getDate() - 1);
-        matchesDate = orderDate >= lastStart && orderDate <= lastEnd;
-        break;
-      }
-
-      case "lastMonth": {
-        const start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-        const end = new Date(now.getFullYear(), now.getMonth(), 0);
-        matchesDate = orderDate >= start && orderDate <= end;
-        break;
-      }
-
-      case "custom": {
-        if (customFromDate && customToDate) {
-          const from = new Date(customFromDate);
-          const to = new Date(customToDate);
-          matchesDate = orderDate >= from && orderDate <= to;
-        } else {
-          matchesDate = true;
-        }
-        break;
-      }
-
-      default:
-        matchesDate = true;
-    }
-
-    return matchesSearch && matchesDate;
-  });
-
-  const formatDateDisplay = (isoString) =>
-    new Date(isoString).toLocaleString("en-US", {
-      dateStyle: "long",
-      timeStyle: "short",
-    });
-
+  const totalPages = Math.ceil(total / pageSize);
+  console.log(orders);
   return (
     <div className="p-8 text-black">
       <h1 className="text-3xl font-bold mb-6">Order Dashboard</h1>
 
-      {/* Top Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-purple-500 text-white p-6 rounded-xl shadow-md hover:scale-105 transform transition">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-sm uppercase">Order Pending</div>
-              <div className="text-3xl font-bold mt-1">
-                {orders.filter((o) => o.status === "pending").length}
-              </div>
-            </div>
-            <div className="text-4xl opacity-30">🕒</div>
-          </div>
-        </div>
-
-        <div className="bg-red-500 text-white p-6 rounded-xl shadow-md hover:scale-105 transform transition">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-sm uppercase">Order Cancel</div>
-              <div className="text-3xl font-bold">
-                {orders.filter((o) => o.status === "canceled").length}
-              </div>
-            </div>
-            <div className="text-4xl opacity-30">❌</div>
-          </div>
-        </div>
-
-        <div className="bg-blue-500 text-white p-6 rounded-xl shadow-md hover:scale-105 transform transition">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-sm uppercase">Order Process</div>
-              <div className="text-3xl font-bold">
-                {orders.filter((o) => o.status === "processing").length}
-              </div>
-            </div>
-            <div className="text-4xl opacity-30">🔄</div>
-          </div>
-        </div>
-
-        <div className="bg-green-500 text-white p-6 rounded-xl shadow-md hover:scale-105 transform transition">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-sm uppercase">Today Income</div>
-              <div className="text-3xl font-bold">₹9568.00</div>
-            </div>
-            <div className="text-4xl opacity-30">💰</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Filter Controls */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+      {/* Filters */}
+      <div className="flex gap-2 mb-4">
         <input
           type="text"
           placeholder="Search by Order ID"
-          className="border rounded px-3 py-2"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="border px-2 py-1 rounded"
         />
-
-        <div className="flex flex-col gap-2">
-          <select
-            className="border rounded px-3 py-2"
-            value={filterDate}
-            onChange={(e) => setFilterDate(e.target.value)}
-          >
-            <option value="">All Dates</option>
-            <option value="thisWeek">This Week</option>
-            <option value="thisMonth">This Month</option>
-            <option value="lastWeek">Last Week</option>
-            <option value="lastMonth">Last Month</option>
-            <option value="custom">Custom Range</option>
-          </select>
-
-          {filterDate === "custom" && (
-            <div className="flex gap-2">
-              <div>
-                <label className="text-sm block mb-1">From:</label>
-                <input
-                  type="date"
-                  className="border rounded px-3 py-2"
-                  value={customFromDate}
-                  onChange={(e) => setCustomFromDate(e.target.value)}
-                />
-              </div>
-              <div>
-                <label className="text-sm block mb-1">To:</label>
-                <input
-                  type="date"
-                  className="border rounded px-3 py-2"
-                  value={customToDate}
-                  onChange={(e) => setCustomToDate(e.target.value)}
-                  disabled={!customFromDate}
-                />
-              </div>
-            </div>
-          )}
-        </div>
+        <select
+          value={filterDate}
+          onChange={(e) => setFilterDate(e.target.value)}
+          className="border px-2 py-1 rounded"
+        >
+          <option value="">All Dates</option>
+          <option value="thisWeek">This Week</option>
+          <option value="lastWeek">Last Week</option>
+          <option value="thisMonth">This Month</option>
+          <option value="lastMonth">Last Month</option>
+          <option value="custom">Custom</option>
+        </select>
+        {filterDate === "custom" && (
+          <>
+            <input
+              type="date"
+              value={from}
+              onChange={(e) => setFrom(e.target.value)}
+              className="border px-2 py-1 rounded"
+            />
+            <input
+              type="date"
+              value={to}
+              onChange={(e) => setTo(e.target.value)}
+              className="border px-2 py-1 rounded"
+            />
+          </>
+        )}
       </div>
 
       {/* Orders Table */}
@@ -253,63 +90,102 @@ const Page = () => {
           <thead className="bg-gray-100 text-gray-700 text-sm">
             <tr>
               <th className="p-4">Order ID</th>
-              <th className="p-4">Payment Method</th>
-              <th className="p-4">Order Date</th>
-              <th className="p-4">Delivery Date</th>
-              <th className="p-4">Status</th>
+              <th className="p-4">Amount</th>
+              <th className="p-4">Name</th>
               <th className="p-4">Total</th>
+              <th className="p-4">Status</th>
               <th className="p-4">Action</th>
             </tr>
           </thead>
           <tbody>
-            {filteredOrders.map((order) => (
-              <tr key={order.id} className="hover:bg-gray-50">
-                <td className="p-4">{order.id}</td>
-                <td className="p-4">{order.paymentMethod}</td>
-                <td className="p-4">{formatDateDisplay(order.orderDate)}</td>
-                <td className="p-4">{order.deliveryDate}</td>
+            {orders.map((order) => (
+              <tr key={order._id} className="hover:bg-gray-50">
+                <td className="p-4">{order?.orderId}</td>
+                <td className="p-4">{order?.totalAmount}</td>
+                <td className="p-4">{order?.customer?.fullName}</td>
+                <td className="p-4">{order?.customer?.phone}</td>
+              
                 <td className="p-4">
-                  <select
-                    value={order.status}
-                    onChange={(e) =>
-                      handleStatusChange(order.id, e.target.value)
-                    }
-                    className={`px-2 py-1 rounded text-white text-sm font-medium cursor-pointer
-                      ${
-                        order.status === "pending"
-                          ? "bg-yellow-500"
-                          : order.status === "delivered"
-                          ? "bg-blue-500"
-                          : order.status === "canceled"
-                          ? "bg-red-500"
-                          : "bg-gray-500"
-                      }
-                    `}
-                  >
-                    <option value="pending">Pending</option>
-                    <option value="delivered">Delivered</option>
-                    <option value="canceled">Canceled</option>
-                    <option value="processing">Processing</option>
-                  </select>
-                </td>
-                <td className="p-4">₹{order.total}</td>
-                <td className="p-4 flex gap-2">
-                  <button className="text-blue-600 hover:text-blue-800">
-                    <FaEye />
-                  </button>
-                  <button className="text-green-600 hover:text-green-800">
-                    <FaEdit />
-                  </button>
-                </td>
+  <select
+    value={order.status || "pending"}
+    onChange={async (e) => {
+      const newStatus = e.target.value;
+      // frontend update
+      setOrders((prev) =>
+        prev.map((o) =>
+          o._id === order._id ? { ...o, status: newStatus } : o
+        )
+      );
+      // backend update
+      try {
+        await fetch(`/api/order/${order._id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: newStatus }),
+        });
+      } catch (err) {
+        console.error("Failed to update status", err);
+      }
+    }}
+    className={`px-2 py-1 rounded text-white text-sm font-medium cursor-pointer
+      ${
+        order.status === "pending"
+          ? "bg-yellow-500"
+          : order.status === "shipping"
+          ? "bg-blue-500"
+          : order.status === "delivered"
+          ? "bg-green-500"
+          : order.status === "canceled"
+          ? "bg-red-500"
+          : "bg-gray-500"
+      }
+    `}
+  >
+    <option value="pending">Pending</option>
+    <option value="shipping">Shipping</option>
+    <option value="delivered">Delivered</option>
+    <option value="canceled">Canceled</option>
+  </select>
+</td>
+
+
+
+<td className="p-4 flex gap-2">
+  <button className="text-blue-600 hover:text-blue-800">
+    <FaEye />
+  </button>
+  <button
+    className="text-red-500 hover:text-red-800"
+    onClick={async () => {
+      if (!confirm("Are you sure you want to delete this order?")) return;
+      try {
+        await fetch(`/api/order/${order._id}`, { method: "DELETE" });
+        setOrders((prev) => prev.filter((o) => o._id !== order._id));
+      } catch (err) {
+        console.error("Failed to delete order", err);
+      }
+    }}
+  >
+    <MdDeleteForever />
+  </button>
+</td>
               </tr>
             ))}
           </tbody>
         </table>
-
-        {filteredOrders.length === 0 && (
+        {orders.length === 0 && (
           <div className="p-6 text-center text-gray-500">No orders found.</div>
         )}
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
+      )}
     </div>
   );
 };
