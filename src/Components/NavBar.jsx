@@ -102,7 +102,7 @@ export default function Navbar() {
 
       {/* Bottom Categories (Desktop) */}
       <div className="hidden md:flex w-full bg-blue-50">
-        <div className="container mx-auto flex items-center justify-between px-4 py-2 text-sm font-medium">
+        <div className="container mx-auto flex items-center justify-between px-4 py-2 text-sm ">
           <div className="flex items-center space-x-6 uppercase font-bold">
             {categories?.map((cat, i) => (
               <Link
@@ -114,7 +114,9 @@ export default function Navbar() {
               </Link>
             ))}
           </div>
-        
+          <Link cl href={'/collection'}>
+          <button className="hover:text-orange-500 transition-colors duration-300 uppercase font-bold">Collection</button>
+          </Link>
         </div>
       </div>
 
@@ -177,6 +179,9 @@ export default function Navbar() {
               {cat?.name}
             </Link>
           ))}
+          <Link cl href={'/collection'}>
+          <button className="hover:text-orange-500 transition-colors duration-300 uppercase font-bold">Collection</button>
+          </Link>
         </div>
 
         

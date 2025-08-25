@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import ProductCard from "@/Components/Card/ProductCard/ProductCard";
 import { CategoryFilter } from "@/Components/CategoryFilter/CategoryFilter";
@@ -8,7 +8,8 @@ import LoadingSpinner from "@/Components/Shared/LoadingSpiner";
 import Pagination from "@/Components/Shared/Pagination";
 import { useData } from "@/context/DataContext";
 
-const Page = () => {
+// Separate component that uses searchParams
+function CollectionContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -130,6 +131,15 @@ const Page = () => {
         </main>
       </div>
     </div>
+  );
+}
+
+// Main page component with Suspense boundary
+const Page = () => {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><LoadingSpinner /></div>}>
+      <CollectionContent />
+    </Suspense>
   );
 };
 
