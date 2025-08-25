@@ -1,22 +1,19 @@
 "use client";
 
 import CategoryCard from "@/Components/Card/CategoryCard/CategoryCard";
-import { FaShirt } from "react-icons/fa6";
-import { GiTrousers } from "react-icons/gi";
-import { MdChildCare } from "react-icons/md";
-import { PiShirtFoldedLight } from "react-icons/pi";
+
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "./categories-swiper.css";
-import useCategories from "@/hook/useCategories";
+import {  useData } from "@/context/DataContext";
 
 
 export default function CategoriesSection() {
 
-  const { categories } = useCategories();
+  const { categories } = useData();
 
   return (
     <div className="w-full  p-6 rounded-lg">

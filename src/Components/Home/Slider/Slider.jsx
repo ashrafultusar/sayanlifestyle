@@ -6,6 +6,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { useEffect, useState } from "react";
+import LoadingSpinner from "@/Components/Shared/LoadingSpiner";
 
 export default function Slider() {
   const [slider, setSlider] = useState(null);
@@ -31,8 +32,7 @@ useEffect(() => {
 }, []);
 
 
-  if (!slider) return <div>Loading...</div>; // Show something while loading
-
+  if (!slider) return <LoadingSpinner overlay />; 
   return (
     <div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">

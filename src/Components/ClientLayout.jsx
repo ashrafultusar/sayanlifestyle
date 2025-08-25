@@ -6,6 +6,7 @@ import Navbar from "@/Components/NavBar";
 import Footer from "@/Components/Footer";
 import ClientProvider from "@/Components/ClientProvider";
 import { ToastContainer } from "react-toastify";
+import { DataProvider } from "@/context/DataContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,13 +27,14 @@ export default function ClientLayout({ children }) {
 
   return (
     <div className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <DataProvider>
       <ToastContainer />
       {!shouldHideLayout && <Navbar />}
 
       <ClientProvider>
         <main style={{ minHeight: "calc(100vh - 64px - 64px)" }}>{children}</main>
       </ClientProvider>
-
+      </DataProvider>
       {!shouldHideLayout && <Footer />}
     </div>
   );

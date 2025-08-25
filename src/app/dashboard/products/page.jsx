@@ -1,7 +1,7 @@
 "use client";
 import Pagination from "@/Components/Shared/Pagination";
-import useCategories from "@/hook/useCategories";
-import useProducts from "@/hook/useProducts";
+import { useData } from "@/context/DataContext";
+
 
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
@@ -12,11 +12,11 @@ const Page = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
 
-  const { products, totalCount, loading } = useProducts(
+  const { products, totalCount, loading } = useData(
     currentPage,
     itemsPerPage
   );
-  const { categories } = useCategories();
+  const { categories } = useData();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");

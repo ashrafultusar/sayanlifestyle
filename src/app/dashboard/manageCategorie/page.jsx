@@ -1,12 +1,13 @@
 "use client";
 
-import useCategories from "@/hook/useCategories";
+
+import { useData } from "@/context/DataContext";
 import { useState } from "react";
 import { FaPlus, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 export default function Page() {
-  const { categories, setCategories } = useCategories();
+  const { categories, setCategories } = useData();
 
   const [search, setSearch] = useState("");
   const [showForm, setShowForm] = useState(false);

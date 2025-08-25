@@ -1,14 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Image from "next/image";
 import ProductCard from "@/Components/Card/ProductCard/ProductCard";
-import useProducts from "@/hook/useProducts";
 import Link from "next/link";
+import { useData } from "@/context/DataContext";
+import LoadingSpinner from "@/Components/Shared/LoadingSpiner";
 
 export default function ProductPage() {
-  const { products } = useProducts();
+  const { products } = useData();
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState("");
@@ -61,7 +62,11 @@ export default function ProductPage() {
     if (id) fetchProduct();
   }, [id]);
 
-  if (loading) return <p className="text-center py-10">Loading...</p>;
+
+  if (loading) return <LoadingSpinner overlay />;
+
+
+
   if (!product)
     return <p className="text-center text-black py-10">Product not found</p>;
 

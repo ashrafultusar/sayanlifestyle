@@ -51,7 +51,7 @@ const ProductCard = ({ _id, title, image, discountPrice, price }) => {
 
         {/* Footer Button */}
         <Link href={`/productDetails/${_id}`}>
-          <button  className="mt-4 bg-black hover:bg-gray-800 text-white text-sm px-4 py-2 rounded flex items-center cursor-pointer justify-center w-full gap-2 transition-all duration-300 group/button relative overflow-hidden">
+          <button className="mt-4 bg-black hover:bg-gray-800 text-white text-sm px-4 py-2 rounded flex items-center cursor-pointer justify-center w-full gap-2 transition-all duration-300 group/button relative overflow-hidden">
             <span className="transition-opacity duration-300 group-hover/button:opacity-0">
               Buy Now
             </span>

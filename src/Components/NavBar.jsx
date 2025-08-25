@@ -4,11 +4,12 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FiPhoneCall, FiSearch, FiMenu, FiX } from "react-icons/fi";
 import { FaCartArrowDown, FaFacebookF } from "react-icons/fa";
-import useCategories from "@/hook/useCategories";
+import {  useData } from "@/context/DataContext";
+
 
 export default function Navbar() {
   const router = useRouter();
-  const { categories } = useCategories();
+  const { categories } = useData();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [cartCount, setCartCount] = useState(0);
@@ -113,12 +114,7 @@ export default function Navbar() {
               </Link>
             ))}
           </div>
-          <Link
-            href="/collection"
-            className="hover:text-orange-500 transition-colors font-bold duration-300"
-          >
-            All Collection
-          </Link>
+        
         </div>
       </div>
 
@@ -183,14 +179,7 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="p-4 border-t">
-          <Link
-            href="/collection"
-            className="hover:text-orange-500 transition-colors duration-300"
-          >
-            Collection
-          </Link>
-        </div>
+        
       </div>
     </div>
   );

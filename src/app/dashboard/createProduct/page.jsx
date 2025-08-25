@@ -1,5 +1,6 @@
 "use client";
-import useCategories from "@/hook/useCategories";
+
+import { useData } from "@/context/DataContext";
 import { useRouter } from "next/navigation";
 
 import React, { useState } from "react";
@@ -7,7 +8,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Page = () => {
-  const { categories } = useCategories();
+  const { categories } = useData();
   const router=useRouter()
   const [form, setForm] = useState({
     title: "",
