@@ -1,4 +1,4 @@
-// app/api/homeslider/route.js
+
 import { NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import connectDB from "@/lib/db";
@@ -90,7 +90,7 @@ export async function GET() {
   }
   
 
-  // DELETE: Remove one by ID
+
 export async function DELETE(req) {
     await connectDB();
   

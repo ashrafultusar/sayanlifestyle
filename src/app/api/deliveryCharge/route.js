@@ -13,17 +13,17 @@ export async function POST(req) {
       return NextResponse.json({ message: 'Missing fields' }, { status: 400 });
     }
 
-    // Check if delivery charge document already exists
+    
     const existing = await DeliveryCharge.findOne();
 
     let result;
     if (existing) {
-      // Update existing
+     
       existing.insideDhaka = insideDhaka;
       existing.outsideDhaka = outsideDhaka;
       result = await existing.save();
     } else {
-      // Create new
+     
       result = await DeliveryCharge.create({ insideDhaka, outsideDhaka });
     }
 

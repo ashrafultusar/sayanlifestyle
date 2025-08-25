@@ -3,14 +3,14 @@ import connectDB from "@/lib/db";
 import Category from "@/models/Category";
 import { v2 as cloudinary } from "cloudinary";
 
-// ✅ Cloudinary config
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// ✅ Create a new category (POST)
+
 export async function POST(req) {
   const formData = await req.formData();
   const name = formData.get("name");
