@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import Pagination from "@/Components/Shared/Pagination";
 import { MdDeleteForever } from "react-icons/md";
+import Link from "next/link";
 
 const Page = () => {
   const [search, setSearch] = useState("");
@@ -40,7 +41,7 @@ const Page = () => {
   }, [search, filterDate, from, to, currentPage]);
 
   const totalPages = Math.ceil(total / pageSize);
-  console.log(orders);
+  console.log(orders._id);
   return (
     <div className="p-8 text-black">
       <h1 className="text-3xl font-bold mb-6">Order Dashboard</h1>
@@ -104,30 +105,30 @@ const Page = () => {
                 <td className="p-4">{order?.totalAmount}</td>
                 <td className="p-4">{order?.customer?.fullName}</td>
                 <td className="p-4">{order?.customer?.phone}</td>
-              
+
                 <td className="p-4">
-  <select
-    value={order.status || "pending"}
-    onChange={async (e) => {
-      const newStatus = e.target.value;
-      // frontend update
-      setOrders((prev) =>
-        prev.map((o) =>
-          o._id === order._id ? { ...o, status: newStatus } : o
-        )
-      );
-      // backend update
-      try {
-        await fetch(`/api/order/${order._id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ status: newStatus }),
-        });
-      } catch (err) {
-        console.error("Failed to update status", err);
-      }
-    }}
-    className={`px-2 py-1 rounded text-white text-sm font-medium cursor-pointer
+                  <select
+                    value={order.status || "pending"}
+                    onChange={async (e) => {
+                      const newStatus = e.target.value;
+                      // frontend update
+                      setOrders((prev) =>
+                        prev.map((o) =>
+                          o._id === order._id ? { ...o, status: newStatus } : o
+                        )
+                      );
+                      // backend update
+                      try {
+                        await fetch(`/api/order/${order._id}`, {
+                          method: "PATCH",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ status: newStatus }),
+                        });
+                      } catch (err) {
+                        console.error("Failed to update status", err);
+                      }
+                    }}
+                    className={`px-2 py-1 rounded text-white text-sm font-medium cursor-pointer
       ${
         order.status === "pending"
           ? "bg-yellow-500"
@@ -140,35 +141,43 @@ const Page = () => {
           : "bg-gray-500"
       }
     `}
-  >
-    <option value="pending">Pending</option>
-    <option value="shipping">Shipping</option>
-    <option value="delivered">Delivered</option>
-    <option value="canceled">Canceled</option>
-  </select>
-</td>
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="shipping">Shipping</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="canceled">Canceled</option>
+                  </select>
+                </td>
 
-
-
-<td className="p-4 flex gap-2">
-  <button className="text-blue-600 hover:text-blue-800">
-    <FaEye />
-  </button>
-  <button
-    className="text-red-500 hover:text-red-800"
-    onClick={async () => {
-      if (!confirm("Are you sure you want to delete this order?")) return;
-      try {
-        await fetch(`/api/order/${order._id}`, { method: "DELETE" });
-        setOrders((prev) => prev.filter((o) => o._id !== order._id));
-      } catch (err) {
-        console.error("Failed to delete order", err);
-      }
-    }}
-  >
-    <MdDeleteForever />
-  </button>
-</td>
+                <td className="p-4 flex gap-2">
+                  <Link
+                    href={`/orders/${order._id}`}
+                    className="text-blue-600 hover:text-blue-800"
+                  >
+                    <FaEye />
+                  </Link>
+                  <button
+                    className="text-red-500 hover:text-red-800"
+                    onClick={async () => {
+                      if (
+                        !confirm("Are you sure you want to delete this order?")
+                      )
+                        return;
+                      try {
+                        await fetch(`/api/order/${order._id}`, {
+                          method: "DELETE",
+                        });
+                        setOrders((prev) =>
+                          prev.filter((o) => o._id !== order._id)
+                        );
+                      } catch (err) {
+                        console.error("Failed to delete order", err);
+                      }
+                    }}
+                  >
+                    <MdDeleteForever />
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
