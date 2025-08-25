@@ -10,29 +10,36 @@ import LoadingSpinner from "@/Components/Shared/LoadingSpiner";
 
 export default function Slider() {
   const [slider, setSlider] = useState(null);
-const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
-useEffect(() => {
-  const fetchSliderData = async () => {
-    try {
-      const res = await fetch("/api/homeslider");
-      const json = await res.json();
 
-      if (json.success && json.data.length > 0) {
-        setSlider(json.data[0]);
+  
+
+  useEffect(() => {
+    const fetchSliderData = async () => {
+      try {
+        const res = await fetch("/api/homeslider");
+        const json = await res.json();
+
+        if (json.success && json.data.length > 0) {
+          setSlider(json.data[0]);
+        }
+      } catch (error) {
+        console.error("Error fetching slider data:", error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching slider data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  fetchSliderData();
-}, []);
-
-
-
+    fetchSliderData();
+  }, []);
+if (loading) {
+    return (
+      <div className="flex justify-center items-center h-[400px]">
+        <LoadingSpinner />
+      </div>
+    );
+  }
   return (
     <div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
