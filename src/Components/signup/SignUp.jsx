@@ -92,17 +92,14 @@ const SignUp = () => {
           <div>
             <button
               type="submit"
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 rounded-md transition duration-200"
+              className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 rounded-md transition duration-200 cursor-pointer"
             >
               Sign Up
             </button>
           </div>
         </form>
 
-        {/* Divider */}
-        <div className="mt-6 text-center text-sm text-gray-500">
-          Already have an account? <a href="/login" className="text-blue-500 hover:underline">Log in</a>
-        </div>
+       
       </div>
     </div>
   );

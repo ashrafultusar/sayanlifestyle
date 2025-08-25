@@ -3,6 +3,8 @@ import React from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { FaUser, FaEnvelope, FaLock, FaArrowLeft } from "react-icons/fa";
+import Link from "next/link";
 
 const SignIn = () => {
   const router = useRouter();
@@ -15,7 +17,7 @@ const SignIn = () => {
 
     try {
       const res = await signIn("credentials", {
-        redirect: false, 
+        redirect: false,
         email,
         password,
       });
@@ -24,7 +26,7 @@ const SignIn = () => {
         toast.error(res.error);
       } else {
         toast.success("Logged in successfully!");
-        router.push("/dashboard"); 
+        router.push("/dashboard");
       }
     } catch (error) {
       console.error(error);
@@ -33,81 +35,79 @@ const SignIn = () => {
   };
 
   return (
-    <div className="flex w-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800">
-      <div
-        className="hidden bg-cover lg:block lg:w-1/2"
-        style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1606660265514-358ebbadc80d?auto=format&fit=crop&w=1575&q=80')",
-        }}
-      ></div>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-blue-300 to-green-200 relative">
+      
+      {/* Back to Home */}
+      <Link
+        href="/"
+        className="absolute top-4 left-4 flex items-center text-white hover:text-gray-200"
+      >
+        <FaArrowLeft className="mr-1" />
+        Back to Home
+      </Link>
 
       <form
         onSubmit={handleSubmit}
-        className="w-full px-6 py-8 md:px-8 lg:w-1/2"
+        className="bg-teal-700/80 backdrop-blur-md rounded-lg shadow-lg p-8 w-80 flex flex-col items-center"
       >
-        <div className="flex justify-center mx-auto">
-          <img
-            className="w-auto h-7 sm:h-8"
-            src="https://merakiui.com/images/logo.svg"
-            alt="Logo"
-          />
+        {/* User Icon */}
+        <div className="text-white text-6xl mb-6">
+          <FaUser />
         </div>
 
-        <p className="mt-3 text-xl text-center text-gray-600 dark:text-gray-200">
-          Welcome back!
-        </p>
-
-        <div className="flex items-center justify-between mt-4">
-          <span className="w-1/5 border-b dark:border-gray-600 lg:w-1/4"></span>
-          <span className="text-xs text-center text-gray-500 uppercase">
-            or login with email
-          </span>
-          <span className="w-1/5 border-b dark:border-gray-400 lg:w-1/4"></span>
-        </div>
-
-        <div className="mt-4">
-          <label
-            htmlFor="email"
-            className="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-200"
-          >
-            Email
-          </label>
+        {/* Email Input */}
+        <div className="w-full mb-4">
+          <div className="flex items-center text-gray-200 mb-1">
+            <FaEnvelope className="mr-2" />
+            <label htmlFor="email" className="text-sm">
+              Email ID
+            </label>
+          </div>
           <input
+            type="email"
             id="email"
             name="email"
-            type="email"
-            defaultValue='admin@gmail.com'
+            defaultValue="admin@gmail.com"
             required
-            className="block w-full px-4 py-2 border rounded-lg focus:border-blue-400 focus:ring focus:ring-blue-300"
+            className="w-full px-3 py-2 rounded bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-white"
+            placeholder="Enter your email"
           />
         </div>
 
-        <div className="mt-4">
-          <label
-            htmlFor="password"
-            className="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-200"
-          >
-            Password
-          </label>
+        {/* Password Input */}
+        <div className="w-full mb-4">
+          <div className="flex items-center text-gray-200 mb-1">
+            <FaLock className="mr-2" />
+            <label htmlFor="password" className="text-sm">
+              Password
+            </label>
+          </div>
           <input
-            id="password"
-            defaultValue='123456'
-            name="password"
             type="password"
+            id="password"
+            name="password"
+            defaultValue="123456"
             required
-            className="block w-full px-4 py-2 border rounded-lg focus:border-blue-400 focus:ring focus:ring-blue-300"
+            className="w-full px-3 py-2 rounded bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-white"
+            placeholder="Enter your password"
           />
         </div>
 
-        <div className="mt-6">
-          <button
-            type="submit"
-            className="w-full px-6 py-3 text-sm font-medium text-white bg-gray-800 rounded-lg hover:bg-gray-700"
-          >
-            Sign In
-          </button>
+        {/* Remember me */}
+        <div className="w-full flex justify-between items-center text-white text-sm mb-6">
+          <label className="flex items-center">
+            <input type="checkbox" className="mr-2 accent-white" />
+            Remember me
+          </label>
         </div>
+
+        {/* Login Button */}
+        <button
+          type="submit"
+          className="w-full bg-teal-800 hover:bg-teal-900 text-white py-2 rounded font-semibold transition-colors cursor-pointer"
+        >
+          LOGIN
+        </button>
       </form>
     </div>
   );

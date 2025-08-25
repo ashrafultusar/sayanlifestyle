@@ -87,7 +87,7 @@ const Page = () => {
         <h2 className="text-2xl font-semibold text-gray-800">Manage Admin</h2>
         <button
           onClick={() => setShowForm((prev) => !prev)}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md transition duration-200"
+          className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white px-5 py-2 rounded-md transition duration-200"
         >
           {showForm ? "Hide Create Admin" : "Create Admin"}
         </button>

@@ -11,7 +11,7 @@ const DashboardLayout = ({ children }) => {
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.replace("/login"); // replace avoids back button loop
+      router.replace("/login"); 
     }
   }, [status, router]);
 

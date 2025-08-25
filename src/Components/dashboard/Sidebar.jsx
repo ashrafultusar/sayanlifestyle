@@ -14,6 +14,7 @@ import {
   FaShoppingCart,
   FaTruck,
   FaImages,
+  FaArrowLeft,
 } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 
@@ -47,6 +48,7 @@ export default function Sidebar() {
       icon: <FaTruck />,
     },
     { name: "Home Slider", href: "/dashboard/homeSlider", icon: <FaImages /> },
+    { name: "Back Home", href: "/", icon: <FaArrowLeft /> },
   ];
 
   // Close dropdown on outside click
@@ -127,7 +129,7 @@ export default function Sidebar() {
         <div className="mt-auto">
           <button
             onClick={handleLogout}
-            className="w-full px-4 py-2 bg-red-600 rounded hover:bg-red-500"
+            className="w-full px-4 py-2 bg-red-600 rounded hover:bg-red-500 cursor-pointer"
           >
             Logout
           </button>

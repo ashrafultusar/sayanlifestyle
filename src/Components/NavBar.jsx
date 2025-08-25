@@ -67,11 +67,7 @@ export default function Navbar() {
 
           {/* Contact & Facebook & Cart */}
           <div className="hidden md:flex items-center space-x-5 text-sm">
-            <Link href={"/dashboard"}>
-              <button className="cursor-pointer px-3 py-2 rounded-md border border-gray-200 hover:bg-orange-100 hover:text-orange-600 transition-colors duration-300">
-                Dashboard
-              </button>
-            </Link>
+           
 
             <div className="flex items-center space-x-1 text-gray-700">
               <FiPhoneCall className="text-orange-500" />
@@ -86,7 +82,7 @@ export default function Navbar() {
             <Link href="/checkout" className="relative">
               <FaCartArrowDown className="text-2xl text-gray-700 hover:text-black transition-colors duration-300" />
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full px-1.5 py-0.5">
+                <span className="absolute -top-2 -right-2 bg-black-500 text-white text-xs rounded-full px-1.5 py-0.5">
                   {cartCount}
                 </span>
               )}
