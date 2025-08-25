@@ -1,1 +1,1 @@
- image : https://i.ibb.co.com/nq8MkmqJ/product.jpg
+URL: https://www.sayanslifestyle.com
