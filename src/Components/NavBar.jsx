@@ -36,7 +36,7 @@ export default function Navbar() {
   return (
     <div className="w-full shadow-sm relative z-50 text-black">
       {/* Top Layer */}
-      <div className="bg-white border-b">
+      <div className="bg-white">
         <div className="container mx-auto flex items-center justify-between px-4 py-3">
           {/* Logo */}
           <Link href={"/"}>
@@ -84,9 +84,9 @@ export default function Navbar() {
 
             {/* Cart Icon with Badge */}
             <Link href="/checkout" className="relative">
-              <FaCartArrowDown className="text-2xl text-gray-700 hover:text-orange-500 transition-colors duration-300" />
+              <FaCartArrowDown className="text-2xl text-gray-700 hover:text-black transition-colors duration-300" />
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full px-1.5 py-0.5">
+                <span className="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full px-1.5 py-0.5">
                   {cartCount}
                 </span>
               )}
@@ -106,7 +106,7 @@ export default function Navbar() {
       {/* Bottom Categories (Desktop) */}
       <div className="hidden md:flex w-full bg-blue-50">
         <div className="container mx-auto flex items-center justify-between px-4 py-2 text-sm font-medium">
-          <div className="flex items-center space-x-6 uppercase">
+          <div className="flex items-center space-x-6 uppercase font-bold">
             {categories?.map((cat, i) => (
               <Link
                 key={i}
@@ -119,7 +119,7 @@ export default function Navbar() {
           </div>
           <Link
             href="/collection"
-            className="hover:text-orange-500 transition-colors duration-300"
+            className="hover:text-orange-500 transition-colors font-bold duration-300"
           >
             All Collection
           </Link>

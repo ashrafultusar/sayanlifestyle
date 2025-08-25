@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 import {
   FaBars,
@@ -17,14 +17,20 @@ import {
 } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 
-
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
-  
+
   const dropdownRef = useRef(null);
 
   const pathname = usePathname();
   const { data: session } = useSession();
+
+  const handleLogout = async () => {
+    await signOut({
+      redirect: true,
+      callbackUrl: "/login",
+    });
+  };
 
   const links = [
     { name: "Orders", href: "/dashboard/orders", icon: <FaShoppingCart /> },
@@ -58,7 +64,10 @@ export default function Sidebar() {
     <>
       {/* Mobile Topbar */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-gray-800 text-white flex justify-between items-center px-4 py-3 shadow-md">
-        <button onClick={() => setIsOpen(!isOpen)} className="p-2 cursor-pointer">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="p-2 cursor-pointer"
+        >
           {isOpen ? <IoClose size={24} /> : <FaBars size={24} />}
         </button>
         <Link href="/dashboard">
@@ -75,9 +84,9 @@ export default function Sidebar() {
       {/* Sidebar */}
       <aside
         className={`fixed top-0 left-0 z-40 h-screen w-64 px-4 py-8 bg-white border-r transition-transform duration-300
-        flex flex-col
-        ${isOpen ? "translate-x-0" : "-translate-x-full"} 
-        md:translate-x-0 md:static md:h-screen md:flex`}
+  flex flex-col
+  ${isOpen ? "translate-x-0" : "-translate-x-full"} 
+  md:translate-x-0 md:static md:h-screen md:flex`}
       >
         {/* Logo */}
         <div className="hidden md:flex justify-center mb-8">
@@ -93,7 +102,7 @@ export default function Sidebar() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex pt-6 flex-col gap-2 mt-6">
+        <nav className="flex flex-col gap-2 mt-6 flex-grow">
           {links.map(({ name, href, icon }) => {
             const active = pathname === href;
             return (
@@ -101,11 +110,11 @@ export default function Sidebar() {
                 key={name}
                 href={href}
                 className={`flex items-center gap-3 px-4 py-2 rounded-md text-sm uppercase transition
-                  ${
-                    active
-                      ? "bg-blue-600 text-white"
-                      : "text-gray-700 bg-gray-100 hover:bg-gray-200"
-                  }`}
+            ${
+              active
+                ? "bg-blue-600 text-white"
+                : "text-gray-700 bg-gray-100 hover:bg-gray-200"
+            }`}
               >
                 {icon}
                 {name}
@@ -113,6 +122,16 @@ export default function Sidebar() {
             );
           })}
         </nav>
+
+        {/* Logout button fixed at bottom */}
+        <div className="mt-auto">
+          <button
+            onClick={handleLogout}
+            className="w-full px-4 py-2 bg-red-600 rounded hover:bg-red-500"
+          >
+            Logout
+          </button>
+        </div>
       </aside>
 
       {/* Overlay for Mobile */}

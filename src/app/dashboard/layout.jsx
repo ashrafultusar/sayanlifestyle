@@ -1,41 +1,30 @@
 "use client";
+
 import Sidebar from "@/Components/dashboard/Sidebar";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-export default function DashboardLayout({ children }) {
+const DashboardLayout = ({ children }) => {
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
-  // const {data:session,status}=useSession()
-  // const router=useRouter()
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.replace("/login"); // replace avoids back button loop
+    }
+  }, [status, router]);
 
-  // useEffect(() => {
-  //   if (status === "loading") return; 
-  //   if (!session) {
-  //     router.push("/login"); 
-  //   } else if (session.user.role !== "admin") {
-  //     router.push("/"); 
-  //   }
-  // }, [session, status, router]);
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
 
-  // if (status === "loading") {
-  //   return (
-  //     <div className="flex items-center justify-center min-h-screen">
-  //       <p className="text-lg">Checking authentication...</p>
-  //     </div>
-  //   );
-  // }
-
-  // if (!session || session.user.role !== "admin") {
-  //   return null; 
-  // }
-  
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
+    <div className="flex min-h-screen">
       <Sidebar />
-      {/* Main Content */}
-      <main className="flex-1 p-8 overflow-y-auto">{children}</main>
+      <main className="flex-1 p-6 bg-gray-100">{children}</main>
     </div>
   );
-}
+};
+
+export default DashboardLayout;

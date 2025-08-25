@@ -99,8 +99,8 @@ const Page = () => {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
-              <tr key={order._id} className="hover:bg-gray-50">
+            {orders?.map((order) => (
+              <tr key={order._id} className=" last:border-b-0 odd:bg-white even:bg-gray-300 hover:bg-gray-100 transition">
                 <td className="p-4">{order?.orderId}</td>
                 <td className="p-4">{order?.totalAmount}</td>
                 <td className="p-4">{order?.customer?.fullName}</td>

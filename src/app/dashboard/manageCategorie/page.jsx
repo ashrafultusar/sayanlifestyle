@@ -2,10 +2,10 @@
 
 import useCategories from "@/hook/useCategories";
 import { useState } from "react";
-import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
+import { FaPlus, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 
-export default function page() {
+export default function Page() {
   const { categories, setCategories } = useCategories();
 
   const [search, setSearch] = useState("");
@@ -15,6 +15,7 @@ export default function page() {
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Handle image change
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -22,8 +23,13 @@ export default function page() {
       setPreview(URL.createObjectURL(file));
     }
   };
+
+  // Add new category
   const handleAddCategory = async () => {
-    if (!newCategory || !newImage) return;
+    if (!newCategory || !newImage) {
+      toast.warning("Please provide category name and image");
+      return;
+    }
 
     setLoading(true);
 
@@ -38,12 +44,13 @@ export default function page() {
       });
 
       const data = await res.json();
-      setCategories((prev) => [data, ...prev]);
+
       if (!res.ok) {
-        alert(data.error || "Upload failed");
+        toast.error(data.error || "Upload failed");
         return;
       }
 
+      setCategories((prev) => [data, ...prev]);
       setNewCategory("");
       setNewImage(null);
       setPreview(null);
@@ -57,6 +64,7 @@ export default function page() {
     }
   };
 
+  // Delete category
   const handleDeleteCategory = async (id) => {
     if (!window.confirm("Are you sure you want to delete this category?"))
       return;
@@ -73,9 +81,8 @@ export default function page() {
         return;
       }
 
-      toast.success("Category deleted");
-
       setCategories((prev) => prev.filter((cat) => cat._id !== id));
+      toast.success("Category deleted");
     } catch (err) {
       toast.error("Something went wrong");
       console.error("Delete error:", err);
@@ -97,7 +104,13 @@ export default function page() {
 
       {/* Add Category Form */}
       {showForm && (
-        <div className="bg-white p-4 rounded-lg shadow space-y-3">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault(); // prevent page reload
+            handleAddCategory();
+          }}
+          className="bg-white p-4 rounded-lg shadow space-y-3"
+        >
           {/* Category Name Input */}
           <input
             type="text"
@@ -135,7 +148,7 @@ export default function page() {
 
           {/* Submit Button */}
           <button
-            onClick={handleAddCategory}
+            type="submit"
             disabled={loading}
             className={`px-4 py-2 cursor-pointer text-white rounded-lg transition ${
               loading
@@ -145,7 +158,7 @@ export default function page() {
           >
             {loading ? "Submitting..." : "Submit"}
           </button>
-        </div>
+        </form>
       )}
 
       {/* Search Bar */}
@@ -159,26 +172,28 @@ export default function page() {
 
       {/* Category Table */}
       <div className="bg-white shadow-sm rounded-lg overflow-hidden">
-        <table className="w-full text-left ">
+        <table className="w-full text-left">
           <thead>
             <tr className="bg-gray-100">
-              <th className="p-3 ">Image</th>
-
-              <th className="p-3 ">Category Name</th>
-              <th className="p-3  text-right">Actions</th>
+              <th className="p-3">Image</th>
+              <th className="p-3">Category Name</th>
+              <th className="p-3 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
             {categories
-              .filter((cat) =>
+              ?.filter((cat) =>
                 cat.name.toLowerCase().includes(search.toLowerCase())
               )
               .map((cat) => (
-                <tr key={cat?._id} className="hover:bg-gray-50">
-                  <td className="p-3 ">
-                    {cat.imageUrl ? (
+                <tr
+                  key={cat?._id}
+                  className="last:border-b-0 odd:bg-white even:bg-gray-300 hover:bg-gray-100 transition"
+                >
+                  <td className="p-3">
+                    {cat?.imageUrl ? (
                       <img
-                        src={cat.imageUrl}
+                        src={cat?.imageUrl}
                         alt={cat.name}
                         className="w-12 h-12 object-cover rounded"
                       />
@@ -186,7 +201,7 @@ export default function page() {
                       <span className="text-gray-400">No image</span>
                     )}
                   </td>
-                  <td className="p-3">{cat?.name}</td>
+                  <td className="p-3 uppercase">{cat?.name}</td>
                   <td className="p-3 text-right space-x-2">
                     <button
                       onClick={() => handleDeleteCategory(cat._id)}
