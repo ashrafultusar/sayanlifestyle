@@ -1,9 +1,9 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiPhoneCall, FiSearch, FiMenu, FiX } from "react-icons/fi";
-import { FaFacebookF } from "react-icons/fa";
+import { FaCartArrowDown, FaFacebookF } from "react-icons/fa";
 import useCategories from "@/hook/useCategories";
 
 export default function Navbar() {
@@ -11,21 +11,36 @@ export default function Navbar() {
   const { categories } = useCategories();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [cartCount, setCartCount] = useState(0);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (!searchTerm.trim()) return;
     router.push(`/collection?search=${encodeURIComponent(searchTerm.trim())}`);
-    setSearchTerm(""); 
+    setSearchTerm("");
   };
+
+  useEffect(() => {
+    try {
+      const storedData = localStorage.getItem("checkoutData");
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+
+        if (Array.isArray(parsedData)) {
+          setCartCount(parsedData.length);
+        }
+      }
+    } catch {}
+  }, []);
 
   return (
     <div className="w-full shadow-sm relative z-50 text-black">
       {/* Top Layer */}
-      <div className="bg-white">
-        <div className="container mx-auto flex items-center justify-between px-4  py-3">
+      <div className="bg-white border-b">
+        <div className="container mx-auto flex items-center justify-between px-4 py-3">
+          {/* Logo */}
           <Link href={"/"}>
-            <div className="flex items-center space-x-2 text-xl font-bold">
+            <div className="flex items-center space-x-2 text-2xl font-extrabold tracking-wide hover:text-orange-500 transition-colors duration-300">
               SAYAN
             </div>
           </Link>
@@ -40,29 +55,41 @@ export default function Navbar() {
               placeholder="Search for products"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full border rounded-l-full px-4 py-2 text-sm outline-none"
+              className="w-full border border-gray-300 rounded-l-full px-4 py-2 text-sm outline-none focus:ring-1 focus:ring-orange-400"
             />
             <button
               type="submit"
-              className="bg-black text-white rounded-r-full px-4"
+              className="bg-black text-white rounded-r-full px-4 hover:bg-orange-500 transition-colors duration-300"
             >
               <FiSearch />
             </button>
           </form>
 
-          {/* Contact & Facebook */}
-          <div className="hidden md:flex items-center space-x-4 text-sm">
+          {/* Contact & Facebook & Cart */}
+          <div className="hidden md:flex items-center space-x-5 text-sm">
             <Link href={"/dashboard"}>
-              <button className="cursor-pointer px-2 py-2 rounded-md border">
+              <button className="cursor-pointer px-3 py-2 rounded-md border border-gray-200 hover:bg-orange-100 hover:text-orange-600 transition-colors duration-300">
                 Dashboard
               </button>
             </Link>
-            <div className="flex items-center space-x-1">
-              <FiPhoneCall />
+
+            <div className="flex items-center space-x-1 text-gray-700">
+              <FiPhoneCall className="text-orange-500" />
               <span>09639-184415</span>
             </div>
+
             <Link href="#">
-              <FaFacebookF className="text-blue-600" />
+              <FaFacebookF className="text-blue-600 hover:text-blue-800 transition-colors duration-300" />
+            </Link>
+
+            {/* Cart Icon with Badge */}
+            <Link href="/checkout" className="relative">
+              <FaCartArrowDown className="text-2xl text-gray-700 hover:text-orange-500 transition-colors duration-300" />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full px-1.5 py-0.5">
+                  {cartCount}
+                </span>
+              )}
             </Link>
           </div>
 
@@ -84,13 +111,16 @@ export default function Navbar() {
               <Link
                 key={i}
                 href={`/collection?category=${encodeURIComponent(cat?.name)}`}
-                className="hover:text-orange-400"
+                className="hover:text-orange-500 transition-colors duration-300"
               >
                 {cat?.name}
               </Link>
             ))}
           </div>
-          <Link href="/collection" className="hover:text-orange-400">
+          <Link
+            href="/collection"
+            className="hover:text-orange-500 transition-colors duration-300"
+          >
             All Collection
           </Link>
         </div>
@@ -108,7 +138,7 @@ export default function Navbar() {
           mobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between p-4">
+        <div className="flex items-center justify-between p-4 border-b">
           <Link href={"/"}>
             <div className="text-lg font-bold">SAYAN</div>
           </Link>
@@ -124,11 +154,11 @@ export default function Navbar() {
             placeholder="Search for products"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="flex-1 border rounded-l-full px-3 py-2 text-sm outline-none"
+            className="flex-1 border border-gray-300 rounded-l-full px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-orange-400"
           />
           <button
             type="submit"
-            className="bg-black text-white rounded-r-full px-4"
+            className="bg-black text-white rounded-r-full px-4 hover:bg-orange-500 transition-colors duration-300"
           >
             <FiSearch />
           </button>
@@ -136,12 +166,12 @@ export default function Navbar() {
 
         {/* Contact & Categories */}
         <div className="p-4 border-t space-y-3 text-sm">
-          <div className="flex items-center space-x-2">
-            <FiPhoneCall />
+          <div className="flex items-center space-x-2 text-gray-700">
+            <FiPhoneCall className="text-orange-500" />
             <span>09639-184415</span>
           </div>
           <Link href="#">
-            <FaFacebookF className="text-blue-600" />
+            <FaFacebookF className="text-blue-600 hover:text-blue-800 transition-colors duration-300" />
           </Link>
         </div>
 
@@ -150,7 +180,7 @@ export default function Navbar() {
             <Link
               key={i}
               href={`/collection?category=${encodeURIComponent(cat?.name)}`}
-              className="hover:text-orange-400 uppercase block border-b py-2"
+              className="hover:text-orange-500 uppercase block border-b py-2 transition-colors duration-300"
             >
               {cat?.name}
             </Link>
@@ -158,7 +188,10 @@ export default function Navbar() {
         </div>
 
         <div className="p-4 border-t">
-          <Link href="/collection" className="hover:text-black">
+          <Link
+            href="/collection"
+            className="hover:text-orange-500 transition-colors duration-300"
+          >
             Collection
           </Link>
         </div>

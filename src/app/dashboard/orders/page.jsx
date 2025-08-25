@@ -41,7 +41,7 @@ const Page = () => {
   }, [search, filterDate, from, to, currentPage]);
 
   const totalPages = Math.ceil(total / pageSize);
-  console.log(orders._id);
+
   return (
     <div className="p-8 text-black">
       <h1 className="text-3xl font-bold mb-6">Order Dashboard</h1>
@@ -151,11 +151,12 @@ const Page = () => {
 
                 <td className="p-4 flex gap-2">
                   <Link
-                    href={`/orders/${order._id}`}
+                    href={`/dashboard/orders/${order._id}`}
                     className="text-blue-600 hover:text-blue-800"
                   >
                     <FaEye />
                   </Link>
+
                   <button
                     className="text-red-500 hover:text-red-800"
                     onClick={async () => {

@@ -10,7 +10,6 @@ export async function GET(_req, { params }) {
     await connectDB();
     const { id } = params;
 
-    // Try by _id, else by orderId
     let order = null;
     if (id.match(/^[0-9a-fA-F]{24}$/)) {
       order = await Order.findById(id).lean();
@@ -28,6 +27,7 @@ export async function GET(_req, { params }) {
     return NextResponse.json({ success: false, error: "Failed to load order" }, { status: 500 });
   }
 }
+
 
 
 export async function DELETE(req, { params }) {
