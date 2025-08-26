@@ -15,11 +15,15 @@ const Footer = () => {
       <div className="container mx-auto flex flex-col md:flex-row justify-between gap-10">
         {/* Logo */}
         <div className="flex-1">
-          <img
+          {/* <img
             src="/logo.png" // <-- Replace with your actual logo path or URL
             alt="SAYAN Logo"
             className="w-32"
-          />
+          /> */}
+
+<div className="flex items-center space-x-2 text-2xl font-extrabold tracking-wide cursor-pointer hover:text-orange-500 transition-colors duration-300">
+              SAYAN
+            </div>
         </div>
 
         {/* Contact Us */}
@@ -28,15 +32,16 @@ const Footer = () => {
           <ul className="space-y-2 text-sm">
             <li className="flex items-start gap-2">
               <FaMapMarkerAlt className="mt-1" />
-              4th Floor, Yashfi Trade Center, Link Road, Narayanganj 1420
+             Mirpur 1 
             </li>
             <li className="flex items-center gap-2">
               <FaEnvelope />
-              Email: support@nogor.com.bd
+              Email: lifestylesayans@gmail.com
+
             </li>
             <li className="flex items-center gap-2">
               <FaPhoneAlt />
-              Phone: 09639-184415
+              Phone: 0900000-00000
             </li>
           </ul>
         </div>
@@ -55,7 +60,7 @@ const Footer = () => {
               <FaPinterestP />
             </a>
           </div>
-          <p className="text-sm mt-2">Career with NOGOR</p>
+          <p className="text-sm mt-2">Career with  SAYAN</p>
         </div>
 
         {/* Useful Links */}
