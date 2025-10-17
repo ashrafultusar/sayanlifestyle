@@ -21,11 +21,11 @@ const NewArrival = () => {
 
   return (
     <div className="relative">
-      <h1 className="text-2xl font-bold mb-6  text-black underline">
+      <h1 className="text-2xl md:text-3xl font-bold mb-6 text-black ml-5 uppercase">
         New Arrivals
       </h1>
 
-      <div className="px-4 group">
+      <div >
         <Swiper
           modules={[Autoplay, Navigation]}
           spaceBetween={20}
@@ -49,35 +49,30 @@ const NewArrival = () => {
         >
           {products.map((product) => (
             <SwiperSlide key={product?._id}>
-              <div className="transition-transform duration-300 hover:scale-105">
-                <ProductCard
-                  _id={product._id}
-                  title={product?.title}
-                  image={product?.image}
-                  description={product?.description}
-                  discountPrice={product?.discountPrice}
-                  price={product?.price}
-                />
-              </div>
+              {/* ❌ Removed hover scale and transition */}
+              <ProductCard
+                _id={product._id}
+                title={product?.title}
+                image={product?.image}
+                price={product?.price}
+              />
             </SwiperSlide>
           ))}
         </Swiper>
 
         {/* 🔹 Custom Arrows */}
-        <div className="absolute top-1/2 -translate-y-1/2 left-1 z-10 opacity-0 group-hover:opacity-100 transition duration-300">
-          <button className="custom-prev bg-black/70 hover:bg-black text-white p-2 rounded-full shadow-md">
+        <div className="absolute top-1/2 -translate-y-1/2 left-1 z-10">
+          <button className="custom-prev bg-black/70 hover:bg-black text-white p-2 rounded-full shadow-md cursor-pointer">
             ❮
           </button>
         </div>
 
-        <div className="absolute top-1/2 -translate-y-1/2 right-1 z-10 opacity-0 group-hover:opacity-100 transition duration-300">
-          <button className="custom-next bg-black/70 hover:bg-black text-white p-2 rounded-full shadow-md">
+        <div className="absolute top-1/2 -translate-y-1/2 right-1 z-10">
+          <button className="custom-next bg-black/70 hover:bg-black text-white p-2 rounded-full shadow-md cursor-pointer">
             ❯
           </button>
         </div>
       </div>
-
-     
     </div>
   );
 };
