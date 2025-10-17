@@ -102,7 +102,7 @@ export default function Sidebar() {
             />
           </Link>
         </div>
-
+<Link href={'/'} className="text-gray-700 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-md text-sm">Go Back</Link>
         {/* Navigation */}
         <nav className="flex flex-col gap-2 mt-6 flex-grow">
           {links.map(({ name, href, icon }) => {
