@@ -6,11 +6,11 @@ import Slider from "@/Components/Home/Slider/Slider";
 export default async function Home() {
 
   return (
-    <div className="flex flex-col gap-8 container mx-auto px-4 py-6">
+    <div className="flex flex-col gap-8   py-6">
       <Slider />
+      <NewArrival/>
       <CategoriesSection />
-      <NewArrival></NewArrival>
-      <BestSellingProducts></BestSellingProducts>
+      <BestSellingProducts/>
     </div>
   );
 }

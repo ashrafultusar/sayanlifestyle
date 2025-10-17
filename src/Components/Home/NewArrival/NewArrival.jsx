@@ -1,43 +1,83 @@
 "use client";
 
+import React from "react";
+import Link from "next/link";
 import ProductCard from "@/Components/Card/ProductCard/ProductCard";
 import { useData } from "@/context/DataContext";
 
-import Link from "next/link";
-import React from "react";
+// 🌀 Swiper Imports
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation } from "swiper/modules";
+
+// 🌀 Swiper Styles
+import "swiper/css";
+import "swiper/css/navigation";
 
 const NewArrival = () => {
   const { products, loading, error } = useData();
 
-
   if (loading) return <p className="text-center mt-10">Loading...</p>;
   if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
-console.log(products);
+
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-6 text-center text-black underline">
+    <div className="relative">
+      <h1 className="text-2xl font-bold mb-6  text-black underline">
         New Arrivals
       </h1>
-      <div className="grid gap-6 grid-cols-1 md:grid-cols-3 lg:grid-cols-5">
-        {products.map((product) => (
-          <ProductCard
-            key={product?._id}
-            _id={product._id}
-            title={product?.title}
-            image={product?.image}
-            description={product?.description}
-            discountPrice={product?.discountPrice}
-            price={product?.price}
-          />
-        ))}
-      </div>
-      <div className="text-center py-4">
-        <Link href={"/collection"}>
-          <button className="bg-black hover:bg-gray-800 text-white rounded px-4 py-1  cursor-pointer">
-            See All
+
+      <div className="px-4 group">
+        <Swiper
+          modules={[Autoplay, Navigation]}
+          spaceBetween={20}
+          slidesPerView={5}
+          loop={true}
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+          }}
+          navigation={{
+            nextEl: ".custom-next",
+            prevEl: ".custom-prev",
+          }}
+          breakpoints={{
+            320: { slidesPerView: 1 },
+            640: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 },
+            1280: { slidesPerView: 5 },
+          }}
+          className="mySwiper"
+        >
+          {products.map((product) => (
+            <SwiperSlide key={product?._id}>
+              <div className="transition-transform duration-300 hover:scale-105">
+                <ProductCard
+                  _id={product._id}
+                  title={product?.title}
+                  image={product?.image}
+                  description={product?.description}
+                  discountPrice={product?.discountPrice}
+                  price={product?.price}
+                />
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+
+        {/* 🔹 Custom Arrows */}
+        <div className="absolute top-1/2 -translate-y-1/2 left-1 z-10 opacity-0 group-hover:opacity-100 transition duration-300">
+          <button className="custom-prev bg-black/70 hover:bg-black text-white p-2 rounded-full shadow-md">
+            ❮
           </button>
-        </Link>
+        </div>
+
+        <div className="absolute top-1/2 -translate-y-1/2 right-1 z-10 opacity-0 group-hover:opacity-100 transition duration-300">
+          <button className="custom-next bg-black/70 hover:bg-black text-white p-2 rounded-full shadow-md">
+            ❯
+          </button>
+        </div>
       </div>
+
+     
     </div>
   );
 };

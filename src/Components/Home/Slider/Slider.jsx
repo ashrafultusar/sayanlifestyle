@@ -51,7 +51,7 @@ if (loading) {
             pagination={{ clickable: true }}
             autoplay={{ delay: 5000, disableOnInteraction: false }}
             loop
-            className="w-full h-[250px] md:h-[400px] lg:h-[450px] rounded-sm overflow-hidden"
+            className="w-full h-[455px] md:h-[500px] lg:h-[555px] rounded-sm overflow-hidden"
           >
             {slider?.sliderImages?.map((imgUrl, index) => (
               <SwiperSlide key={index}>
@@ -70,12 +70,12 @@ if (loading) {
           <img
             src={slider?.rightImageTop}
             alt="Half Sleeve Collection"
-            className="w-full md:h-[400px] lg:h-[210px] object-cover rounded-sm"
+            className="w-full md:h-[500px] lg:h-[270px] object-cover rounded-sm"
           />
           <img
             src={slider?.rightImageBottom}
             alt="Full Sleeve Jersey"
-            className="w-full md:h-[400px] lg:h-[220px] object-cover rounded-sm"
+            className="w-full md:h-[500px] lg:h-[270px] object-cover rounded-sm"
           />
         </div>
       </div>
