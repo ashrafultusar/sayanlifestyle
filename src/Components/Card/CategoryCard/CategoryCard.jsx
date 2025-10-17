@@ -1,28 +1,18 @@
 "use client";
 import React from "react";
 
-const CategoryCard = ({ imageUrl, name, count }) => {
+const CategoryCard = ({ imageUrl, name }) => {
   return (
-    <div className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition duration-200 p-4 w-full flex items-center gap-4">
-      {/* Image Section */}
-      <div className="w-20 h-20 flex items-center justify-center bg-blue-50 rounded-lg overflow-hidden">
-        {imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={name}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <span className="text-gray-400 text-xs">No Image</span>
-        )}
-      </div>
-
-      {/* Text Section */}
-      <div>
-        <h3 className="text-sm font-semibold text-gray-800">{name}</h3>
-        <p className="text-xs text-gray-500">
-          {count > 0 ? `${count} products` : "No products"}
-        </p>
+    <div className="relative group overflow-hidden cursor-pointer w-full h-[300px] md:h-[400px] lg:h-[500px]">
+      <img
+        src={imageUrl}
+        alt={name}
+        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+      />
+      <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-all duration-300 flex flex-col items-center justify-end pb-6 text-white">
+        <h3 className="text-lg md:text-4xl lg:text-5xl font-semibold uppercase tracking-wide">
+          {name}
+        </h3>
       </div>
     </div>
   );

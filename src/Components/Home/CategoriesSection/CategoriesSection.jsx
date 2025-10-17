@@ -1,44 +1,42 @@
 "use client";
 
 import CategoryCard from "@/Components/Card/CategoryCard/CategoryCard";
-
-
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
-import "./categories-swiper.css";
-import {  useData } from "@/context/DataContext";
-
+import { useData } from "@/context/DataContext";
 
 export default function CategoriesSection() {
-
   const { categories } = useData();
 
-  return (
-    <div className="w-full  p-6 rounded-lg">
-      <h1 className="text-black md:text-3xl text-center uppercase font-medium mb-4">
-        Shop by Categories
-      </h1>
+  // Split categories into groups alternating 4 and 2
+  const groupedCategories = [];
+  let toggle = true; // true = 4, false = 2
+  let i = 0;
 
-      <Swiper
-        modules={[Navigation]}
-        spaceBetween={16}
-        slidesPerView={2}
-        navigation
-        pagination={false}
-        breakpoints={{
-          640: { slidesPerView: 3 },
-          768: { slidesPerView: 4 },
-          1024: { slidesPerView: 5 },
-        }}
-      >
-        {categories.map((cat, index) => (
-          <SwiperSlide key={index}>
-            <CategoryCard imageUrl={cat?.imageUrl} name={cat?.name} count={cat?.count} />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+  while (i < categories.length) {
+    const groupSize = toggle ? 4 : 2;
+    groupedCategories.push(categories.slice(i, i + groupSize));
+    i += groupSize;
+    toggle = !toggle;
+  }
+
+  return (
+    <div className="w-full py-10 space-y-8">
+      {groupedCategories.map((group, index) => {
+        const cols = Math.min(group.length, index % 2 === 0 ? 4 : 2);
+        return (
+          <div
+            key={index}
+            className={`grid gap-4 grid-cols-${cols} md:grid-cols-${cols}`}
+          >
+            {group.map((cat, i) => (
+              <CategoryCard
+                key={i}
+                imageUrl={cat?.imageUrl}
+                name={cat?.name}
+              />
+            ))}
+          </div>
+        );
+      })}
     </div>
   );
 }
