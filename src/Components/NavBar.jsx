@@ -71,8 +71,15 @@ export default function Navbar() {
            
 
             <div className="flex items-center space-x-1 text-gray-700">
-              <FiPhoneCall className="text-orange-500" />
-              <span>09639-184415</span>
+            <a
+      href="https://wa.me/8809639184415"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center gap-2 hover:text-green-600 transition"
+    >
+      <FiPhoneCall className="text-orange-500" />
+      <span>01903550555</span>
+    </a>
             </div>
 
             <Link href="#">
@@ -161,8 +168,15 @@ export default function Navbar() {
         {/* Contact & Categories */}
         <div className="p-4 border-t space-y-3 text-sm">
           <div className="flex items-center space-x-2 text-gray-700">
-            <FiPhoneCall className="text-orange-500" />
-            <span>09639-184415</span>
+          <a
+      href="https://wa.me/8809639184415"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center gap-2 hover:text-green-600 transition"
+    >
+      <FiPhoneCall className="text-orange-500" />
+      <span>01903550555</span>
+    </a>
           </div>
           <Link href="#">
             <FaFacebookF className="text-blue-600 hover:text-blue-800 transition-colors duration-300" />
