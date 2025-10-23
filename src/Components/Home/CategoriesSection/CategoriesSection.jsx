@@ -2,6 +2,7 @@
 
 import CategoryCard from "@/Components/Card/CategoryCard/CategoryCard";
 import { useData } from "@/context/DataContext";
+import Link from "next/link";
 
 export default function CategoriesSection() {
   const { categories } = useData();
@@ -28,11 +29,15 @@ export default function CategoriesSection() {
             className={`grid gap-4 grid-cols-${cols} md:grid-cols-${cols}`}
           >
             {group.map((cat, i) => (
-              <CategoryCard
+              <Link
                 key={i}
-                imageUrl={cat?.imageUrl}
-                name={cat?.name}
-              />
+                href={`/collection?category=${encodeURIComponent(cat?.name)}`}
+              >
+                <CategoryCard
+                  imageUrl={cat?.imageUrl}
+                  name={cat?.name}
+                />
+              </Link>
             ))}
           </div>
         );

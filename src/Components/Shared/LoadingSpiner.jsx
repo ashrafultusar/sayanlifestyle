@@ -1,20 +1,13 @@
-import React from "react";
+import React from 'react';
 
-const LoadingSpinner = ({ size = 48, overlay = true }) => {
-  const spinner = (
-    <div
-      className="animate-spin rounded-full border-t-2 border-b-2 border-black"
-      style={{ width: size, height: size }}
-    ></div>
-  );
-
-  return overlay ? (
-    <div className="fixed inset-0 z-50 flex justify-center items-center bg-gray-200">
-      {spinner}
+const LoadingSpiner = () => {
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-white">
+    <div className="w-40 h-1 bg-gray-200 rounded-full overflow-hidden relative">
+      <div className="absolute top-0 left-0 h-full bg-orange-500 animate-loading-line"></div>
     </div>
-  ) : (
-    <div className="flex justify-center items-center">{spinner}</div>
+  </div>
   );
 };
 
-export default LoadingSpinner;
+export default LoadingSpiner;
