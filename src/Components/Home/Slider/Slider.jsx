@@ -33,13 +33,7 @@ export default function Slider() {
 
     fetchSliderData();
   }, []);
-if (loading) {
-    return (
-      <div className="flex justify-center items-center h-[400px]">
-        <LoadingSpinner />
-      </div>
-    );
-  }
+
   return (
     <div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">

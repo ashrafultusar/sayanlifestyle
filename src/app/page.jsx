@@ -4,6 +4,8 @@ import NewArrival from "@/Components/Home/NewArrival/NewArrival";
 import Slider from "@/Components/Home/Slider/Slider";
 
 export default async function Home() {
+  
+  await new Promise((resolve) => setTimeout(resolve, 1500));
 
   return (
     <div className="flex flex-col gap-8   py-6">
