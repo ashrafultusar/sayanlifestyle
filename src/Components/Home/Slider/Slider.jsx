@@ -6,14 +6,10 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { useEffect, useState } from "react";
-import LoadingSpinner from "@/Components/Shared/LoadingSpiner";
 
 export default function Slider() {
   const [slider, setSlider] = useState(null);
   const [loading, setLoading] = useState(true);
-
-
-  
 
   useEffect(() => {
     const fetchSliderData = async () => {
@@ -34,6 +30,26 @@ export default function Slider() {
     fetchSliderData();
   }, []);
 
+  // ✅ Skeleton Loader Component
+  const Skeleton = () => (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 animate-pulse">
+      {/* Main skeleton */}
+      <div className="lg:col-span-2">
+        <div className="w-full h-[455px] md:h-[500px] lg:h-[555px] bg-gray-200 rounded-sm"></div>
+      </div>
+
+      {/* Side skeletons */}
+      <div className="hidden lg:flex flex-col gap-4">
+        <div className="w-full h-[270px] bg-gray-200 rounded-sm"></div>
+        <div className="w-full h-[270px] bg-gray-200 rounded-sm"></div>
+      </div>
+    </div>
+  );
+
+  // ✅ If loading → show Skeleton
+  if (loading) return <Skeleton />;
+
+  // ✅ Actual slider render
   return (
     <div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
