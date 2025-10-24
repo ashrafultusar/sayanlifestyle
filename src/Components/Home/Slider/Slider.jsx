@@ -30,15 +30,11 @@ export default function Slider() {
     fetchSliderData();
   }, []);
 
-  // ✅ Skeleton Loader Component
   const Skeleton = () => (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 animate-pulse">
-      {/* Main skeleton */}
       <div className="lg:col-span-2">
-        <div className="w-full h-[455px] md:h-[500px] lg:h-[555px] bg-gray-200 rounded-sm"></div>
+        <div className="w-full h-[250px] sm:h-[300px] md:h-[400px] lg:h-[555px] bg-gray-200 rounded-sm"></div>
       </div>
-
-      {/* Side skeletons */}
       <div className="hidden lg:flex flex-col gap-4">
         <div className="w-full h-[270px] bg-gray-200 rounded-sm"></div>
         <div className="w-full h-[270px] bg-gray-200 rounded-sm"></div>
@@ -46,14 +42,12 @@ export default function Slider() {
     </div>
   );
 
-  // ✅ If loading → show Skeleton
   if (loading) return <Skeleton />;
 
-  // ✅ Actual slider render
   return (
     <div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Main Swiper */}
+        {/* ✅ Main Swiper (Responsive Height) */}
         <div className="lg:col-span-2">
           <Swiper
             modules={[Navigation, Pagination, Autoplay]}
@@ -61,31 +55,33 @@ export default function Slider() {
             pagination={{ clickable: true }}
             autoplay={{ delay: 5000, disableOnInteraction: false }}
             loop
-            className="w-full h-[455px] md:h-[500px] lg:h-[555px] rounded-sm overflow-hidden"
+            className="w-full rounded-sm overflow-hidden"
           >
             {slider?.sliderImages?.map((imgUrl, index) => (
               <SwiperSlide key={index}>
-                <img
-                  src={imgUrl}
-                  alt={`Slide ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
+                <div className="relative w-full h-[230px] sm:h-[300px] md:h-[400px] lg:h-[555px]">
+                  <img
+                    src={imgUrl}
+                    alt={`Slide ${index + 1}`}
+                    className="absolute inset-0 w-full h-full object-cover md:object-fill lg:object-cover"
+                  />
+                </div>
               </SwiperSlide>
             ))}
           </Swiper>
         </div>
 
-        {/* Side Images */}
+        {/* ✅ Side Images (Hidden on small screens) */}
         <div className="hidden lg:flex flex-col gap-4">
           <img
             src={slider?.rightImageTop}
             alt="Half Sleeve Collection"
-            className="w-full md:h-[500px] lg:h-[270px] object-cover rounded-sm"
+            className="w-full h-[270px] object-cover rounded-sm"
           />
           <img
             src={slider?.rightImageBottom}
             alt="Full Sleeve Jersey"
-            className="w-full md:h-[500px] lg:h-[270px] object-cover rounded-sm"
+            className="w-full h-[270px] object-cover rounded-sm"
           />
         </div>
       </div>
