@@ -79,7 +79,7 @@ export default function Navbar() {
               </a>
             </div>
 
-            <Link href="#">
+            <Link target="_blank" href="https://www.facebook.com/people/Sayan-Lifestyle/61581716045681/?mibextid=ZbWKwL">
               <FaFacebookF className="text-blue-600 hover:text-blue-800 transition-colors duration-300" />
             </Link>
 
