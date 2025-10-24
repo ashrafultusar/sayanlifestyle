@@ -8,7 +8,7 @@ import LoadingSpinner from "@/Components/Shared/LoadingSpiner";
 import Pagination from "@/Components/Shared/Pagination";
 import { useData } from "@/context/DataContext";
 
-// Separate component that uses searchParams
+
 function CollectionContent() {
   const router = useRouter();
   const pathname = usePathname();

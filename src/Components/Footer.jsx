@@ -3,11 +3,11 @@ import Link from "next/link";
 import React from "react";
 import {
   FaFacebookF,
-  FaPinterestP,
   FaEnvelope,
   FaPhoneAlt,
   FaMapMarkerAlt,
   FaWhatsapp,
+  FaMailBulk,
 } from "react-icons/fa";
 
 const Footer = () => {
@@ -42,10 +42,10 @@ const Footer = () => {
             <li className="flex items-center gap-2">
               <FaEnvelope className="text-orange-500" />
               <a
-                href="mailto:sayansoffifial08@gmail.com"
+                href="sayansofficial08@gmail.com"
                 className="hover:text-orange-400 transition"
               >
-                sayansoffifial08@gmail.com
+                sayansofficial08@gmail.com
               </a>
             </li>
             <li className="flex items-center gap-2">
@@ -54,7 +54,7 @@ const Footer = () => {
                 href="tel:+8801903550555"
                 className="hover:text-orange-400 transition"
               >
-                +880 1903-550555
+                01903550555
               </a>
             </li>
           </ul>
@@ -66,12 +66,12 @@ const Footer = () => {
             FOLLOW US
           </h3>
           <div className="flex items-center gap-4">
-            <a
-              href="#"
+            <Link target="_blank" href="https://www.facebook.com/people/Sayan-Lifestyle/61581716045681/?mibextid=ZbWKwL"
+           
               className="bg-blue-600 hover:bg-blue-700 p-3 rounded-full transition-transform transform hover:scale-110"
             >
               <FaFacebookF className="text-white text-lg" />
-            </a>
+            </Link>
             <a
               href="https://wa.me/8809639184415"
               target="_blank"
@@ -84,7 +84,7 @@ const Footer = () => {
               href="#"
               className="bg-red-600 hover:bg-red-700 p-3 rounded-full transition-transform transform hover:scale-110"
             >
-              <FaPinterestP className="text-white text-lg" />
+              <FaMailBulk className="text-white text-lg" />
             </a>
           </div>
           <p className="text-sm mt-4 text-gray-400">

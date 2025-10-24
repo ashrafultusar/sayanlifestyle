@@ -7,30 +7,46 @@ const ProductCard = ({ _id, title, image, price, isNew }) => {
   const imageUrl = Array.isArray(image) ? image[0] : image;
 
   return (
-    <div className="bg-white border border-gray-100 overflow-hidden shadow-sm">
+    <div className="bg-white border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 rounded-md">
       {/* Image Section */}
       <Link href={`/productDetails/${_id}`}>
         <div className="relative">
           {/* "NEW" Badge */}
           {isNew && (
-            <span className="absolute top-2 left-2 bg-black text-white text-xs font-semibold px-2 py-1 rounded">
+            <span className="absolute top-2 left-2 bg-black text-white text-[10px] sm:text-xs font-semibold px-2 py-1 rounded">
               NEW
             </span>
           )}
+
+          {/* ✅ Responsive Image Height */}
           <img
             src={imageUrl || "https://via.placeholder.com/400x500"}
             alt={title}
-            className="w-full h-[500px] object-cover"
+            className="
+              w-full 
+              h-[220px]        /* mobile */
+              sm:h-[280px]     /* small tablets */
+              md:h-[360px]     /* tablets */
+              lg:h-[500px]     /* desktop */
+              object-cover 
+              transition-transform 
+              duration-300 
+              hover:scale-105
+            "
           />
         </div>
       </Link>
 
       {/* Product Info */}
-      <div className="text-center py-4">
-        <h2 className="text-lg font-medium text-gray-800 uppercase tracking-wide">
+      {/* Text Section */}
+      <div className="text-center py-2 h-1/4 flex flex-col justify-center px-2">
+        <h2
+          className="text-sm sm:text-base md:text-lg font-medium text-gray-800 uppercase tracking-wide
+          overflow-hidden line-clamp-2 break-words"
+        >
           {title}
         </h2>
-        <p className="text-gray-900 text-base font-semibold mt-1">
+        <p className="text-gray-900 text-sm sm:text-base md:text-lg font-semibold mt-1">
           Tk. {price}
         </p>
       </div>

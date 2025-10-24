@@ -1,77 +1,87 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
+import React, { useRef } from "react";
 import ProductCard from "@/Components/Card/ProductCard/ProductCard";
 import { useData } from "@/context/DataContext";
-
-// 🌀 Swiper Imports
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
-
-// 🌀 Swiper Styles
 import "swiper/css";
 import "swiper/css/navigation";
+import ProductSkeleton from "@/Components/Skeleton/ProductSkeleton";
 
 const NewArrival = () => {
   const { products, loading, error } = useData();
 
-  if (loading) return <p className="text-center mt-10">Loading...</p>;
-  if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
+  const prevRef = useRef(null);
+  const nextRef = useRef(null);
+
+  if (loading)
+    return (
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 px-5 mt-10">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <ProductSkeleton key={i} />
+        ))}
+      </div>
+    );
+
+  if (error)
+    return <p className="text-center mt-10 text-red-500">{error}</p>;
 
   return (
-    <div className="relative">
-      <h1 className="text-2xl md:text-3xl font-bold mb-6 text-black ml-5 uppercase">
+    <div className="relative px-5 mt-10">
+      <h1 className="text-2xl md:text-3xl font-bold mb-6 text-black uppercase">
         New Arrivals
       </h1>
 
-      <div >
+      <div className="relative">
         <Swiper
           modules={[Autoplay, Navigation]}
-          spaceBetween={20}
-          slidesPerView={5}
+          spaceBetween={16}
           loop={true}
           autoplay={{
-            delay: 3000,
+            delay: 4000,
             disableOnInteraction: false,
           }}
-          navigation={{
-            nextEl: ".custom-next",
-            prevEl: ".custom-prev",
-          }}
           breakpoints={{
-            320: { slidesPerView: 1 },
-            640: { slidesPerView: 2 },
-            1024: { slidesPerView: 3 },
-            1280: { slidesPerView: 5 },
+            320: { slidesPerView: 2, spaceBetween: 10 }, // mobile
+            640: { slidesPerView: 3, spaceBetween: 16 }, // tablet
+            1024: { slidesPerView: 5, spaceBetween: 20 }, // desktop
+          }}
+          onInit={(swiper) => {
+           
+            swiper.params.navigation.prevEl = prevRef.current;
+            swiper.params.navigation.nextEl = nextRef.current;
+            swiper.navigation.init();
+            swiper.navigation.update();
           }}
           className="mySwiper"
         >
-          {products.map((product) => (
-            <SwiperSlide key={product?._id}>
-              {/* ❌ Removed hover scale and transition */}
+          {products?.map((product) => (
+            <SwiperSlide key={product._id}>
               <ProductCard
                 _id={product._id}
-                title={product?.title}
-                image={product?.image}
-                price={product?.price}
+                title={product.title}
+                image={product.image}
+                price={product.price}
+                isNew={product.isNew}
               />
             </SwiperSlide>
           ))}
         </Swiper>
 
-        {/* 🔹 Custom Arrows */}
-        <div className="absolute top-1/2 -translate-y-1/2 left-1 z-10">
-          <button className="custom-prev bg-black/70 hover:bg-black text-white p-2 rounded-full shadow-md cursor-pointer">
-            ❮
-          </button>
-        </div>
-
-        <div className="absolute top-1/2 -translate-y-1/2 right-1 z-10">
-          <button className="custom-next bg-black/70 hover:bg-black text-white p-2 rounded-full shadow-md cursor-pointer">
-            ❯
-          </button>
-        </div>
+        {/* ✅ Now these arrows work perfectly */}
+        <button
+          ref={prevRef}
+          className="absolute top-1/2 -translate-y-1/2 left-1 bg-black/70 hover:bg-black text-white p-2 rounded-full shadow-md z-10 cursor-pointer"
+        >
+          ❮
+        </button>
+        <button
+          ref={nextRef}
+          className="absolute top-1/2 -translate-y-1/2 right-1 bg-black/70 hover:bg-black text-white p-2 rounded-full shadow-md z-10 cursor-pointer"
+        >
+          ❯
+        </button>
       </div>
     </div>
   );
