@@ -14,7 +14,7 @@ function CollectionContent() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const { categories } = useData(); // static categories from context
+  const { categories } = useData(); 
 
   const [products, setProducts] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
