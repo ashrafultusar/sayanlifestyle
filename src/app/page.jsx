@@ -45,41 +45,43 @@
 
 
 
+
 import BestSellingProducts from "@/Components/Home/BestSellingProducts/BestSellingProducts";
 import CategoriesSection from "@/Components/Home/CategoriesSection/CategoriesSection";
 import NewArrival from "@/Components/Home/NewArrival/NewArrival";
 import Slider from "@/Components/Home/Slider/Slider";
+import { headers } from "next/headers";
+
+// Server-side base URL detect
+async function getBaseUrl() {
+  const host = headers().get("host");
+  const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+  return `${protocol}://${host}`;
+}
 
 async function getHomeData() {
-  // 🔹 Base URL নির্ধারণ: লোকাল হলে localhost, deploy হলে vercel domain
-  const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL ||
-    (typeof window === "undefined"
-      ? process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : "http://localhost:3000"
-      : "");
+  const baseUrl = await getBaseUrl();
 
-  const [sliderRes, categoryRes, productRes] = await Promise.all([
+  const [sliderRes, categoryRes, productRes, chargeRes] = await Promise.all([
     fetch(`${baseUrl}/api/homeslider`, { cache: "no-store" }),
     fetch(`${baseUrl}/api/categories`, { cache: "no-store" }),
-    fetch(`${baseUrl}/api/products?page=1&limit=12&sort=newest`, {
-      cache: "no-store",
-    }),
+    fetch(`${baseUrl}/api/products?page=1&limit=12&sort=newest`, { cache: "no-store" }),
+    fetch(`${baseUrl}/api/deliveryCharge`, { cache: "no-store" }),
   ]);
 
-  // 🔹 JSON এ রূপান্তর
-  const [slider, categories, products] = await Promise.all([
+  // সব json parse করা
+  const [slider, categories, products, deliveryCharge] = await Promise.all([
     sliderRes.json(),
     categoryRes.json(),
     productRes.json(),
+    chargeRes.json(),
   ]);
 
-  return { slider, categories, products };
+  return { slider, categories, products, deliveryCharge };
 }
 
 export default async function Home() {
-  const { slider, categories, products } = await getHomeData();
+  const { slider, categories, products, deliveryCharge } = await getHomeData();
 
   return (
     <div className="flex flex-col gap-8 py-6">

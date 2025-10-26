@@ -1,95 +1,72 @@
-"use client"; 
-import { createContext, useContext, useState, useEffect } from "react";
+// context/DataContext.js
+"use client";
+
+import { createContext, useContext, useEffect, useState } from "react";
 
 const DataContext = createContext();
 
 export const DataProvider = ({ children }) => {
-  // Categories
+  // Categories states
   const [categories, setCategories] = useState([]);
   const [catLoading, setCatLoading] = useState(true);
   const [catError, setCatError] = useState(null);
 
-  // Products
+  // Products states
   const [products, setProducts] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [prodLoading, setProdLoading] = useState(true);
+  const [prodError, setProdError] = useState(null);
 
-  // Slider
-  const [slider, setSlider] = useState(null);
-  const [sliderLoading, setSliderLoading] = useState(true);
-
-  // Delivery charge
-  const [deliveryCharge, setDeliveryCharge] = useState({
-    insideDhaka: 0,
-    outsideDhaka: 0,
-  });
-  const [chargeLoading, setChargeLoading] = useState(true);
-
-  // Server fetch function
-  const fetchServerData = async () => {
-    try {
-      const [sliderRes, categoryRes, productRes, chargeRes] = await Promise.all([
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/homeslider`, {
-          cache: "no-store",
-        }),
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/categories`, {
-          cache: "no-store",
-        }),
-        fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/products?page=1&limit=12&sort=newest`,
-          { cache: "no-store" }
-        ),
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/deliveryCharge`, {
-          cache: "no-store",
-        }),
-      ]);
-
-      // Parse all responses
-      const [sliderData, categoryData, productData, chargeData] = await Promise.all([
-        sliderRes.json(),
-        categoryRes.json(),
-        productRes.json(),
-        chargeRes.json(),
-      ]);
-
-      // Set state
-      setSlider(sliderData?.data?.[0] || null);
-      setCategories(categoryData || []);
-      setProducts(productData?.products || []);
-      setTotalCount(productData?.total || 0);
-      setDeliveryCharge({
-        insideDhaka: chargeData?.data?.insideDhaka || 0,
-        outsideDhaka: chargeData?.data?.outsideDhaka || 0,
-      });
-    } catch (err) {
-      setCatError(err.message || "Something went wrong");
-    } finally {
-      setCatLoading(false);
-      setProdLoading(false);
-      setSliderLoading(false);
-      setChargeLoading(false);
-    }
-  };
-
+  // Fetch Categories
   useEffect(() => {
-    fetchServerData();
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch("/api/categories");
+        if (!res.ok) throw new Error("Failed to fetch categories");
+        const data = await res.json();
+        setCategories(data);
+      } catch (err) {
+        setCatError(err.message);
+      } finally {
+        setCatLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  // Fetch Products
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setProdLoading(true);
+      try {
+        const res = await fetch(`/api/products?page=1&limit=12&sort=newest`);
+        if (!res.ok) throw new Error("Failed to fetch products");
+        const data = await res.json();
+        setProducts(data.products || []);
+        setTotalCount(data.total || 0);
+      } catch (err) {
+        setProdError(err.message);
+      } finally {
+        setProdLoading(false);
+      }
+    };
+    fetchProducts();
   }, []);
 
   return (
     <DataContext.Provider
       value={{
+        // Categories
         categories,
         setCategories,
         catLoading,
         catError,
+        // Products
         products,
         setProducts,
         totalCount,
         prodLoading,
-        slider,
-        sliderLoading,
-        deliveryCharge,
-        chargeLoading,
+        prodError,
       }}
     >
       {children}
