@@ -16,7 +16,7 @@ export default function OrderSuccessPage() {
           You will receive all order details via your registered email.
         </p>
         <p className="mt-2 font-semibold">
-          For any inquiries, feel free to contact us: support@example.com
+          For any inquiries, feel free to contact us: sayansofficial08@gmail.com
         </p>
         <p className="mt-2 font-medium">
           Thank you for your trust and support.
@@ -33,7 +33,7 @@ export default function OrderSuccessPage() {
         </p>
         <p className="mt-2 font-semibold">
           যেকোনো প্রশ্ন বা সহায়তার জন্য আমাদের সাথে যোগাযোগ করুন:
-          support@example.com
+          sayansofficial08@gmail.com
         </p>
         <p className="mt-2 font-medium">
           আপনার বিশ্বাস ও সমর্থনের জন্য ধন্যবাদ।
@@ -42,8 +42,8 @@ export default function OrderSuccessPage() {
       
         <div className="bg-gray-100 text-center p-4 rounded text-sm text-gray-800 mt-6">
           <p>Contact Us</p>
-          <p className="mt-2">support@example.com</p>
-          <p className="mt-2 font-semibold">0170000000</p>
+          <p className="mt-2">sayansofficial08@gmail.com</p>
+          <p className="mt-2 font-semibold">01903550555</p>
         </div>
   
 
