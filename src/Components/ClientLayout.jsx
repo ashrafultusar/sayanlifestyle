@@ -23,17 +23,21 @@ export default function ClientLayout({ children }) {
 
   // Hide Navbar/Footer on these routes
   const hideLayoutOn = ["/dashboard", "/login"];
-  const shouldHideLayout = hideLayoutOn.some(path => pathname.startsWith(path));
+  const shouldHideLayout = hideLayoutOn.some((path) =>
+    pathname.startsWith(path)
+  );
 
   return (
     <div className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
       <DataProvider>
-      <ToastContainer />
-      {!shouldHideLayout && <Navbar />}
+        <ToastContainer />
+        {!shouldHideLayout && <Navbar />}
 
-      <ClientProvider>
-        <main style={{ minHeight: "calc(100vh - 64px - 64px)" }}>{children}</main>
-      </ClientProvider>
+        <ClientProvider>
+          <main style={{ minHeight: "calc(100vh - 64px - 64px)" }}>
+            {children}
+          </main>
+        </ClientProvider>
       </DataProvider>
       {!shouldHideLayout && <Footer />}
     </div>
