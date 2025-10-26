@@ -77,7 +77,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-5 text-sm">
             <div className="flex items-center space-x-1 text-gray-700">
               <a
-                href="https://wa.me/8809639184415"
+                href="https://wa.me/01903550555"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 hover:text-green-600 transition"
@@ -189,7 +189,7 @@ export default function Navbar() {
         <div className="p-4 border-t space-y-3 text-sm">
           <div className="flex items-center space-x-2 text-gray-700">
             <a
-              href="https://wa.me/8809639184415"
+              href="https://wa.me/01903550555"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 hover:text-green-600 transition"

@@ -51,7 +51,8 @@ const Footer = () => {
             <li className="flex items-center gap-2">
               <FaPhoneAlt className="text-orange-500" />
               <a
-                href="tel:+8801903550555"
+                href="https://wa.me/01903550555"
+                target="_blank"
                 className="hover:text-orange-400 transition"
               >
                 01903550555
