@@ -2,13 +2,13 @@
 
 import CategoryCard from "@/Components/Card/CategoryCard/CategoryCard";
 import CategorySkeleton from "@/Components/Skeleton/CategorySkeleton";
-
-import { useData } from "@/context/DataContext";
 import Link from "next/link";
 
-export default function CategoriesSection() {
-  const { categories, loading, error } = useData();
-
+export default function CategoriesSection({
+  categories,
+  loading = false,
+  error = null,
+}) {
   // ✅ Skeleton while loading
   if (loading)
     return (
@@ -16,9 +16,9 @@ export default function CategoriesSection() {
         {[1, 2, 3].map((row) => (
           <div
             key={row}
-            className={`grid gap-4 grid-cols-${row % 2 === 1 ? 4 : 2} md:grid-cols-${
+            className={`grid gap-4 grid-cols-${
               row % 2 === 1 ? 4 : 2
-            }`}
+            } md:grid-cols-${row % 2 === 1 ? 4 : 2}`}
           >
             {Array.from({ length: row % 2 === 1 ? 4 : 2 }).map((_, i) => (
               <CategorySkeleton key={i} />
@@ -30,8 +30,12 @@ export default function CategoriesSection() {
 
   if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
 
-  // ✅ Actual category render
-  // Split categories into groups alternating 4 and 2
+  if (!categories || categories.length === 0)
+    return (
+      <p className="text-center text-gray-500 mt-10">No categories found.</p>
+    );
+
+  // ✅ Split categories into groups alternating 4 and 2
   const groupedCategories = [];
   let toggle = true;
   let i = 0;

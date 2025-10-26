@@ -9,7 +9,7 @@ import { useData } from "@/context/DataContext";
 import LoadingSpinner from "@/Components/Shared/LoadingSpiner";
 
 export default function ProductPage() {
-  const { products } = useData();
+  const { products, } = useData();
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState("");
@@ -62,10 +62,7 @@ export default function ProductPage() {
     if (id) fetchProduct();
   }, [id]);
 
-
   if (loading) return <LoadingSpinner overlay />;
-
-
 
   if (!product)
     return <p className="text-center text-black py-10">Product not found</p>;
