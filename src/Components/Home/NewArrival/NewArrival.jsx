@@ -2,16 +2,13 @@
 
 import React, { useRef } from "react";
 import ProductCard from "@/Components/Card/ProductCard/ProductCard";
-import { useData } from "@/context/DataContext";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import ProductSkeleton from "@/Components/Skeleton/ProductSkeleton";
 
-const NewArrival = () => {
-  const { products, loading, error } = useData();
-
+const NewArrival = ({ products, loading = false, error = null }) => {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
 
@@ -24,8 +21,12 @@ const NewArrival = () => {
       </div>
     );
 
-  if (error)
-    return <p className="text-center mt-10 text-red-500">{error}</p>;
+  if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
+
+  if (!products || products.length === 0)
+    return (
+      <p className="text-center mt-10 text-gray-500">No products found.</p>
+    );
 
   return (
     <div className="relative px-5 mt-10">
@@ -48,7 +49,6 @@ const NewArrival = () => {
             1024: { slidesPerView: 5, spaceBetween: 20 }, // desktop
           }}
           onInit={(swiper) => {
-           
             swiper.params.navigation.prevEl = prevRef.current;
             swiper.params.navigation.nextEl = nextRef.current;
             swiper.navigation.init();
@@ -56,7 +56,7 @@ const NewArrival = () => {
           }}
           className="mySwiper"
         >
-          {products?.map((product) => (
+          {products.map((product) => (
             <SwiperSlide key={product._id}>
               <ProductCard
                 _id={product._id}
@@ -69,7 +69,7 @@ const NewArrival = () => {
           ))}
         </Swiper>
 
-        {/* ✅ Now these arrows work perfectly */}
+        {/* Navigation Arrows */}
         <button
           ref={prevRef}
           className="absolute top-1/2 -translate-y-1/2 left-1 bg-black/70 hover:bg-black text-white p-2 rounded-full shadow-md z-10 cursor-pointer"

@@ -130,7 +130,7 @@ export default function Navbar() {
             ))}
           </div>
           <Link href={"/collection"}>
-            <button className="hover:text-orange-500 transition-colors duration-300 uppercase font-bold">
+            <button className="hover:text-orange-500 transition-colors duration-300 uppercase font-bold cursor-pointer">
               Collection
             </button>
           </Link>
