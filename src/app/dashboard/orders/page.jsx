@@ -48,11 +48,11 @@ const Page = () => {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, filterDate, from, to,status]);
+  }, [search, filterDate, from, to, status]);
 
   useEffect(() => {
     fetchOrders();
-  }, [search, filterDate, from, to,status, currentPage]);
+  }, [search, filterDate, from, to, status, currentPage]);
 
   const totalPages = Math.ceil(total / pageSize);
 
@@ -98,7 +98,8 @@ const Page = () => {
       console.error("Failed to update status", err);
     }
   };
-console.log(orders);
+
+  console.log(orders);
   return (
     <div className="text-black">
       <style jsx global>{`
@@ -177,48 +178,54 @@ console.log(orders);
         </div>
 
         {/* Orders Table */}
-        <div className="rounded-xl shadow-md overflow-x-auto">
-          <table className="w-full text-left">
-            <thead className="bg-gray-100 text-gray-700 text-sm">
+        <div className="rounded-xl shadow-md overflow-x-auto w-full">
+          <table className="min-w-[600px] md:min-w-full text-left text-sm">
+            <thead className="bg-gray-100 text-gray-700">
               <tr>
-                <th className="p-4">Order ID</th>
-                <th className="p-4">Total Amount</th>
-                <th className="p-4">Customer Name</th>
-                <th className="p-4">Phone</th>
-                <th className="p-4">Status</th>
-                <th className="p-4">Action</th>
+                <th className="p-3 whitespace-nowrap">Order ID</th>
+                <th className="p-3 whitespace-nowrap">Total Amount</th>
+                <th className="p-3 whitespace-nowrap">Customer Name</th>
+                <th className="p-3 whitespace-nowrap">Phone</th>
+                <th className="p-3 whitespace-nowrap">Status</th>
+                <th className="p-3 whitespace-nowrap text-center">Action</th>
               </tr>
             </thead>
+
             <tbody>
               {orders?.map((order) => (
                 <tr
                   key={order._id}
-                  className=" last:border-b-0 odd:bg-white even:bg-gray-300 hover:bg-gray-100 transition"
+                  className="last:border-b-0 odd:bg-white even:bg-gray-100 hover:bg-gray-50 transition text-sm"
                 >
-                  <td className="p-4">{order?.orderId}</td>
-                  <td className="p-4">
+                  <td className="p-3 whitespace-nowrap">{order?.orderId}</td>
+                  <td className="p-3 whitespace-nowrap">
                     ${(order?.totalAmount || 0).toFixed(2)}
                   </td>
-                  <td className="p-4">{order?.customer?.fullName}</td>
-                  <td className="p-4">{order?.customer?.phone}</td>
+                  <td className="p-3 whitespace-nowrap">
+                    {order?.fullName}
+                  </td>
+                  <td className="p-3 whitespace-nowrap">
+                    {order?.phone}
+                  </td>
 
-                  <td className="p-4">
+                  <td className="p-3 whitespace-nowrap">
                     <select
                       value={order.status || "pending"}
                       onChange={(e) =>
                         handleStatusChange(order, e.target.value)
                       }
-                      className={`px-2 py-1 rounded text-white text-sm font-medium cursor-pointer ${
-                        order.status === "pending"
-                          ? "bg-yellow-500"
-                          : order.status === "shipping"
-                          ? "bg-blue-500"
-                          : order.status === "delivered"
-                          ? "bg-green-500"
-                          : order.status === "canceled"
-                          ? "bg-red-500"
-                          : "bg-gray-500"
-                      }`}
+                      className={`px-2 py-1 rounded text-white text-xs sm:text-sm font-medium cursor-pointer
+                ${
+                  order.status === "pending"
+                    ? "bg-yellow-500"
+                    : order.status === "shipping"
+                    ? "bg-blue-500"
+                    : order.status === "delivered"
+                    ? "bg-green-500"
+                    : order.status === "canceled"
+                    ? "bg-red-500"
+                    : "bg-gray-500"
+                }`}
                     >
                       <option value="pending">Pending</option>
                       <option value="shipping">Shipping</option>
@@ -227,23 +234,21 @@ console.log(orders);
                     </select>
                   </td>
 
-                  <td className="p-4 flex gap-2 text-xl">
+                  <td className="p-3 whitespace-nowrap flex items-center gap-2 justify-center text-lg">
                     <Link
                       href={`/dashboard/orders/${order._id}`}
                       className="text-blue-600 hover:text-blue-800"
                     >
                       <FaEye />
                     </Link>
-
                     <button
-                      className="text-red-500 cursor-pointer hover:text-red-800"
+                      className="text-red-500 hover:text-red-800"
                       onClick={() => handleDelete(order._id)}
                     >
                       <MdDeleteForever />
                     </button>
-
                     <button
-                      className="cursor-pointer text-green-600 hover:text-green-800"
+                      className="text-green-600 hover:text-green-800"
                       onClick={() => handlePrint(order)}
                     >
                       <IoPrintSharp />
@@ -253,6 +258,7 @@ console.log(orders);
               ))}
             </tbody>
           </table>
+
           {orders.length === 0 && (
             <div className="p-6 text-center text-gray-500">
               No orders found.
