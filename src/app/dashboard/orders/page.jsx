@@ -14,6 +14,7 @@ const Page = () => {
   const [filterDate, setFilterDate] = useState("");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
+  const [status, setStatus] = useState("all");
 
   const [orders, setOrders] = useState([]);
   const [total, setTotal] = useState(0);
@@ -28,6 +29,7 @@ const Page = () => {
       filterDate,
       from,
       to,
+      status,
       page: currentPage,
       limit: pageSize,
     });
@@ -46,11 +48,11 @@ const Page = () => {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, filterDate, from, to]);
+  }, [search, filterDate, from, to,status]);
 
   useEffect(() => {
     fetchOrders();
-  }, [search, filterDate, from, to, currentPage]);
+  }, [search, filterDate, from, to,status, currentPage]);
 
   const totalPages = Math.ceil(total / pageSize);
 
@@ -96,16 +98,15 @@ const Page = () => {
       console.error("Failed to update status", err);
     }
   };
-
+console.log(orders);
   return (
     <div className="text-black">
       <style jsx global>{`
         @media print {
-          /* প্রিন্টের সময় এই ক্লাসটি লুকানো থাকবে */
           .no-print {
             display: none !important;
           }
-          /* প্রিন্টের সময় শুধু এই ক্লাসটি দেখা যাবে */
+
           .print-only {
             display: block !important;
             position: absolute;
@@ -114,7 +115,7 @@ const Page = () => {
             width: 100%;
           }
         }
-        /* সাধারণ অবস্থায় এটি লুকানো থাকবে */
+
         .print-only {
           display: none;
         }
@@ -144,6 +145,7 @@ const Page = () => {
             <option value="lastMonth">Last Month</option>
             <option value="custom">Custom</option>
           </select>
+
           {filterDate === "custom" && (
             <>
               <input
@@ -160,6 +162,18 @@ const Page = () => {
               />
             </>
           )}
+
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            className="border px-2 py-1 rounded"
+          >
+            <option value="all">All Status</option>
+            <option value="Pending">Pending</option>
+            <option value="shipping">Shipping</option>
+            <option value="delivered">Delivered</option>
+            <option value="canceled">Canceled</option>
+          </select>
         </div>
 
         {/* Orders Table */}

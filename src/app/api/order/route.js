@@ -33,7 +33,7 @@ export async function GET(req) {
   try {
     await connectDB();
 
-    const { search, filterDate, from, to, page = "1", limit = "10" } = Object.fromEntries(
+    const { search, filterDate, from, to,status, page = "1", limit = "10" } = Object.fromEntries(
       new URL(req.url).searchParams
     );
 
@@ -46,7 +46,6 @@ export async function GET(req) {
         { fullName: { $regex: search, $options: "i" } },
       ];
 
-      // only add _id if it's a valid ObjectId
       if (mongoose.Types.ObjectId.isValid(search)) {
         orConditions.push({ _id: new mongoose.Types.ObjectId(search) });
       }
@@ -54,7 +53,10 @@ export async function GET(req) {
       query.$or = orConditions;
     }
 
-    // --- DATE FILTER SECTION (unchanged) ---
+    if (status && status !== "all") {
+      query.status = status;
+    }
+
     const now = new Date();
     let start, end;
 
