@@ -1,12 +1,13 @@
 
 import { NextResponse } from "next/server";
+import mongoose from "mongoose";
 import connectDB from "@/lib/db";
 import Order from "@/models/Order";
 
-// Ensure dynamic (no caching for list)
+
 export const dynamic = "force-dynamic";
 
-// CREATE order
+
 export async function POST(req) {
   try {
     await connectDB();
@@ -28,7 +29,6 @@ export async function POST(req) {
   }
 }
 
-// LIST orders with search, date filters & pagination
 export async function GET(req) {
   try {
     await connectDB();
@@ -39,23 +39,28 @@ export async function GET(req) {
 
     const query = {};
 
-    // Search by orderId (human-friendly) or by Mongo ObjectId substring fallback
     if (search) {
-      query.$or = [
+      const orConditions = [
         { orderId: { $regex: search, $options: "i" } },
-        { _id: { $regex: search, $options: "i" } }, // not efficient, but helpful
         { phone: { $regex: search, $options: "i" } },
         { fullName: { $regex: search, $options: "i" } },
       ];
+
+      // only add _id if it's a valid ObjectId
+      if (mongoose.Types.ObjectId.isValid(search)) {
+        orConditions.push({ _id: new mongoose.Types.ObjectId(search) });
+      }
+
+      query.$or = orConditions;
     }
 
-    // Date filtering on createdAt
+    // --- DATE FILTER SECTION (unchanged) ---
     const now = new Date();
     let start, end;
 
     switch (filterDate) {
       case "thisWeek": {
-        const day = now.getDay(); // 0 Sun..6 Sat
+        const day = now.getDay();
         start = new Date(now);
         start.setHours(0, 0, 0, 0);
         start.setDate(now.getDate() - day + (day === 0 ? -6 : 1));
@@ -68,7 +73,7 @@ export async function GET(req) {
         const day = now.getDay();
         end = new Date(now);
         end.setHours(23, 59, 59, 999);
-        end.setDate(now.getDate() - day); // last Sunday
+        end.setDate(now.getDate() - day);
         start = new Date(end);
         start.setHours(0, 0, 0, 0);
         start.setDate(end.getDate() - 6);
@@ -111,9 +116,9 @@ export async function GET(req) {
         .lean(),
     ]);
 
-    return NextResponse.json({ success: true, orders, total, page: pageNumber, limit: pageSize }, { status: 200 });
+    return NextResponse.json({ success: true, orders, total, page: pageNumber, limit: pageSize });
   } catch (error) {
     console.error("Order fetch error:", error);
-    return NextResponse.json({ success: false, error: "Failed to fetch orders" }, { status: 500 });
+    return NextResponse.json({ success: false, error: error.message || "Failed to fetch orders" }, { status: 500 });
   }
 }

@@ -65,7 +65,7 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile Topbar */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-gray-800 text-white flex justify-between items-center px-4 py-3 shadow-md">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-gray-800 text-white flex justify-between items-center px-4 py-3 shadow-md navbar no-print">
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="p-2 cursor-pointer"
@@ -91,7 +91,7 @@ export default function Sidebar() {
   md:translate-x-0 md:static md:h-screen md:flex`}
       >
         {/* Logo */}
-        <div className="hidden md:flex justify-center mb-8">
+        <div className="hidden md:flex justify-center mb-8 navbar no-print">
           <Link href="/dashboard">
             <Image
               src="https://merakiui.com/images/logo.svg"
