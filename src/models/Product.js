@@ -22,11 +22,12 @@ const ProductSchema = new mongoose.Schema(
     Chest: { type: String, required: true },
     Length: { type: String, required: true },
     Category: { type: String, required: true },
+     homeCategory: { type: String, default: "" },
     Code: { type: String, required: true },
     price: { type: Number, required: true },
     discountPrice: { type: Number, required: true },
     description: { type: String },
-    // Changed 'image' type to an array of strings
+    
     image: { type: [String], required: true },
   },
   { timestamps: true }
