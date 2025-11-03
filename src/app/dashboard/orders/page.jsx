@@ -99,7 +99,7 @@ const Page = () => {
     }
   };
 
-  console.log(orders);
+ 
   return (
     <div className="text-black">
       <style jsx global>{`
@@ -242,13 +242,13 @@ const Page = () => {
                       <FaEye />
                     </Link>
                     <button
-                      className="text-red-500 hover:text-red-800"
+                      className="cursor-pointer text-red-500 hover:text-red-800"
                       onClick={() => handleDelete(order._id)}
                     >
                       <MdDeleteForever />
                     </button>
                     <button
-                      className="text-green-600 hover:text-green-800"
+                      className="text-green-600 cursor-pointer hover:text-green-800"
                       onClick={() => handlePrint(order)}
                     >
                       <IoPrintSharp />

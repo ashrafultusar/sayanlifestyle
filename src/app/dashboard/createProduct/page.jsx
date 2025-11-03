@@ -9,7 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const Page = () => {
   const { categories } = useData();
-  const router=useRouter()
+  const router = useRouter();
   const [form, setForm] = useState({
     title: "",
     size: "",
@@ -20,10 +20,13 @@ const Page = () => {
     price: "",
     discountPrice: "",
     description: "",
+    homecategory: "",
   });
 
   const [imageFiles, setImageFiles] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
+
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -31,7 +34,7 @@ const Page = () => {
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    setImageFiles((prev) => [...prev, ...files]); // multiple append
+    setImageFiles((prev) => [...prev, ...files]);
     setImagePreviews((prev) => [
       ...prev,
       ...files.map((file) => URL.createObjectURL(file)),
@@ -47,6 +50,7 @@ const Page = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const formData = new FormData();
     Object.keys(form).forEach((key) => formData.append(key, form[key]));
@@ -76,9 +80,11 @@ const Page = () => {
       });
       setImageFiles([]);
       setImagePreviews([]);
-      router.push('/dashboard/products')
+      router.push("/dashboard/products");
     } catch (err) {
       toast.error(err.message);
+    }finally {
+      setLoading(false); 
     }
   };
 
@@ -106,6 +112,21 @@ const Page = () => {
                 onChange={handleChange}
                 className="border p-3 rounded-lg w-full h-32 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
+            </div>
+          </div>
+          <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
+            <h2 className="text-xl font-semibold mb-4">Home Category</h2>
+            <div className="flex flex-col gap-4">
+              <select
+                name="homecategory"
+                value={form.homeCategory}
+                onChange={handleChange}
+                className="text-sm bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              >
+                <option value="">Select Home Category</option>
+                <option value="bestseller">Best Seller</option>
+                <option value="newarrival">New Arrival</option>{" "}
+              </select>
             </div>
           </div>
 
@@ -229,9 +250,38 @@ const Page = () => {
           </div>
           <button
             type="submit"
-            className="bg-green-600 text-white p-4 rounded-lg mt-auto text-xl font-semibold cursor-pointer hover:bg-green-700 transition"
+            disabled={loading}
+            className={`bg-green-600 text-white p-4 rounded-lg mt-auto text-xl font-semibold cursor-pointer hover:bg-green-700 transition flex items-center justify-center gap-2 ${
+              loading ? "opacity-70 cursor-not-allowed" : ""
+            }`}
           >
-            Save Product
+            {loading ? (
+              <>
+                <svg
+                  className="animate-spin h-6 w-6 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+                Uploading...
+              </>
+            ) : (
+              "Save Product"
+            )}
           </button>
         </div>
       </form>
