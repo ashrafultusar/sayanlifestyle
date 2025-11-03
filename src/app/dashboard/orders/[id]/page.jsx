@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { FaLongArrowAltLeft } from "react-icons/fa";
+import Link from "next/link";
 
 export default function OrderDetailsPage() {
   const { id } = useParams();
@@ -31,6 +33,7 @@ export default function OrderDetailsPage() {
 
   return (
     <div className="max-w-5xl mx-auto p-6 text-black border border-slate-300 rounded-sm mt-8">
+      
       {/* Header */}
       <div className="mb-6 border-b pb-4">
         <h1 className="text-2xl font-semibold">Order Details</h1>
@@ -128,6 +131,9 @@ export default function OrderDetailsPage() {
         <p>Created At: {new Date(order?.createdAt).toLocaleString()}</p>
         <p>Last Updated: {new Date(order?.updatedAt).toLocaleString()}</p>
       </div>
+    
+      <Link className="bg-red-300 px-3 py-2 rounded text-black" href={'/dashboard/orders'}>Back </Link>
+    
     </div>
   );
 }

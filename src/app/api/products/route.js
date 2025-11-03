@@ -24,10 +24,12 @@ export const POST = async (req) => {
       Chest: formData.get("Chest"),
       Length: formData.get("Length"),
       Category: formData.get("Category"),
+      homeCategory: formData.get("homecategory") || "",
       Code: formData.get("Code"),
       price: Number(formData.get("price")),
       discountPrice: Number(formData.get("discountPrice")),
       description: formData.get("description"),
+     
     };
 
     // Extract all image files
@@ -77,7 +79,6 @@ export const POST = async (req) => {
 
 
 
-
 export const GET = async (req) => {
   try {
     const { searchParams } = new URL(req.url);
@@ -90,18 +91,18 @@ export const GET = async (req) => {
 
     let query = {};
 
-    // If both search and category are provided
+    
     if (search && categoryParam) {
       query = {
         Category: categoryParam,
         title: { $regex: search, $options: "i" },
       };
     }
-    // Only category
+   
     else if (categoryParam) {
       query = { Category: categoryParam };
     }
-    // Only search
+ 
     else if (search) {
       query = {
         $or: [
