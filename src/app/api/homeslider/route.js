@@ -1,4 +1,3 @@
-
 import { NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import connectDB from "@/lib/db";
@@ -22,54 +21,91 @@ export async function POST(req) {
   const formData = await req.formData();
 
   try {
-    // 1. Handle multiple slider images
     const sliderImages = formData.getAll("sliderImages");
+    const rightImageTopFile = formData.get("rightImageTop");
+    const rightImageBottomFile = formData.get("rightImageBottom");
+
     const sliderUrls = [];
+    let rightImageTop = null;
+    let rightImageBottom = null;
 
-    for (const file of sliderImages) {
-      const buffer = Buffer.from(await file.arrayBuffer());
+    // =======================
+    // Left Slider Images
+    // =======================
+    if (sliderImages && sliderImages.length && sliderImages[0] instanceof File) {
+      for (const file of sliderImages) {
+        const buffer = Buffer.from(await file.arrayBuffer());
 
-      const url = await new Promise((resolve, reject) => {
+        const url = await new Promise((resolve, reject) => {
+          cloudinary.uploader.upload_stream(
+            { folder: "home-slider" },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result.secure_url);
+            }
+          ).end(buffer);
+        });
+
+        sliderUrls.push(url);
+      }
+    }
+
+    // =======================
+    // Right Image - Top
+    // =======================
+    if (rightImageTopFile && rightImageTopFile instanceof File) {
+      const buffer = Buffer.from(await rightImageTopFile.arrayBuffer());
+
+      rightImageTop = await new Promise((resolve, reject) => {
         cloudinary.uploader.upload_stream(
-          { folder: "home-slider" },
-          (error, result) => {
-            if (error) reject(error);
-            else resolve(result.secure_url);
+          { folder: "home-right" },
+          (err, result) => {
+            if (err) reject(err);
+            resolve(result.secure_url);
           }
         ).end(buffer);
       });
-
-      sliderUrls.push(url);
     }
 
-    // 2. Right Top
-    const rightImageTopFile = formData.get("rightImageTop");
-    const topBuffer = Buffer.from(await rightImageTopFile.arrayBuffer());
-    const rightImageTop = await new Promise((resolve, reject) => {
-      cloudinary.uploader.upload_stream({ folder: "home-right" }, (err, result) => {
-        if (err) reject(err);
-        resolve(result.secure_url);
-      }).end(topBuffer);
-    });
+    // =======================
+    // Right Image - Bottom
+    // =======================
+    if (rightImageBottomFile && rightImageBottomFile instanceof File) {
+      const buffer = Buffer.from(await rightImageBottomFile.arrayBuffer());
 
-    // 3. Right Bottom
-    const rightImageBottomFile = formData.get("rightImageBottom");
-    const bottomBuffer = Buffer.from(await rightImageBottomFile.arrayBuffer());
-    const rightImageBottom = await new Promise((resolve, reject) => {
-      cloudinary.uploader.upload_stream({ folder: "home-right" }, (err, result) => {
-        if (err) reject(err);
-        resolve(result.secure_url);
-      }).end(bottomBuffer);
-    });
+      rightImageBottom = await new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream(
+          { folder: "home-right" },
+          (err, result) => {
+            if (err) reject(err);
+            resolve(result.secure_url);
+          }
+        ).end(buffer);
+      });
+    }
 
-    // 4. Save to DB
+    // =======================
+    // No File Error
+    // =======================
+    if (
+      sliderUrls.length === 0 &&
+      !rightImageTop &&
+      !rightImageBottom
+    ) {
+      return NextResponse.json(
+        { error: "Please upload at least one image" },
+        { status: 400 }
+      );
+    }
+
     const created = await HomeSlider.create({
-      sliderImages: sliderUrls,
-      rightImageTop,
-      rightImageBottom,
+      sliderImages: sliderUrls.length ? sliderUrls : undefined,
+      rightImageTop: rightImageTop || undefined,
+      rightImageBottom: rightImageBottom || undefined,
     });
 
     return NextResponse.json({ success: true, data: created });
+
   } catch (err) {
     console.error("Error uploading:", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
@@ -77,35 +113,32 @@ export async function POST(req) {
 }
 
 
-
 export async function GET() {
-    await connectDB();
-    try {
-      const allSliders = await HomeSlider.find().sort({ createdAt: -1 });
-      return NextResponse.json({ success: true, data: allSliders });
-    } catch (err) {
-      console.error("Fetch error:", err);
-      return NextResponse.json({ error: "Server error" }, { status: 500 });
-    }
+  await connectDB();
+  try {
+    const allSliders = await HomeSlider.find().sort({ createdAt: -1 });
+    return NextResponse.json({ success: true, data: allSliders });
+  } catch (err) {
+    console.error("Fetch error:", err);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
-  
-
+}
 
 export async function DELETE(req) {
-    await connectDB();
-  
-    const { searchParams } = new URL(req.url);
-    const id = searchParams.get("id");
-  
-    if (!id) {
-      return NextResponse.json({ error: "ID is required" }, { status: 400 });
-    }
-  
-    try {
-      await HomeSlider.findByIdAndDelete(id);
-      return NextResponse.json({ success: true, message: "Deleted successfully" });
-    } catch (err) {
-      console.error("Delete error:", err);
-      return NextResponse.json({ error: "Server error" }, { status: 500 });
-    }
+  await connectDB();
+
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+
+  if (!id) {
+    return NextResponse.json({ error: "ID is required" }, { status: 400 });
   }
+
+  try {
+    await HomeSlider.findByIdAndDelete(id);
+    return NextResponse.json({ success: true, message: "Deleted successfully" });
+  } catch (err) {
+    console.error("Delete error:", err);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
+}
