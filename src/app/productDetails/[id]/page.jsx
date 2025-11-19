@@ -74,7 +74,6 @@ export default function ProductPage() {
       : deliveryCharge.outsideDhaka;
   const totalPrice = (product?.discountPrice * quantity || 0) + courierCharge;
 
-console.log(product);
 
 
   return (
