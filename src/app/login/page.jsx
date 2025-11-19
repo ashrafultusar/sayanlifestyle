@@ -36,7 +36,6 @@ const SignIn = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-blue-300 to-green-200 relative">
-      
       {/* Back to Home */}
       <Link
         href="/"
@@ -67,7 +66,6 @@ const SignIn = () => {
             type="email"
             id="email"
             name="email"
-            defaultValue="admin@gmail.com"
             required
             className="w-full px-3 py-2 rounded bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-white"
             placeholder="Enter your email"
@@ -86,7 +84,6 @@ const SignIn = () => {
             type="password"
             id="password"
             name="password"
-            defaultValue="123456"
             required
             className="w-full px-3 py-2 rounded bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-white"
             placeholder="Enter your password"

@@ -113,14 +113,21 @@ export default function ProductPage() {
 
           {/* Price */}
           <div className="mt-5 flex items-center gap-3">
-            <p className="text-3xl font-medium text-green-600">
-              ৳{product?.discountPrice}
-            </p>
-            <p className="text-lg text-gray-500 line-through">
-              ৳{product?.price}
-            </p>
+            {product?.discountPrice > 0 ? (
+              <>
+                <p className="text-3xl font-medium text-green-600">
+                  ৳{product.discountPrice}
+                </p>
+                <p className="text-lg text-gray-500 line-through">
+                  ৳{product.price}
+                </p>
+              </>
+            ) : (
+              <p className="text-3xl font-medium text-green-600">
+                ৳{product.price}
+              </p>
+            )}
           </div>
-
 
           {/* Sizes */}
           <div className="flex flex-col gap-4 my-6">
@@ -161,10 +168,10 @@ export default function ProductPage() {
               </button>
             </div>
 
-
-          {/* product code */}
-          <p className="mt-5 text-gray-500 lg:w-4/5">Product Code: {product?.Code}</p>
-
+            {/* product code */}
+            <p className="mt-5 text-gray-500 lg:w-4/5">
+              Product Code: {product?.Code}
+            </p>
           </div>
 
           {/* Courier Location */}
