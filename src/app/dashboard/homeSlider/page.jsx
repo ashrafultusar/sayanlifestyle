@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 import UploadForm from "@/Components/dashboard/HomeSlider/UploadForm";
 import SliderCard from "@/Components/dashboard/HomeSlider/SliderCard";
 
-
 const Page = () => {
   const [sliderImages, setSliderImages] = useState([]);
   const [rightImageTop, setRightImageTop] = useState(null);
@@ -35,22 +34,29 @@ const Page = () => {
   const clearSliderImages = () => setSliderImages([]);
 
   const handleSubmit = async () => {
-    if (!sliderImages.length || !rightImageTop || !rightImageBottom) {
-      alert("All fields are required");
+    if (!sliderImages.length && !rightImageTop && !rightImageBottom) {
+      alert("Please upload at least one image");
       return;
     }
 
     const formData = new FormData();
-    sliderImages.forEach((file) => formData.append("sliderImages", file));
-    formData.append("rightImageTop", rightImageTop);
-    formData.append("rightImageBottom", rightImageBottom);
+
+    if (sliderImages.length) {
+      sliderImages.forEach((file) => formData.append("sliderImages", file));
+    }
+
+    if (rightImageTop) {
+      formData.append("rightImageTop", rightImageTop);
+    }
+
+    if (rightImageBottom) {
+      formData.append("rightImageBottom", rightImageBottom);
+    }
 
     try {
       setLoading(true);
       const res = await axios.post("/api/homeslider", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
       if (res.data.success) {
