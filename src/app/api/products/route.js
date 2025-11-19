@@ -21,8 +21,7 @@ export const POST = async (req) => {
     const productData = {
       title: formData.get("title"),
       size: formData.get("size"),
-      Chest: formData.get("Chest"),
-      Length: formData.get("Length"),
+      
       Category: formData.get("Category"),
       homeCategory: formData.get("homecategory") || "",
       Code: formData.get("Code"),
@@ -36,7 +35,7 @@ export const POST = async (req) => {
     const images = formData.getAll("images");
 
     // Validation
-    const requiredFields = ["title", "size", "Chest", "Length", "Category", "Code", "price", "discountPrice"];
+    const requiredFields = ["title", "size", "Category", "Code", "price", "discountPrice"];
     for (let field of requiredFields) {
       if (!productData[field]) {
         return NextResponse.json({ error: `${field} is required` }, { status: 400 });
