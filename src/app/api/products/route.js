@@ -17,25 +17,21 @@ export const POST = async (req) => {
   try {
     const formData = await req.formData();
 
-    // Collect fields
     const productData = {
       title: formData.get("title"),
       size: formData.get("size"),
-      
       Category: formData.get("Category"),
       homeCategory: formData.get("homecategory") || "",
       Code: formData.get("Code"),
       price: Number(formData.get("price")),
-      discountPrice: Number(formData.get("discountPrice")),
-      description: formData.get("description"),
-     
+      discountPrice: Number(formData.get("discountPrice")) || 0, // optional
+      description: formData.get("description") || "",
     };
 
-    // Extract all image files
     const images = formData.getAll("images");
 
-    // Validation
-    const requiredFields = ["title", "size", "Category", "Code", "price", "discountPrice"];
+    // Required validation
+    const requiredFields = ["title", "size", "Category", "Code", "price"];
     for (let field of requiredFields) {
       if (!productData[field]) {
         return NextResponse.json({ error: `${field} is required` }, { status: 400 });
@@ -62,10 +58,7 @@ export const POST = async (req) => {
       });
     });
 
-    const imageUrls = await Promise.all(uploadPromises);
-
-    // Save product with images
-    productData.image = imageUrls;
+    productData.image = await Promise.all(uploadPromises);
 
     const product = await Product.create(productData);
 
@@ -76,7 +69,7 @@ export const POST = async (req) => {
   }
 };
 
-
+ 
 
 export const GET = async (req) => {
   try {

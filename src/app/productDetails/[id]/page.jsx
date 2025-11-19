@@ -74,9 +74,6 @@ export default function ProductPage() {
       : deliveryCharge.outsideDhaka;
   const totalPrice = (product?.discountPrice * quantity || 0) + courierCharge;
 
-console.log(product);
-
-
   return (
     <div className="mt-10 container mx-auto px-4 transition-opacity text-black ease-in duration-500 opacity-100">
       <div className="flex gap-12 flex-col lg:flex-row">
@@ -114,14 +111,21 @@ console.log(product);
 
           {/* Price */}
           <div className="mt-5 flex items-center gap-3">
-            <p className="text-3xl font-medium text-green-600">
-              ৳{product?.discountPrice}
-            </p>
-            <p className="text-lg text-gray-500 line-through">
-              ৳{product?.price}
-            </p>
+            {product?.discountPrice > 0 ? (
+              <>
+                <p className="text-3xl font-medium text-green-600">
+                  ৳{product.discountPrice}
+                </p>
+                <p className="text-lg text-gray-500 line-through">
+                  ৳{product.price}
+                </p>
+              </>
+            ) : (
+              <p className="text-3xl font-medium text-green-600">
+                ৳{product.price}
+              </p>
+            )}
           </div>
-
 
           {/* Sizes */}
           <div className="flex flex-col gap-4 my-6">
@@ -162,10 +166,10 @@ console.log(product);
               </button>
             </div>
 
-
-          {/* product code */}
-          <p className="mt-5 text-gray-500 lg:w-4/5">Product Code: {product?.Code}</p>
-
+            {/* product code */}
+            <p className="mt-5 text-gray-500 lg:w-4/5">
+              Product Code: {product?.Code}
+            </p>
           </div>
 
           {/* Courier Location */}

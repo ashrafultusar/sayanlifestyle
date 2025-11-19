@@ -69,12 +69,12 @@ const Page = () => {
       setForm({
         title: "",
         size: "",
-
         Category: "",
         Code: "",
         price: "",
         discountPrice: "",
         description: "",
+        homecategory: "",
       });
       setImageFiles([]);
       setImagePreviews([]);
@@ -178,7 +178,7 @@ const Page = () => {
               <input
                 type="number"
                 name="discountPrice"
-                placeholder="Discount Price"
+                placeholder="Discount Price (optional)"
                 value={form.discountPrice}
                 onChange={handleChange}
                 className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
