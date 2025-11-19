@@ -12,11 +12,12 @@ const DashboardLayout = ({ children }) => {
   useEffect(() => {
     if (status === "unauthenticated") {
       router.replace("/login"); 
+     
     }
   }, [status, router]);
 
-  if (status === "loading") {
-    return <p>Loading...</p>;
+  if (status === "loading" || status === "unauthenticated") {
+    return null; 
   }
 
   return (
