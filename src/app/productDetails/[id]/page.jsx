@@ -9,7 +9,7 @@ import { useData } from "@/context/DataContext";
 import LoadingSpinner from "@/Components/Shared/LoadingSpiner";
 
 export default function ProductPage() {
-  const { products, } = useData();
+  const { products } = useData();
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState("");
@@ -74,6 +74,9 @@ export default function ProductPage() {
       : deliveryCharge.outsideDhaka;
   const totalPrice = (product?.discountPrice * quantity || 0) + courierCharge;
 
+console.log(product);
+
+
   return (
     <div className="mt-10 container mx-auto px-4 transition-opacity text-black ease-in duration-500 opacity-100">
       <div className="flex gap-12 flex-col lg:flex-row">
@@ -119,8 +122,6 @@ export default function ProductPage() {
             </p>
           </div>
 
-          {/* Description */}
-          <p className="mt-5 text-gray-500 lg:w-4/5">{product?.description}</p>
 
           {/* Sizes */}
           <div className="flex flex-col gap-4 my-6">
@@ -160,6 +161,11 @@ export default function ProductPage() {
                 +
               </button>
             </div>
+
+
+          {/* product code */}
+          <p className="mt-5 text-gray-500 lg:w-4/5">Product Code: {product?.Code}</p>
+
           </div>
 
           {/* Courier Location */}

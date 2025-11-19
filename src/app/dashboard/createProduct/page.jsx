@@ -13,8 +13,7 @@ const Page = () => {
   const [form, setForm] = useState({
     title: "",
     size: "",
-    Chest: "",
-    Length: "",
+
     Category: "",
     Code: "",
     price: "",
@@ -70,8 +69,7 @@ const Page = () => {
       setForm({
         title: "",
         size: "",
-        Chest: "",
-        Length: "",
+
         Category: "",
         Code: "",
         price: "",
@@ -83,8 +81,8 @@ const Page = () => {
       router.push("/dashboard/products");
     } catch (err) {
       toast.error(err.message);
-    }finally {
-      setLoading(false); 
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -155,22 +153,6 @@ const Page = () => {
                 ))}
               </select>
 
-              <input
-                type="number"
-                name="Chest"
-                placeholder="Chest (cm)"
-                value={form.Chest}
-                onChange={handleChange}
-                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-              <input
-                type="number"
-                name="Length"
-                placeholder="Length (cm)"
-                value={form.Length}
-                onChange={handleChange}
-                className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
               <input
                 type="text"
                 name="Code"

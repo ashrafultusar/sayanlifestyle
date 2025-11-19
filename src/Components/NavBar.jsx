@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { FiPhoneCall, FiSearch, FiMenu, FiX } from "react-icons/fi";
 import { FaCartArrowDown, FaFacebookF } from "react-icons/fa";
 import { useData } from "@/context/DataContext";
-import Image from "next/image";
 
 export default function Navbar() {
   const router = useRouter();
@@ -40,14 +39,7 @@ export default function Navbar() {
         <div className="container mx-auto flex items-center justify-between px-4 py-3">
           {/* Logo + Brand Name */}
           <Link href={"/"} className="flex items-center gap-2">
-            <Image
-              src={"/logo.png"}
-              alt="Website Logo"
-              width={25}
-              height={25}
-              priority
-              className="object-contain cursor-pointer"
-            />
+            
             <span className="font-[Montserrat] text-xl uppercase tracking-wide text-gray-900">
               <span className="text-orange-500">Sayan</span> Lifestyle
             </span>
@@ -151,14 +143,7 @@ export default function Navbar() {
       >
         <div className="flex items-center justify-between p-4 border-b">
           <Link href={"/"} className="flex items-center gap-2">
-            <Image
-              src={"/logo.png"}
-              alt="Website Logo"
-              width={25}
-              height={25}
-              priority
-              className="object-contain cursor-pointer"
-            />
+           
             <span className="font-[Montserrat] text-xl uppercase tracking-wide text-gray-900">
               <span className="text-orange-500">Sayan</span> Lifestyle
             </span>
