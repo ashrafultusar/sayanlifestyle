@@ -12,7 +12,7 @@ const ProductSchema = new mongoose.Schema(
     homeCategory: { type: String, default: "" },
     description: { type: String },
     image: { type: [String], required: true },
-   
+    
   },
   { timestamps: true }
 );

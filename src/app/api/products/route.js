@@ -2,73 +2,124 @@
 import connectDB from "@/lib/db";
 import Product from "@/models/Product";
 import { NextResponse } from "next/server";
-import { v2 as cloudinary } from "cloudinary";
+// import { v2 as cloudinary } from "cloudinary";
 
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+// cloudinary.config({
+//   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+//   api_key: process.env.CLOUDINARY_API_KEY,
+//   api_secret: process.env.CLOUDINARY_API_SECRET,
+// });
+
+// connectDB();
+
+// export const POST = async (req) => {
+//   try {
+//     const formData = await req.formData();
+
+//     const productData = {
+//       title: formData.get("title"),
+//       size: formData.get("size"),
+//       Category: formData.get("Category"),
+//       homeCategory: formData.get("homecategory") || "",
+//       Code: formData.get("Code"),
+//       price: Number(formData.get("price")),
+//       discountPrice: Number(formData.get("discountPrice")) || 0, // optional
+//       description: formData.get("description") || "",
+//     };
+
+//     const images = formData.getAll("images");
+
+//     // Required validation
+//     const requiredFields = ["title", "size", "Category", "Code", "price"];
+//     for (let field of requiredFields) {
+//       if (!productData[field]) {
+//         return NextResponse.json({ error: `${field} is required` }, { status: 400 });
+//       }
+//     }
+
+//     if (!images || images.length === 0) {
+//       return NextResponse.json({ error: "At least one image is required" }, { status: 400 });
+//     }
+
+//     // Upload images to Cloudinary
+//     const uploadPromises = images.map(async (image) => {
+//       const arrayBuffer = await image.arrayBuffer();
+//       const buffer = Buffer.from(arrayBuffer);
+
+//       return new Promise((resolve, reject) => {
+//         cloudinary.uploader.upload_stream(
+//           { resource_type: "image" },
+//           (err, result) => {
+//             if (err) return reject(err);
+//             resolve(result.secure_url);
+//           }
+//         ).end(buffer);
+//       });
+//     });
+
+//     productData.image = await Promise.all(uploadPromises);
+
+//     const product = await Product.create(productData);
+
+//     return NextResponse.json({ message: "Product uploaded", product }, { status: 201 });
+//   } catch (err) {
+//     console.error(err);
+//     return NextResponse.json({ error: err.message }, { status: 500 });
+//   }
+// };
 
 connectDB();
 
 export const POST = async (req) => {
   try {
-    const formData = await req.formData();
+    const body = await req.json();
 
-    const productData = {
-      title: formData.get("title"),
-      size: formData.get("size"),
-      Category: formData.get("Category"),
-      homeCategory: formData.get("homecategory") || "",
-      Code: formData.get("Code"),
-      price: Number(formData.get("price")),
-      discountPrice: Number(formData.get("discountPrice")) || 0, // optional
-      description: formData.get("description") || "",
-    };
-
-    const images = formData.getAll("images");
+    const {
+      title,
+      size,
+      Category,
+      homecategory,
+      Code,
+      price,
+      discountPrice,
+      description,
+      image
+    } = body;
 
     // Required validation
     const requiredFields = ["title", "size", "Category", "Code", "price"];
     for (let field of requiredFields) {
-      if (!productData[field]) {
+      if (!body[field]) {
         return NextResponse.json({ error: `${field} is required` }, { status: 400 });
       }
     }
 
-    if (!images || images.length === 0) {
+    if (!image || !image.length) {
       return NextResponse.json({ error: "At least one image is required" }, { status: 400 });
     }
 
-    // Upload images to Cloudinary
-    const uploadPromises = images.map(async (image) => {
-      const arrayBuffer = await image.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-
-      return new Promise((resolve, reject) => {
-        cloudinary.uploader.upload_stream(
-          { resource_type: "image" },
-          (err, result) => {
-            if (err) return reject(err);
-            resolve(result.secure_url);
-          }
-        ).end(buffer);
-      });
+    const newProduct = await Product.create({
+      title,
+      size,
+      Category,
+      homeCategory: homecategory || "",
+      Code,
+      price,
+      discountPrice: discountPrice || 0,
+      description: description || "",
+      image,
     });
 
-    productData.image = await Promise.all(uploadPromises);
+    return NextResponse.json(
+      { message: "Product uploaded", product: newProduct },
+      { status: 201 }
+    );
 
-    const product = await Product.create(productData);
-
-    return NextResponse.json({ message: "Product uploaded", product }, { status: 201 });
   } catch (err) {
-    console.error(err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 };
-
   
 
 export const GET = async (req) => {
