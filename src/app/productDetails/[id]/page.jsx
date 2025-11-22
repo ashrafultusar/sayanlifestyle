@@ -62,6 +62,8 @@ export default function ProductPage() {
     if (id) fetchProduct();
   }, [id]);
 
+  console.log(product);
+
   if (loading) return <LoadingSpinner overlay />;
 
   if (!product)
@@ -73,6 +75,14 @@ export default function ProductPage() {
       ? deliveryCharge.insideDhaka
       : deliveryCharge.outsideDhaka;
   const totalPrice = (product?.discountPrice * quantity || 0) + courierCharge;
+
+  // size from api
+  const availableSizes = product?.size
+    ? product.size
+        .split(",")
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0)
+    : [];
 
   return (
     <div className="mt-10 container mx-auto px-4 transition-opacity text-black ease-in duration-500 opacity-100">
@@ -114,15 +124,15 @@ export default function ProductPage() {
             {product?.discountPrice > 0 ? (
               <>
                 <p className="text-3xl font-medium text-green-600">
-                  ৳{product.discountPrice}
+                  ৳{product?.discountPrice}
                 </p>
                 <p className="text-lg text-gray-500 line-through">
-                  ৳{product.price}
+                  ৳{product?.price}
                 </p>
               </>
             ) : (
               <p className="text-3xl font-medium text-green-600">
-                ৳{product.price}
+                ৳{product?.price}
               </p>
             )}
           </div>
@@ -131,16 +141,22 @@ export default function ProductPage() {
           <div className="flex flex-col gap-4 my-6">
             <p className="font-medium">Select Size</p>
             <div className="flex gap-2">
-              {product?.size?.split(" ")?.map((size, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSelectedSize(size)}
-                  className={`border py-2 px-4 bg-gray-100 rounded ${
-                    size === selectedSize ? "border-orange-500" : ""
-                  }`}
-                >
-                  {size}
-                </button>
+              {availableSizes?.map((size, index) => (
+              <button
+                                key={index}
+                                onClick={() => setSelectedSize(size)}
+                                className={`
+                                  border text-sm font-medium w-10 h-10 flex items-center justify-center rounded cursor-pointer
+                                  ${
+                                    size === selectedSize
+                                      ? "border-slate-200 bg-slate-700 text-white"
+                                      : "border-gray-300 bg-sayan-100 text-gray-700 hover:border-gray-500 hover:bg-gray-200"
+                                  }
+                                  transition-colors
+                                `}
+                              >
+                                {size}
+                              </button>
               ))}
             </div>
           </div>
