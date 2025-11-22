@@ -139,7 +139,7 @@ const Page = () => {
                 <td className="p-4 text-sm">{product?.size || "N/A"}</td>
 
                 <td className="p-4 text-sm font-medium text-green-600">
-                  {product?.price ? `$${product?.price}` : "N/A"}
+                  {product?.price ? `৳ ${product?.price}` : "N/A"}
                 </td>
                 <td className="p-4 flex gap-3 text-lg">
                   {/* <Link href={`/dashboard/editProduct/${product?._id}`}>
