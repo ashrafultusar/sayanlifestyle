@@ -4,7 +4,7 @@ import { useData } from "@/context/DataContext";
 
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 const Page = () => {
@@ -139,7 +139,7 @@ const Page = () => {
                 <td className="p-4 text-sm">{product?.size || "N/A"}</td>
 
                 <td className="p-4 text-sm font-medium text-green-600">
-                  {product?.price ? `$${product?.price}` : "N/A"}
+                  {product?.price ? `৳ ${product?.price}` : "N/A"}
                 </td>
                 <td className="p-4 flex gap-3 text-lg">
                   {/* <Link href={`/dashboard/editProduct/${product?._id}`}>
