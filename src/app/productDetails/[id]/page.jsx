@@ -76,9 +76,6 @@ export default function ProductPage() {
       : deliveryCharge.outsideDhaka;
   const totalPrice = (product?.discountPrice * quantity || 0) + courierCharge;
 
-<<<<<<< HEAD
-
-=======
   // size from api
   const availableSizes = product?.size
     ? product.size
@@ -86,7 +83,6 @@ export default function ProductPage() {
         .map((s) => s.trim())
         .filter((s) => s.length > 0)
     : [];
->>>>>>> a7ba508464523dd63661a75410314b51a77d4083
 
   return (
     <div className="mt-10 container mx-auto px-4 transition-opacity text-black ease-in duration-500 opacity-100">
