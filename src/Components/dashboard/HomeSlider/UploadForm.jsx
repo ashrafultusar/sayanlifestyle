@@ -1,124 +1,165 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 
 const UploadForm = ({
-  sliderImages,
-  rightImageTop,
-  rightImageBottom,
-  handleSliderChange,
-  setRightImageTop,
-  setRightImageBottom,
-  handleSubmit,
-  loading,
-  clearSliderImages,
+  sliders,
+  updateLeftPartial,
+  updateRightTop,
+  updateRightBottom,
 }) => {
-  return (
-    <div className="bg-white p-4 rounded shadow mb-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Left Column: Multiple Slider Images */}
-        <div>
-          <ImageUploader
-            label="Left Slider Images (Multiple)"
-            multiple
-            onChange={handleSliderChange}
-          />
-          <ImagePreviewList
-            files={sliderImages}
-            removable
-            onClear={clearSliderImages}
-          />
-        </div>
+  const [partialFile, setPartialFile] = useState(null);
+  const [partialIndex, setPartialIndex] = useState("");
 
-        {/* Right Column: Two stacked uploads */}
-        <div className="grid grid-rows-2 gap-4">
-          <div>
-            <ImageUploader
-              label="Right Image Top (Single)"
-              onChange={(e) => setRightImageTop(e.target.files[0])}
+  const [rightTop, setRightTop] = useState(null);
+  const [rightBottom, setRightBottom] = useState(null);
+
+  const handleUpdatePartial = async () => {
+    if (!partialFile || partialIndex === "") return;
+    await updateLeftPartial(Number(partialIndex), partialFile);
+    setPartialFile(null);
+    setPartialIndex("");
+  };
+
+  const handleUpdateRightTop = async () => {
+    if (!rightTop) return;
+    await updateRightTop(rightTop);
+    setRightTop(null);
+  };
+
+  const handleUpdateRightBottom = async () => {
+    if (!rightBottom) return;
+    await updateRightBottom(rightBottom);
+    setRightBottom(null);
+  };
+
+  // Common styles for inputs and cards to ensure consistency
+  const cardStyle = "bg-white p-6 rounded-xl shadow-[0_4px_12px_rgb(0,0,0,0.08)] border border-gray-100 flex flex-col";
+  const headingStyle = "text-lg font-bold text-gray-800 mb-5";
+  const inputBaseStyle = "w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 text-gray-700 text-sm";
+  
+  // Modern styling for the file input element
+  const fileInputStyle = `block w-full text-sm text-slate-500
+    file:mr-4 file:py-2.5 file:px-4
+    file:rounded-lg file:border-0
+    file:text-sm file:font-semibold
+    file:bg-indigo-50 file:text-indigo-700
+    hover:file:bg-indigo-100
+    border border-gray-300 rounded-lg cursor-pointer bg-white focus:outline-none transition duration-200 py-1.5 pl-2`;
+
+  return (
+    // Added a light gray background to the main container so the white cards pop out
+    <div className="bg-gray-50 p-8 rounded-2xl">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-black">
+        {/* LEFT PARTIAL */}
+        <div className={cardStyle}>
+          <h2 className={headingStyle}>Update Single Left Slider</h2>
+          
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1 ml-1">Slider Index</label>
+            <input
+              type="number"
+              className={inputBaseStyle}
+              placeholder="Enter index (e.g., 0, 1, 2...)"
+              value={partialIndex}
+              onChange={(e) => setPartialIndex(e.target.value)}
             />
-            {rightImageTop && (
-              <img
-                src={URL.createObjectURL(rightImageTop)}
-                alt="right top"
-                className="w-24 h-24 object-cover rounded"
-              />
-            )}
           </div>
-
-          <div>
-            <ImageUploader
-              label="Right Image Bottom (Single)"
-              onChange={(e) => setRightImageBottom(e.target.files[0])}
+          
+          <div className="mb-4">
+             <label className="block text-sm font-medium text-gray-700 mb-1 ml-1">Upload Image</label>
+            <input
+              type="file"
+              onChange={(e) => setPartialFile(e.target.files[0])}
+              className={fileInputStyle}
             />
-            {rightImageBottom && (
+          </div>
+
+          {partialFile && (
+            <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+               <p className="text-xs text-gray-500 mb-2 text-center font-medium">Selected Preview</p>
               <img
-                src={URL.createObjectURL(rightImageBottom)}
-                alt="right bottom"
-                className="w-24 h-24 object-cover rounded"
+                src={URL.createObjectURL(partialFile)}
+                alt="preview"
+                className="w-full h-32 object-cover rounded-md mx-auto"
               />
-            )}
-          </div>
+            </div>
+          )}
+          
+          <button
+            onClick={handleUpdatePartial}
+            // Used a richer yellow/amber and added width full and hover effects
+            className="w-full mt-auto bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 shadow-md hover:shadow-lg"
+          >
+            Update Single Slide
+          </button>
         </div>
-      </div>
 
-      {/* Submit Button */}
-      <div className="mt-6">
-        <button
-          onClick={handleSubmit}
-          disabled={loading}
-          className="px-4 py-2 bg-blue-600 cursor-pointer text-white rounded hover:bg-blue-700"
-        >
-          {loading ? "Uploading..." : "Submit"}
-        </button>
-      </div>
-    </div>
-  );
-};
-
-/* ImageUploader Component  */
-const ImageUploader = ({ label, multiple = false, onChange }) => {
-  return (
-    <div className="mb-6">
-      {label && <h2 className="font-semibold mb-2">{label}</h2>}
-      <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded cursor-pointer hover:border-blue-500 transition">
-        <div className="flex flex-col items-center justify-center">
-          <p className="text-gray-500">Drag & Drop Images or</p>
-          <div className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
-            Browse Files
+        {/* RIGHT TOP */}
+        <div className={cardStyle}>
+          <h2 className={headingStyle}>Update Right TOP</h2>
+          
+          <div className="mb-4">
+             <label className="block text-sm font-medium text-gray-700 mb-1 ml-1">Upload Image</label>
+            <input
+              type="file"
+              onChange={(e) => setRightTop(e.target.files[0])}
+              className={fileInputStyle}
+            />
           </div>
-        </div>
-        <input
-          type="file"
-          accept="image/*"
-          multiple={multiple}
-          onChange={onChange}
-          className="hidden"
-        />
-      </label>
-    </div>
-  );
-};
 
-/* ImagePreviewList Component  */
-const ImagePreviewList = ({ files = [], removable = false, onClear }) => {
-  return (
-    <div className="mb-4">
-      {removable && files.length > 0 && (
-        <button
-          onClick={onClear}
-          className="text-sm text-red-600 underline mb-2"
-        >
-          Remove All Images
-        </button>
-      )}
-      <div className="flex gap-2 flex-wrap">
-        {files.map((file, i) => (
-          <img
-            key={i}
-            src={URL.createObjectURL(file)}
-            alt="preview"
-            className="w-24 h-24 object-cover rounded"
-          />
-        ))}
+          {rightTop && (
+             <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                <p className="text-xs text-gray-500 mb-2 text-center font-medium">Selected Preview</p>
+              <img
+                src={URL.createObjectURL(rightTop)}
+                alt="preview"
+                // Standardized height for previews
+                 className="w-full h-40 object-cover rounded-md mx-auto"
+              />
+            </div>
+          )}
+          
+          <button
+            onClick={handleUpdateRightTop}
+            // Used a modern indigo/purple, full width and hover effects
+            className="w-full mt-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 shadow-md hover:shadow-lg"
+          >
+            Update Right Top
+          </button>
+        </div>
+
+        {/* RIGHT BOTTOM */}
+        <div className={cardStyle}>
+          <h2 className={headingStyle}>Update Right BOTTOM</h2>
+          
+          <div className="mb-4">
+             <label className="block text-sm font-medium text-gray-700 mb-1 ml-1">Upload Image</label>
+            <input
+              type="file"
+              onChange={(e) => setRightBottom(e.target.files[0])}
+              className={fileInputStyle}
+            />
+          </div>
+          
+          {rightBottom && (
+             <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+               <p className="text-xs text-gray-500 mb-2 text-center font-medium">Selected Preview</p>
+              <img
+                src={URL.createObjectURL(rightBottom)}
+                alt="preview"
+                 className="w-full h-40 object-cover rounded-md mx-auto"
+              />
+            </div>
+          )}
+          
+          <button
+            onClick={handleUpdateRightBottom}
+            className="w-full mt-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 shadow-md hover:shadow-lg"
+          >
+            Update Right Bottom
+          </button>
+        </div>
       </div>
     </div>
   );

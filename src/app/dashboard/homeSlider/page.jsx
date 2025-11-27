@@ -7,18 +7,15 @@ import UploadForm from "@/Components/dashboard/HomeSlider/UploadForm";
 import SliderCard from "@/Components/dashboard/HomeSlider/SliderCard";
 
 const Page = () => {
-  const [sliderImages, setSliderImages] = useState([]);
-  const [rightImageTop, setRightImageTop] = useState(null);
-  const [rightImageBottom, setRightImageBottom] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [allSliders, setAllSliders] = useState([]);
+  const [sliders, setSliders] = useState(null);
 
+  // Fetch slider data
   const fetchSliders = async () => {
     try {
       const res = await axios.get("/api/homeslider");
-      setAllSliders(res.data.data);
+      setSliders(res.data.data || {});
     } catch (err) {
-      console.error("Fetch error:", err);
+      console.error(err);
     }
   };
 
@@ -26,87 +23,75 @@ const Page = () => {
     fetchSliders();
   }, []);
 
-  const handleSliderChange = (e) => {
-    const files = Array.from(e.target.files);
-    setSliderImages((prev) => [...prev, ...files]);
-  };
-
-  const clearSliderImages = () => setSliderImages([]);
-
-  const handleSubmit = async () => {
-    if (!sliderImages.length && !rightImageTop && !rightImageBottom) {
-      alert("Please upload at least one image");
-      return;
-    }
-
-    const formData = new FormData();
-
-    if (sliderImages.length) {
-      sliderImages.forEach((file) => formData.append("sliderImages", file));
-    }
-
-    if (rightImageTop) {
-      formData.append("rightImageTop", rightImageTop);
-    }
-
-    if (rightImageBottom) {
-      formData.append("rightImageBottom", rightImageBottom);
-    }
-
+  // Delete single left image
+  const deleteLeftImage = async (index) => {
     try {
-      setLoading(true);
-      const res = await axios.post("/api/homeslider", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const fd = new FormData();
+      fd.append("action", "delete-left-image");
+      fd.append("index", index);
 
+      const res = await axios.post("/api/homeslider", fd);
       if (res.data.success) {
-        toast.success("Uploaded successfully!");
-        setSliderImages([]);
-        setRightImageTop(null);
-        setRightImageBottom(null);
-        fetchSliders();
+        toast.success(res.data.message);
+        fetchSliders(); // instant UI refresh
       }
     } catch (err) {
-      console.error("Upload error:", err);
-      toast.error("Upload failed");
-    } finally {
-      setLoading(false);
+      console.error(err);
+      toast.error("Failed to delete image");
     }
   };
 
-  const handleDelete = async (id) => {
-    try {
-      const res = await axios.delete(`/api/homeslider?id=${id}`);
-      if (res.data.success) {
-        toast.success("Deleted successfully!");
-        fetchSliders();
-      }
-    } catch (err) {
-      console.error("Delete error:", err);
-      toast.error("Failed to delete");
+  // Update handlers
+  const updateLeftPartial = async (index, file) => {
+    const fd = new FormData();
+    fd.append("action", "update-left-partial");
+    fd.append("index", index);
+    fd.append("file", file);
+
+    const res = await axios.post("/api/homeslider", fd);
+    if (res.data.success) {
+      toast.success(res.data.message);
+      fetchSliders();
+    }
+  };
+
+  const updateRightTop = async (file) => {
+    const fd = new FormData();
+    fd.append("action", "update-right-top");
+    fd.append("rightImageTop", file);
+
+    const res = await axios.post("/api/homeslider", fd);
+    if (res.data.success) {
+      toast.success(res.data.message);
+      fetchSliders();
+    }
+  };
+
+  const updateRightBottom = async (file) => {
+    const fd = new FormData();
+    fd.append("action", "update-right-bottom");
+    fd.append("rightImageBottom", file);
+
+    const res = await axios.post("/api/homeslider", fd);
+    if (res.data.success) {
+      toast.success(res.data.message);
+      fetchSliders();
     }
   };
 
   return (
-    <div className="p-6 text-black">
-      <h1 className="text-2xl font-bold mb-6">Home Image Upload</h1>
+    <div className="p-6">
+      <h1 className="text-3xl font-semibold mb-6 text-black text-center">Home Slider Manager</h1>
 
       <UploadForm
-        sliderImages={sliderImages}
-        rightImageTop={rightImageTop}
-        rightImageBottom={rightImageBottom}
-        handleSliderChange={handleSliderChange}
-        setRightImageTop={setRightImageTop}
-        setRightImageBottom={setRightImageBottom}
-        handleSubmit={handleSubmit}
-        loading={loading}
-        clearSliderImages={clearSliderImages}
+        sliders={sliders}
+        updateLeftPartial={updateLeftPartial}
+        updateRightTop={updateRightTop}
+        updateRightBottom={updateRightBottom}
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {allSliders.map((item) => (
-          <SliderCard key={item._id} item={item} onDelete={handleDelete} />
-        ))}
+      <div className="mt-10">
+        <SliderCard sliders={sliders} deleteLeftImage={deleteLeftImage} />
       </div>
     </div>
   );
