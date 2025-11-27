@@ -2,12 +2,13 @@
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import Image from "next/image";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 export default function Slider({ data }) {
-  const sliderData = data?.data?.[0] || null;
+  const sliderData = data?.data || null;
 
   if (!sliderData) {
     return (
@@ -25,7 +26,7 @@ export default function Slider({ data }) {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-      {/* Main Swiper */}
+      {/* Main Slider */}
       <div className="lg:col-span-2">
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
@@ -35,13 +36,17 @@ export default function Slider({ data }) {
           loop
           className="w-full rounded-sm overflow-hidden"
         >
-          {sliderData?.sliderImages?.map((imgUrl, index) => (
+          {sliderData.sliderImages?.map((imgUrl, index) => (
             <SwiperSlide key={index}>
               <div className="relative w-full h-[230px] sm:h-[300px] md:h-[400px] lg:h-[555px]">
-                <img
-                  src={imgUrl}
+                <Image
+                  src={`${imgUrl}?f_auto,q_auto`} // Cloudinary optimize
                   alt={`Slide ${index + 1}`}
-                  className="absolute inset-0 w-full h-full object-cover md:object-fill lg:object-cover"
+                  fill
+                  className="object-cover"
+                  priority={index === 0} // First slide preload
+                  placeholder="blur"
+                  blurDataURL={`${imgUrl}?w=10&q=10`} // tiny blur placeholder
                 />
               </div>
             </SwiperSlide>
@@ -51,16 +56,26 @@ export default function Slider({ data }) {
 
       {/* Side Images */}
       <div className="hidden lg:flex flex-col gap-4">
-        <img
-          src={sliderData?.rightImageTop}
-          alt="Half Sleeve Collection"
-          className="w-full h-[270px] object-cover rounded-sm"
-        />
-        <img
-          src={sliderData?.rightImageBottom}
-          alt="Full Sleeve Jersey"
-          className="w-full h-[270px] object-cover rounded-sm"
-        />
+        <div className="relative w-full h-[270px]">
+          <Image
+            src={`${sliderData.rightImageTop}?f_auto,q_auto`}
+            alt="Right Top"
+            fill
+            className="object-cover rounded-sm"
+            placeholder="blur"
+            blurDataURL={`${sliderData.rightImageTop}?w=10&q=10`}
+          />
+        </div>
+        <div className="relative w-full h-[270px]">
+          <Image
+            src={`${sliderData.rightImageBottom}?f_auto,q_auto`}
+            alt="Right Bottom"
+            fill
+            className="object-cover rounded-sm"
+            placeholder="blur"
+            blurDataURL={`${sliderData.rightImageBottom}?w=10&q=10`}
+          />
+        </div>
       </div>
     </div>
   );
