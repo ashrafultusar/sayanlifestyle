@@ -21,9 +21,10 @@ const DashboardLayout = ({ children }) => {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen overflow-hidden ">
       <Sidebar />
-      <main className="flex-1 p-6 bg-gray-100">{children}</main>
+      <main className="flex-1 p-6 bg-gray-100 overflow-auto h-screen
+      ">{children}</main>
     </div>
   );
 };
