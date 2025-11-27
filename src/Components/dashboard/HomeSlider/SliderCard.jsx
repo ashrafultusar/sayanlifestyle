@@ -1,44 +1,57 @@
+"use client";
+
 import React from "react";
 
-const SliderCard = ({ item, onDelete }) => {
+const SliderCard = ({ sliders, deleteLeftImage }) => {
+  if (!sliders) return null;
+
   return (
-    <div className="bg-white rounded shadow p-4 flex flex-col gap-2">
-      <h3 className="font-semibold text-lg">Slider Images</h3>
-      <div className="flex flex-wrap gap-2">
-        {item.sliderImages.map((url, i) => (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* LEFT SLIDERS */}
+      <div className="border bg-white p-4 rounded">
+        <h2 className="font-semibold text-black mb-3">Left Slider Images</h2>
+        <div className="flex flex-wrap gap-3">
+          {sliders?.sliderImages?.map((img, i) => (
+            <div key={i} className="relative">
+              <img
+                src={img}
+                className="w-24 h-24 object-cover rounded border"
+              />
+              <span className="absolute bottom-0 left-0 text-white bg-black px-1 text-xs">
+                {i}
+              </span>
+              <button
+                onClick={() => deleteLeftImage(i)}
+                className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 text-xs"
+              >
+                x
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* RIGHT TOP */}
+      <div className="border bg-white p-4 rounded">
+        <h2 className="font-semibold text-black mb-3">Right Top</h2>
+        {sliders?.rightImageTop && (
           <img
-            key={i}
-            src={url}
-            alt="slider"
-            className="w-20 h-20 object-cover rounded"
+            src={sliders.rightImageTop}
+            className="w-full h-40 object-cover rounded"
           />
-        ))}
+        )}
       </div>
 
-      <div>
-        <h4 className="font-semibold mt-2">Right Image Top</h4>
-        <img
-          src={item.rightImageTop}
-          alt="right top"
-          className="w-full h-32 object-cover rounded"
-        />
+      {/* RIGHT BOTTOM */}
+      <div className="border  bg-white p-4 rounded">
+        <h2 className="font-semibold text-black mb-3">Right Bottom</h2>
+        {sliders?.rightImageBottom && (
+          <img
+            src={sliders.rightImageBottom}
+            className="w-full h-40 object-cover rounded"
+          />
+        )}
       </div>
-
-      <div>
-        <h4 className="font-semibold mt-2">Right Image Bottom</h4>
-        <img
-          src={item.rightImageBottom}
-          alt="right bottom"
-          className="w-full h-32 object-cover rounded"
-        />
-      </div>
-
-      <button
-        onClick={() => onDelete(item._id)}
-        className="mt-3 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
-      >
-        Delete
-      </button>
     </div>
   );
 };
