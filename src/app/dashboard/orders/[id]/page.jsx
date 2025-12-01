@@ -29,7 +29,7 @@ export default function OrderDetailsPage() {
 
   if (loading) return <div>Loading...</div>;
   if (!order) return <div>Order not found</div>;
-  console.log(order);
+
 
   // 🔥 Calculate product total
   const productsTotal = order?.products?.reduce((sum, product) => {
@@ -73,7 +73,7 @@ export default function OrderDetailsPage() {
           <h2 className="text-lg font-medium mb-2 border-b">Shipping & Payment</h2>
           <p><span className="font-semibold">Address:</span> {order?.address}</p>
           <p><span className="font-semibold">City:</span> {order?.city}</p>
-          <p><span className="font-semibold">Courier Charge:</span> ${order?.courierCharge}</p>
+          <p><span className="font-semibold">Courier Charge:</span>  ৳ {order?.courierCharge}</p>
           <p><span className="font-semibold">Payment Method:</span> {order?.paymentMethod}</p>
           <p><span className="font-semibold">Status:</span> {order?.status}</p>
         </div>
@@ -118,7 +118,7 @@ export default function OrderDetailsPage() {
                       <p className="text-sm text-gray-400 line-through">${regularTotal}</p>
                     </>
                   ) : (
-                    <p className="font-semibold">${finalPrice}</p>
+                    <p className="font-semibold"> ৳{finalPrice}</p>
                   )}
                 </div>
               </div>
@@ -129,9 +129,9 @@ export default function OrderDetailsPage() {
 
       {/* Summary */}
       <div className="border-t pt-4 flex justify-end flex-col items-end space-y-2">
-        <p className="text-lg font-semibold">Products Total: ${productsTotal}</p>
-        <p className="text-lg font-semibold">Courier Charge: ${order?.courierCharge}</p>
-        <p className="text-xl font-bold">Grand Total: ${grandTotal}</p>
+        <p className="text-lg font-semibold">Products Total:  ৳{productsTotal}</p>
+        <p className="text-lg font-semibold">Courier Charge:  ৳{order?.courierCharge}</p>
+        <p className="text-xl font-bold">Grand Total:  ৳{grandTotal}</p>
       </div>
 
       <div className="text-right mt-4 text-gray-400 text-sm">

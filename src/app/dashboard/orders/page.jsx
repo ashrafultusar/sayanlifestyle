@@ -199,7 +199,7 @@ const Page = () => {
                 >
                   <td className="p-3 whitespace-nowrap">{order?.orderId}</td>
                   <td className="p-3 whitespace-nowrap">
-                    ${(order?.totalAmount || 0).toFixed(2)}
+                  ৳{(order?.totalAmount || 0).toFixed(2)}
                   </td>
                   <td className="p-3 whitespace-nowrap">
                     {order?.fullName}

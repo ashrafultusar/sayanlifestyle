@@ -3,11 +3,7 @@ import React from "react";
 
 const PrintInvoice = ({ order }) => {
   if (!order) {
-    return (
-      <div className="p-5 text-center text-gray-700">
-        No Order Found
-      </div>
-    );
+    return <div className="p-5 text-center text-gray-700">No Order Found</div>;
   }
 
   const {
@@ -21,17 +17,35 @@ const PrintInvoice = ({ order }) => {
     status,
     createdAt,
     courierCharge,
-    discountPrice,
     products = [],
   } = order;
 
-  const subtotal = products.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
+  // =======================
+  // 🧮 PRICE CALCULATION FIXED
+  // =======================
+
+  const subtotal = products.reduce((acc, item) => {
+    const priceToUse =
+      item.discountPrice && item.discountPrice > 0
+        ? item.discountPrice
+        : item.regularPrice;
+
+    return acc + priceToUse * item.quantity;
+  }, 0);
+
+  const totalDiscount = products.reduce((acc, item) => {
+    if (item.discountPrice > 0) {
+      return (
+        acc +
+        (item.regularPrice - item.discountPrice) * item.quantity
+      );
+    }
+    return acc;
+  }, 0);
+
   const deliveryCharge = courierCharge || 0;
-  const discount = discountPrice || 0;
-  const grandTotal = subtotal - discount + deliveryCharge;
+
+  const grandTotal = subtotal + deliveryCharge;
 
   return (
     <div className="max-w-[794px] mx-auto p-8 text-[12px] text-black font-sans">
@@ -41,7 +55,8 @@ const PrintInvoice = ({ order }) => {
         <h2 className="text-base font-bold mt-1">CUSTOMER COPY</h2>
         <h1 className="text-sm font-bold">SAYAN LIFESTYLE</h1>
         <p className="text-[11px] leading-tight">
-        As Salam Bohumukhi Somobay Somity Building, <br />4th Floor, Plot No-79, Block-A, Zoo Road, Mirpur-2, Dhaka 1216
+          As Salam Bohumukhi Somobay Somity Building, <br />4th Floor, Plot
+          No-79, Block-A, Zoo Road, Mirpur-2, Dhaka 1216
         </p>
         <p className="text-[11px] leading-tight">Dhaka 1216</p>
       </div>
@@ -96,10 +111,7 @@ const PrintInvoice = ({ order }) => {
                 <td className="font-bold py-1">Delivery Charge:</td>
                 <td>{deliveryCharge.toFixed(2)}</td>
               </tr>
-              <tr>
-                <td className="font-bold py-1">Discount:</td>
-                <td>{discount.toFixed(2)}</td>
-              </tr>
+            
               <tr>
                 <td className="font-bold py-1">Order Date:</td>
                 <td>
@@ -114,7 +126,8 @@ const PrintInvoice = ({ order }) => {
           </table>
         </div>
       </div>
-      {/* ✅ Product Table (Updated Like Image) */}
+
+      {/* Product Table */}
       <table className="w-full border border-black border-collapse text-[12px] mb-3">
         <thead>
           <tr className="bg-gray-100 text-center">
@@ -133,33 +146,41 @@ const PrintInvoice = ({ order }) => {
             </th>
           </tr>
         </thead>
+
         <tbody>
           {products?.length > 0 ? (
-            products?.map((item, index) => (
-              <tr key={index}>
-                <td className="border border-black p-1 text-center">
-                  {index + 1}
-                </td>
-                <td className="border border-black p-1">
-                  {item?.title || "N/A"}
-                </td>
-                <td className="border border-black p-1">
-                  FDL Mobile Store for MAR21
-                </td>
-                <td className="border border-black p-1 text-center">
-                  {item?.size || "N/A"}
-                </td>
-                <td className="border border-black p-1 text-center">
-                  {item?.quantity}
-                </td>
-                <td className="border border-black p-1 text-right">
-                  {item?.price.toFixed(2)}
-                </td>
-                <td className="border border-black p-1 text-right">
-                  {(item?.price * item?.quantity).toFixed(2)}
-                </td>
-              </tr>
-            ))
+            products.map((item, index) => {
+              const priceToUse =
+                item.discountPrice && item.discountPrice > 0
+                  ? item.discountPrice
+                  : item.regularPrice;
+
+              return (
+                <tr key={index}>
+                  <td className="border border-black p-1 text-center">
+                    {index + 1}
+                  </td>
+                  <td className="border border-black p-1">
+                    {item.title || "N/A"}
+                  </td>
+                  <td className="border border-black p-1">
+                    FDL Mobile Store for MAR21
+                  </td>
+                  <td className="border border-black p-1 text-center">
+                    {item.size || "N/A"}
+                  </td>
+                  <td className="border border-black p-1 text-center">
+                    {item.quantity}
+                  </td>
+                  <td className="border border-black p-1 text-right">
+                    {priceToUse.toFixed(2)}
+                  </td>
+                  <td className="border border-black p-1 text-right">
+                    {(priceToUse * item.quantity).toFixed(2)}
+                  </td>
+                </tr>
+              );
+            })
           ) : (
             <tr>
               <td
@@ -171,57 +192,41 @@ const PrintInvoice = ({ order }) => {
             </tr>
           )}
 
-          {/* Summary Rows */}
-          <tr className="">
+          {/* Summary */}
+          <tr>
             <td colSpan="6" className="border border-black p-1 text-left">
               Total
             </td>
             <td className="border border-black p-1 text-right">
-              {subtotal?.toFixed(2)}
+              {subtotal.toFixed(2)}
             </td>
           </tr>
+
           <tr>
             <td colSpan="6" className="border border-black p-1 text-left">
-              Discount
-            </td>
-            <td className="border border-black p-1 text-right">
-              -{discount?.toFixed(2)}
-            </td>
-          </tr>
-          <tr>
-            <td colSpan="6" className="border border-black p-1 text-left">
-              Subtotal
-            </td>
-            <td className="border border-black p-1 text-right">
-              {(subtotal - discount).toFixed(2)}
-            </td>
-          </tr>
-          <tr>
-            <td colSpan="6" className="border border-black p-1 v">
               Delivery Charge
             </td>
             <td className="border border-black p-1 text-right">
-              {deliveryCharge?.toFixed(2)}
+              {deliveryCharge.toFixed(2)}
             </td>
           </tr>
+
           <tr className="font-bold bg-gray-50">
             <td colSpan="6" className="border border-black p-1 text-left">
               Grand Total
             </td>
             <td className="border border-black p-1 text-right">
-              {grandTotal?.toFixed(2)}
+              {grandTotal.toFixed(2)}
             </td>
           </tr>
         </tbody>
       </table>
 
-      {/* Note */}
       <p className="text-[11px] my-5">
         Note: Shipping charges may vary depending on courier location and
         weight.
       </p>
 
-      {/* Signatures */}
       <div className="flex justify-between mt-12">
         <div className="w-2/5 text-center border-t border-black pt-1">
           <p className="text-xs">CUSTOMER</p>
@@ -231,11 +236,8 @@ const PrintInvoice = ({ order }) => {
         </div>
       </div>
 
-      {/* Footer */}
       <div className="text-center mt-10">
-        <p className="text-[11px]">
-          Powered by sayan lifestyle.
-        </p>
+        <p className="text-[11px]">Powered by sayan lifestyle.</p>
       </div>
     </div>
   );
