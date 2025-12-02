@@ -79,34 +79,37 @@ export const POST = async (req) => {
       title,
       size,
       Category,
-      homecategory,
+      homeCategory, // Include homeCategory in the POST body
       Code,
-      price,
+      regularPrice,
       discountPrice,
       description,
-      image
+      image,
     } = body;
 
-    // Required validation
-    const requiredFields = ["title", "size", "Category", "Code", "price"];
-    for (let field of requiredFields) {
-      if (!body[field]) {
-        return NextResponse.json({ error: `${field} is required` }, { status: 400 });
-      }
+    // Validate required fields except for discountPrice
+    if (!title || !size || !Category || !Code || !regularPrice) {
+      return NextResponse.json({ error: "All fields except discountPrice are required" }, { status: 400 });
     }
 
+    // Ensure image is provided
     if (!image || !image.length) {
       return NextResponse.json({ error: "At least one image is required" }, { status: 400 });
     }
 
+    // Calculate the final price
+    const price = regularPrice - (discountPrice || 0); // discountPrice defaults to 0 if not provided
+
+    // Create the product
     const newProduct = await Product.create({
       title,
       size,
       Category,
-      homeCategory: homecategory || "",
+      homeCategory, // Add homeCategory to product creation
       Code,
+      regularPrice,
+      discountPrice: discountPrice || 0, // Set discountPrice to 0 if not provided
       price,
-      discountPrice: discountPrice || 0,
       description: description || "",
       image,
     });
@@ -115,12 +118,11 @@ export const POST = async (req) => {
       { message: "Product uploaded", product: newProduct },
       { status: 201 }
     );
-
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 };
-  
+
 
 export const GET = async (req) => {
   try {

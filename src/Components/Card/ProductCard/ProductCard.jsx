@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import React from "react";
+import Image from "next/image";
 
-const ProductCard = ({ _id, title, image, price, isNew }) => {
+const ProductCard = ({ _id, title, image, price, regularPrice, discountPrice, isNew }) => {
   const imageUrl = Array.isArray(image) ? image[0] : image;
 
   return (
@@ -18,27 +19,20 @@ const ProductCard = ({ _id, title, image, price, isNew }) => {
             </span>
           )}
 
-          {/* ✅ Responsive Image Height */}
-          <img
-            src={imageUrl || "https://via.placeholder.com/400x500"}
+          {/* Image with next/image for optimization */}
+          <Image
+            src={imageUrl || "https://via.placeholder.com/400x500"}  // Placeholder if imageUrl is missing
             alt={title}
-            className="
-              w-full 
-              h-[220px]        /* mobile */
-              sm:h-[280px]     /* small tablets */
-              md:h-[360px]     /* tablets */
-              lg:h-[500px]     /* desktop */
-              object-cover 
-              transition-transform 
-              duration-300 
-              hover:scale-105
-            "
+            width={500} // Set the width
+            height={500} // Set the height (you can adjust the aspect ratio if necessary)
+            className="w-full h-[220px] sm:h-[280px] md:h-[360px] lg:h-[500px] object-cover transition-transform duration-300 hover:scale-105"
+            layout="intrinsic" // Ensure that it keeps the aspect ratio
+            priority // Optionally add priority for the first images to load faster
           />
         </div>
       </Link>
 
       {/* Product Info */}
-      {/* Text Section */}
       <div className="text-center py-2 h-1/4 flex flex-col justify-center px-2">
         <h2
           className="text-sm sm:text-base md:text-lg font-medium text-gray-800 uppercase tracking-wide
@@ -46,9 +40,20 @@ const ProductCard = ({ _id, title, image, price, isNew }) => {
         >
           {title}
         </h2>
-        <p className="text-gray-900 text-sm sm:text-base md:text-lg font-semibold mt-1">
-          Tk. {price}
-        </p>
+
+        {/* Price Section */}
+        <div className="mt-1">
+          {discountPrice > 0 ? (
+            <div>
+              <span className="text-gray-500 line-through">{regularPrice}</span>
+              <span className="text-gray-900 font-semibold ml-2">Tk. {discountPrice}</span>
+            </div>
+          ) : (
+            <span className="text-gray-900 text-sm sm:text-base md:text-lg font-semibold mt-1">
+              Tk. {regularPrice}
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );

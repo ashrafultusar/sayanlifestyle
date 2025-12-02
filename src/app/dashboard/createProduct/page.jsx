@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useData } from "@/context/DataContext";
@@ -15,11 +14,11 @@ const Page = () => {
     title: "",
     size: "",
     Category: "",
+    homeCategory: "", // Initialize homeCategory as part of form state
     Code: "",
-    price: "",
-    discountPrice: "",
+    regularPrice: "", // Regular price is required
+    discountPrice: "", // Discount price is optional
     description: "",
-    homecategory: "",
   });
 
   const [imageURLs, setImageURLs] = useState([]); // Cloudinary URLs
@@ -30,10 +29,10 @@ const Page = () => {
   const uploadToCloudinary = async (file) => {
     const data = new FormData();
     data.append("file", file);
-    data.append("upload_preset", process.env.NEXT_PUBLIC_CLOUD_PRESET); // 'ml_unsigned'
+    data.append("upload_preset", process.env.NEXT_PUBLIC_CLOUD_PRESET);
 
     const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`, // 'deyvbbuax'
+      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`,
       {
         method: "POST",
         body: data,
@@ -42,15 +41,9 @@ const Page = () => {
 
     const json = await res.json();
 
-    // Debugging: If upload fails show error
+    // If upload fails, show error message
     if (!json.secure_url) {
-      console.log("Cloudinary Error Response:", json);
-      // এখানে আরও সুস্পষ্ট এরর মেসেজ দেখাচ্ছে
-      toast.error(
-        `Cloudinary upload failed! Error: ${
-          json.error?.message || "Unknown error"
-        }`
-      );
+      toast.error(`Cloudinary upload failed! Error: ${json.error?.message || "Unknown error"}`);
       return null;
     }
 
@@ -62,19 +55,12 @@ const Page = () => {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
 
-    // Preview images
-    setImagePreviews((prev) => [
-      ...prev,
-      ...files.map((file) => URL.createObjectURL(file)),
-    ]);
+    setImagePreviews((prev) => [...prev, ...files.map((file) => URL.createObjectURL(file))]);
 
     const urls = [];
-
-    // Start uploading files one by one
     for (let file of files) {
       const url = await uploadToCloudinary(file);
-
-      if (url) urls.push(url); // only push valid URLs
+      if (url) urls.push(url);
     }
 
     setImageURLs((prev) => [...prev, ...urls]);
@@ -88,6 +74,13 @@ const Page = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    // Ensure that required fields are filled, excluding discountPrice
+    if (!form.title || !form.size || !form.Category || !form.Code || !form.regularPrice) {
+      toast.error("All fields except Discount Price are required!");
+      setLoading(false);
+      return;
+    }
 
     const productData = {
       ...form,
@@ -111,11 +104,11 @@ const Page = () => {
         title: "",
         size: "",
         Category: "",
+        homeCategory: "", // Reset homeCategory after submission
         Code: "",
-        price: "",
+        regularPrice: "",
         discountPrice: "",
         description: "",
-        homecategory: "",
       });
 
       setImageURLs([]);
@@ -129,8 +122,7 @@ const Page = () => {
     }
   };
 
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   return (
     <div className="max-w-4xl text-black mx-auto mt-4 p-6 bg-white rounded-lg shadow-xl">
@@ -161,8 +153,8 @@ const Page = () => {
           <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
             <h2 className="text-xl font-semibold mb-4">Home Category</h2>
             <select
-              name="homecategory"
-              value={form.homecategory}
+              name="homeCategory" // Correct the name to match form state
+              value={form.homeCategory}
               onChange={handleChange}
               className="border p-3 rounded-lg w-full"
             >
@@ -181,7 +173,7 @@ const Page = () => {
                 placeholder="Size"
                 value={form.size}
                 onChange={handleChange}
-                className="border  p-3 rounded-lg w-full"
+                className="border p-3 rounded-lg w-full"
               />
               <input
                 type="text"
@@ -199,7 +191,6 @@ const Page = () => {
               className="border p-3 rounded-lg w-full"
             >
               <option value="">Category</option>
-              {/* Assuming categories is fetched from context */}
               {categories?.map((ctg) => (
                 <option key={ctg._id} value={ctg.name}>
                   {ctg.name}
@@ -213,11 +204,12 @@ const Page = () => {
 
             <input
               type="number"
-              name="price"
-              placeholder="Price"
-              value={form.price}
+              name="regularPrice"
+              placeholder="Regular Price"
+              value={form.regularPrice}
               onChange={handleChange}
               className="border mb-3 p-3 rounded-lg w-full"
+              required
             />
 
             <input
@@ -276,12 +268,11 @@ const Page = () => {
 
           <button
             type="submit"
-            disabled={loading || imageURLs.length === 0} // Disable if loading or no images uploaded
+            disabled={loading || imageURLs.length === 0}
             className={`bg-green-600 text-white p-4 rounded-lg text-xl font-semibold 
-              ${
-                loading || imageURLs.length === 0
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-green-700"
+              ${loading || imageURLs.length === 0
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-green-700"
               }`}
           >
             {loading ? "Uploading..." : "Save Product"}

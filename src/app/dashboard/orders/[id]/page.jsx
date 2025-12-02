@@ -48,6 +48,8 @@ export default function OrderDetailsPage() {
   // 🔥 Grand Total (Product Total + Courier Charge)
   const grandTotal = productsTotal + (order?.courierCharge || 0);
 
+
+  console.log(order);
   return (
     <div className="max-w-5xl mx-auto p-6 text-black border border-slate-300 rounded-sm mt-8">
       

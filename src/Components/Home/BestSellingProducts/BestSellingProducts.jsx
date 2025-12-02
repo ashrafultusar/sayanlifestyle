@@ -12,7 +12,6 @@ const BestSellingProducts = ({ products, loading = false, error = null }) => {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
 
-  // ✅ Loading skeleton
   if (loading)
     return (
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 px-5 mt-10">
@@ -65,14 +64,15 @@ const BestSellingProducts = ({ products, loading = false, error = null }) => {
                 _id={product._id}
                 title={product.title}
                 image={product.image}
-                price={product.price}
-                isNew={product.isNew}
+                regularPrice={product.regularPrice}  // Pass regularPrice
+                discountPrice={product.discountPrice} // Pass discountPrice
+                isNew={product.homeCategory === "newarrival"} // Check if it's a new arrival based on homeCategory
               />
             </SwiperSlide>
           ))}
         </Swiper>
 
-        {/* ✅ Arrows */}
+        {/* Navigation Arrows */}
         <button
           ref={prevRef}
           className="absolute top-1/2 -translate-y-1/2 left-1 bg-black/70 hover:bg-black text-white p-2 rounded-full shadow-md z-10 cursor-pointer"

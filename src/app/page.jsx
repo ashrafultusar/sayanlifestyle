@@ -47,7 +47,7 @@ export default async function Home() {
     (p) => p.homeCategory === "newarrival"
   );
 
-  console.log(slider);
+  console.log(newArrivalProducts);
   return (
     <div className="flex flex-col gap-8 py-6">
       <Slider data={slider} />

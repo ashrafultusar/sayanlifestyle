@@ -74,9 +74,12 @@ export default function ProductPage() {
     courierLocation === "inside"
       ? deliveryCharge.insideDhaka
       : deliveryCharge.outsideDhaka;
-  const totalPrice = (product?.discountPrice * quantity || 0) + courierCharge;
+  const totalPrice =
+    (product?.discountPrice > 0 ? product?.discountPrice : product?.regularPrice) *
+      quantity +
+    courierCharge;
 
-  // size from api
+  // Size from API
   const availableSizes = product?.size
     ? product.size
         .split(",")
@@ -127,12 +130,12 @@ export default function ProductPage() {
                   ৳{product?.discountPrice}
                 </p>
                 <p className="text-lg text-gray-500 line-through">
-                  ৳{product?.price}
+                  ৳{product?.regularPrice}
                 </p>
               </>
             ) : (
               <p className="text-3xl font-medium text-green-600">
-                ৳{product?.price}
+                ৳{product?.regularPrice}
               </p>
             )}
           </div>
@@ -142,21 +145,17 @@ export default function ProductPage() {
             <p className="font-medium">Select Size</p>
             <div className="flex gap-2">
               {availableSizes?.map((size, index) => (
-              <button
-                                key={index}
-                                onClick={() => setSelectedSize(size)}
-                                className={`
-                                  border text-sm font-medium w-10 h-10 flex items-center justify-center rounded cursor-pointer
-                                  ${
-                                    size === selectedSize
-                                      ? "border-slate-200 bg-slate-700 text-white"
-                                      : "border-gray-300 bg-sayan-100 text-gray-700 hover:border-gray-500 hover:bg-gray-200"
-                                  }
-                                  transition-colors
-                                `}
-                              >
-                                {size}
-                              </button>
+                <button
+                  key={index}
+                  onClick={() => setSelectedSize(size)}
+                  className={`border text-sm font-medium w-10 h-10 flex items-center justify-center rounded cursor-pointer ${
+                    size === selectedSize
+                      ? "border-slate-200 bg-slate-700 text-white"
+                      : "border-gray-300 bg-sayan-100 text-gray-700 hover:border-gray-500 hover:bg-gray-200"
+                  } transition-colors`}
+                >
+                  {size}
+                </button>
               ))}
             </div>
           </div>
@@ -182,10 +181,8 @@ export default function ProductPage() {
               </button>
             </div>
 
-            {/* product code */}
-            <p className="mt-5 text-gray-500 lg:w-4/5">
-              Product Code: {product?.Code}
-            </p>
+            {/* Product Code */}
+            <p className="mt-5 text-gray-500 lg:w-4/5">Product Code: {product?.Code}</p>
           </div>
 
           {/* Courier Location */}
@@ -228,7 +225,7 @@ export default function ProductPage() {
                 const newProduct = {
                   id,
                   title: product?.title,
-                  regularPrice: product?.price,
+                  regularPrice: product?.regularPrice,
                   discountPrice: product?.discountPrice,
                   price: product?.discountPrice,
                   image: product?.image?.[0] || "/placeholder.png",
@@ -237,9 +234,7 @@ export default function ProductPage() {
                   size: selectedSize,
                 };
 
-                const existingCart = JSON.parse(
-                  localStorage.getItem("checkoutData") || "[]"
-                );
+                const existingCart = JSON.parse(localStorage.getItem("checkoutData") || "[]");
 
                 const existingIndex = existingCart.findIndex(
                   (item) =>
@@ -254,10 +249,7 @@ export default function ProductPage() {
                   existingCart.push(newProduct);
                 }
 
-                localStorage.setItem(
-                  "checkoutData",
-                  JSON.stringify(existingCart)
-                );
+                localStorage.setItem("checkoutData", JSON.stringify(existingCart));
                 setIsOrdering(false);
               }}
               disabled={!selectedSize}

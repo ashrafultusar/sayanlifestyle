@@ -24,17 +24,17 @@ const AllProducts = ({ products, loading = false, error = null }) => {
 
   if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
 
-  if (!products || products.length === 0)
+  if (!Array.isArray(products) || products.length === 0)
     return (
       <p className="text-center text-gray-500 mt-10">
-        No AllProducts products found.
+        No AllProducts found.
       </p>
     );
 
   return (
     <div className="relative px-5 mt-10">
       <h1 className="text-2xl md:text-3xl font-bold mb-6 text-black uppercase">
-      All Categories Products
+        All Categories Products
       </h1>
 
       <div className="relative">
@@ -65,8 +65,9 @@ const AllProducts = ({ products, loading = false, error = null }) => {
                 _id={product._id}
                 title={product.title}
                 image={product.image}
-                price={product.price}
-                isNew={product.isNew}
+                regularPrice={product.regularPrice}  // Pass regularPrice
+                discountPrice={product.discountPrice} // Pass discountPrice
+                isNew={product.homeCategory === "newarrival"} // Check if it's a new arrival based on homeCategory
               />
             </SwiperSlide>
           ))}

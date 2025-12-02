@@ -62,8 +62,9 @@ const NewArrival = ({ products, loading = false, error = null }) => {
                 _id={product._id}
                 title={product.title}
                 image={product.image}
-                price={product.price}
-                isNew={product.isNew}
+                regularPrice={product.regularPrice}  // Pass regularPrice
+                discountPrice={product.discountPrice} // Pass discountPrice
+                isNew={product.homeCategory === "newarrival"} // Check if it's a new arrival based on homeCategory
               />
             </SwiperSlide>
           ))}
